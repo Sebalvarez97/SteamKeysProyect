@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 30/06/2018 03:39:10 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="Model.Estadollave" table="estadollave" catalog="steamkeys" optimistic-lock="version">
+        <id name="idestado" type="java.lang.Integer">
+            <column name="IDestado" />
+            <generator class="identity" />
+        </id>
+        <property name="estadollaveNombre" type="string">
+            <column name="estadollaveNombre" length="45" />
+        </property>
+        <set name="keyses" table="keys" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="estado" />
+            </key>
+            <one-to-many class="Model.Keys" />
+        </set>
+    </class>
+</hibernate-mapping>
