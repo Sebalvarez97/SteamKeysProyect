@@ -4,7 +4,12 @@
  * and open the template in the editor.
  */
 package steamkeys;
-
+import Model.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import Controller.*;
 /**
  *
  * @author eltet
@@ -16,6 +21,37 @@ public class SteamKeys {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        
+        Calendar c = Calendar.getInstance();
+        String dia = Integer.toString(c.get(Calendar.DATE));
+        String mes = Integer.toString(c.get(Calendar.MONTH));
+        String annio = Integer.toString(c.get(Calendar.YEAR)); 
+        
+        Date d = new Date();
+        
+        d.setDate(Calendar.DATE);
+        d.setMonth(Calendar.MONTH);
+        d.setYear(Calendar.YEAR);
+        
+        
+        System.out.println(dia + "  " + mes + "  " + annio);
+        
+        KeyType t1 = new KeyType(1, "Revolver");
+        
+        System.out.println("CREADA   " + t1.getTipeDescription());
+        
+        KeyState s1 = new KeyState(10, "NonComerciable");
+        
+        Key key = new Key(63.99 , t1 ,d ,s1 );
+        
+        Operation op = new Operation();
+        
+        op.CreateKey(key);
+        
+        
+        
+        
+        
     }
     
 }
