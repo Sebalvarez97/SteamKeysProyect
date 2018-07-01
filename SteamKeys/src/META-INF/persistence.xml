@@ -16,7 +16,7 @@
       <!--Dialecto de hibernate para mysql-->
       <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
       <!--Conexion con la base de datos-->
-      <property name="hibernate.hbm2ddl.auto" value="update"/>
+      <property name="hibernate.hbm2ddl.auto" value="update"/>  
     </properties>
   </persistence-unit>
 </persistence>

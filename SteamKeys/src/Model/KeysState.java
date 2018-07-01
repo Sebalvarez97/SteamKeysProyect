@@ -6,16 +6,19 @@
 package Model;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  *
  * @author eltet
  */
 @Entity
+@Table(name = "keysstate")
 public class KeysState implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -31,32 +34,22 @@ public class KeysState implements Serializable {
         this.id = id;
     }
 /////////////////////////////////////////////////////
-     
-     private int IDstate;
+     @Column(name = "stateDescription")
      private String stateDescription;
 
-    public KeysState(int IDstate, String stateDescription) {
-        this.IDstate = IDstate;
+    public KeysState( String stateDescription) {
+      
         this.stateDescription = stateDescription;
     }
 
-    
-    
     public KeysState() {
         
-    }
-
-    public int getIDstate() {
-        return IDstate;
     }
 
     public String getStateDescription() {
         return stateDescription;
     }
-
-    public void setIDstate(int IDstate) {
-        this.IDstate = IDstate;
-    }
+ 
 
     public void setStateDescription(String stateDescription) {
         this.stateDescription = stateDescription;

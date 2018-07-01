@@ -38,9 +38,9 @@ public class SteamKeys {
         
         KeysType t1 = new KeysType( "Revolver");
         
-        System.out.println("CREADA   " + t1.getTipeDescription());
+        System.out.println("CREADA   " + t1.getTypeDescription());
         
-        KeysState s1 = new KeysState(10, "NonComerciable");
+        KeysState s1 = new KeysState("NonComerciable");
         
         Keys key = new Keys(63.99 , t1 ,d ,s1 );
         

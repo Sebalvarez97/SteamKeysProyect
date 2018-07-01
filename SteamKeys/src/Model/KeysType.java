@@ -6,16 +6,19 @@
 package Model;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  *
  * @author eltet
  */
 @Entity
+@Table(name = "keystype")
 public class KeysType implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -31,7 +34,7 @@ public class KeysType implements Serializable {
         this.id = id;
     }
 ////////////////////////////////////////////////
-
+    @Column(name = "typeDescription")
     private String TipeDescription; 
 
     public KeysType(String TipeDescription) {
@@ -44,13 +47,13 @@ public class KeysType implements Serializable {
 
 
 
-    public String getTipeDescription() {
+    public String getTypeDescription() {
         return TipeDescription;
     }
 
  
 
-    public void setTipeDescription(String TipeDescription) {
+    public void setTypeDescription(String TipeDescription) {
         this.TipeDescription = TipeDescription;
     }
     
