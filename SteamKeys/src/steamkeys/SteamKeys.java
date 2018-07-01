@@ -20,7 +20,7 @@ import static jdk.nashorn.internal.objects.NativeObject.keys;
  */
 public class SteamKeys {
 
-    private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("SteamKeysPU");;
+    private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("SteamKeysPU");
     /**
      * @param args the command line arguments
      */
