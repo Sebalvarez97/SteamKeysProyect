@@ -36,13 +36,13 @@ public class SteamKeys {
         
         System.out.println(dia + "  " + mes + "  " + annio);
         
-        KeyType t1 = new KeyType(1, "Revolver");
+        KeysType t1 = new KeysType( "Revolver");
         
         System.out.println("CREADA   " + t1.getTipeDescription());
         
-        KeyState s1 = new KeyState(10, "NonComerciable");
+        KeysState s1 = new KeysState(10, "NonComerciable");
         
-        Key key = new Key(63.99 , t1 ,d ,s1 );
+        Keys key = new Keys(63.99 , t1 ,d ,s1 );
         
 //        Operation op = new Operation();
 //        
