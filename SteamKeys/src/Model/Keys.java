@@ -19,7 +19,7 @@ import javax.persistence.Table;
  * @author eltet
  */
 @Entity
-@Table(name = "Keys")
+@Table(name = "keys")
 public class Keys implements Serializable {
 
     private static final long serialVersionUID = 1L;
