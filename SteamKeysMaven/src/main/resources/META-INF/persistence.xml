@@ -11,7 +11,7 @@
     <!--<provider>org.hibernate.ejb.HibernatePersistence</provider>-->
     <!--Representacion de las clases-->
     
-    <class>Model.Key</class>
+    <class>Moel.Key</class>
     <class>Model.KeyType</class>
     <class>Model.KeyState</class>
     <properties>

@@ -6,12 +6,23 @@
 package Model;
 
 import java.io.Serializable;
+import java.sql.Time;
+import java.time.ZonedDateTime;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+
 
 /**
  *
@@ -29,10 +40,15 @@ public class Key implements Serializable {
     @Column(name = "buyprice")
     private double buyprice;
     
-    @Column(name = "keystate")
+    @Column(name = "buydate")
+    private Date buydate;
+    
+    @ManyToOne//(fetch = FetchType.LAZY)
+    @JoinColumn(name = "keystate")
     private KeyState keyState;
     
-    @Column(name = "keytype")
+    @ManyToOne//(fetch = FetchType.LAZY)
+    @JoinColumn(name = "keytype")
     private KeyType keyType;
     
     public Key(){
@@ -73,6 +89,14 @@ public class Key implements Serializable {
         this.keyType = keyType;
     }
     
+    public Date getBuyDate(){
+        return this.buydate;
+    }
+    
+    public void setBuyDate(){ //SETEA LA FECHA CON LA FECHA DE HOY EN LA ZONA HORARIA DE STEAM
+        Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT -7:00"));
+        this.buydate = c.getTime();
+    }
     /////////////////////////
     
     public Long getId() {
