@@ -10,26 +10,73 @@ import Model.*;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 public class EntityController {
     
-    private static EntityManager manager;
+    //Creamos el gestor de persistencia
+    private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("SteamKeysPU");
+    private static EntityManager Ownmanager = emf.createEntityManager();
     
-    private static EntityManagerFactory emf;
+    private static KeyJpaController keysController = new KeyJpaController(emf);
+    private static KeyTypeJpaController typeController = new KeyTypeJpaController(emf);
+    private static KeyStateJpaController stateController = new KeyStateJpaController(emf);
+    
+    
+     //CUENTA LAS LLAVES EN LA BASE DE DATOS
+    public static void KeyCounter(){
+        
+         int cantidadkeys = keysController.getKeyCount(); 
+        // List<Key> keys = (List<Key>) manager.createQuery("FROM key").getResultList();
+        System.out.println("En esta base de datos hay " + cantidadkeys + " keys");
+        
+    }    
+    public static void create(Object entity){
+        
+        switch(entity.getClass().toString()){
+            
+            case "class Model.Key":
+                keysController.create((Key) entity);
+                break;
+            case "class Model.KeyState":
+                if(stateController.findIfExists((KeyState)entity)){
+                    System.out.println("The state you want to enter already exists");
+                }else{stateController.create((KeyState) entity);}
+                break;
+            case "class Model.KeyType":
+                if(typeController.findIfExists((KeyType)entity)){
+                    System.out.println("The type you want to enter already exists");
+                }else{typeController.create((KeyType) entity);}
+                break;
+            default:
+                System.out.println("The entity type doesn not exist");
+                break;
+        }
+    }  
     
      public static void main(String[] args) throws NonexistentEntityException{
-        //Creamos el gestor de persistencia
-        emf = Persistence.createEntityManagerFactory("SteamKeysPU");
-        //manager = emf.createEntityManager();
-        KeyJpaController keysController = new KeyJpaController(emf);
-        KeyTypeJpaController typeController = new KeyTypeJpaController(emf);
-        KeyStateJpaController stateController = new KeyStateJpaController(emf);
         
         
-        
+         KeyState ks = new KeyState();
+         ks.setStateDescription("Untradeable");
+         KeyType kt = new KeyType();
+         kt.setTypeDescription("Revolver");
+         Key k = new Key();
+         k.setKeyState(ks);
+         k.setKeyType(kt);
+         k.setBuyprice(63.99);
+         
+         System.out.println(ks.getClass().toString());
+         
+         EntityController.create(ks);
+         EntityController.create(kt);
+         EntityController.create(k);
+         
+         EntityController.KeyCounter();
+         
         //PRUEBA DE CREACION DE LLAVE
         //Key k = new Key(63.99, "untradeable", "Revolver");
         //keysController.create(k);
@@ -95,13 +142,10 @@ public class EntityController {
 //        }
 //       
         /////////////////////////////////////////////////////
-        //CUENTA LAS LLAVES EN LA BASE DE DATOS
-        int cantidadkeys = keysController.getKeyCount(); 
-        // List<Key> keys = (List<Key>) manager.createQuery("FROM key").getResultList();
-        System.out.println("En esta base de datos hay " + cantidadkeys + " keys");
         
          //PRUEBA DE DESTRUCCION DE LLAVE
 //        keysController.destroy(k.getId());
+    
         
     }
     

@@ -122,7 +122,32 @@ public class KeyTypeJpaController implements Serializable {
                                         em.close();
                                     }
                                 }
-
+                                
+                                public boolean findIfExists(KeyType type){
+                                    EntityManager em = getEntityManager();
+                                    try {
+                                        List <Object> query = em.createQuery("select kt.id from KeyType as kt where kt.typeDescription='" + type.getTypeDescription() + "'").getResultList();
+                                        if(query.isEmpty()){
+                                            return false;
+                                        }else return true;
+                                
+                                    } finally {
+                                     em.close();
+                                    }
+                                }
+                                public boolean findIfExists(String type){
+                                    EntityManager em = getEntityManager();
+                                    try {
+                                        List <Object> query = em.createQuery("select kt.id from KeyType as kt where kt.typeDescription='" + type + "'").getResultList();
+                                        if(query.isEmpty()){
+                                            return false;
+                                        }else return true;
+                                
+                                    } finally {
+                                     em.close();
+                                    }
+                                }
+                          
     public KeyType findKeyType(Long id) {
         EntityManager em = getEntityManager();
         try {
