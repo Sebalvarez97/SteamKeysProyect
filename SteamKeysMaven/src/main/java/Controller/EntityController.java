@@ -25,7 +25,7 @@ public class EntityController {
         KeyJpaController keysController = new KeyJpaController(emf);
         int cantidadkeys = keysController.getKeyCount(); 
        // List<Key> keys = (List<Key>) manager.createQuery("FROM key").getResultList();
-        System.out.println("En esta base de datos hay  " + cantidadkeys + "keys");
+        System.out.println("En esta base de datos hay " + cantidadkeys + " keys");
         
     }
     
