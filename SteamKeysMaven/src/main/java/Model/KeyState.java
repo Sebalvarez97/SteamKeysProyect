@@ -18,63 +18,35 @@ import javax.persistence.Table;
  * @author eltet
  */
 @Entity
-@Table(name = "key")
-public class Key implements Serializable {
+@Table(name = "keystate")
+public class KeyState implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    @Column(name = "buyprice")
-    private double buyprice;
-    
-    @Column(name = "keystate")
-    private KeyState keyState;
-    
-    @Column(name = "keytype")
-    private KeyType keyType;
-    
-    public Key(){
+    @Column(name = "stateDescription")
+    private String stateDescription;
+
+    public KeyState() {
         
     }
-
-    public Key(double buyprice, KeyState keyState, KeyType keyType) {
-        this.buyprice = buyprice;
-        this.keyState = keyState;
-        this.keyType = keyType;
-    }
-
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-///////////////////////////////////////////////////
-    public double getBuyprice() {
-        return buyprice;
-    }
-
-    public KeyState getKeyState() {
-        return keyState;
-    }
-
-    public KeyType getKeyType() {
-        return keyType;
-    }
-
-    public void setBuyprice(double buyprice) {
-        this.buyprice = buyprice;
-    }
-
-    public void setKeyState(KeyState keyState) {
-        this.keyState = keyState;
-    }
-
-    public void setKeyType(KeyType keyType) {
-        this.keyType = keyType;
-    }
     
-    /////////////////////////
-    
+    public KeyState(String stateDescription) {
+        this.stateDescription = stateDescription;
+    }
+        
+    /////////////////////////////////////////////
+    public String getStateDescription() {
+        return stateDescription;
+    }
+
+    public void setStateDescription(String stateDescription) {
+        this.stateDescription = stateDescription;
+    }
+   ///////////////////////////////////////////// 
+        
     public Long getId() {
         return id;
     }
@@ -93,10 +65,10 @@ public class Key implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Key)) {
+        if (!(object instanceof KeyState)) {
             return false;
         }
-        Key other = (Key) object;
+        KeyState other = (KeyState) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -105,7 +77,7 @@ public class Key implements Serializable {
 
     @Override
     public String toString() {
-        return "Model.Key[ id=" + id + " ]";
+        return "Model.KeyState[ id=" + id + " ]";
     }
     
 }

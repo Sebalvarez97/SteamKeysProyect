@@ -13,67 +13,42 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+
 /**
  *
  * @author eltet
  */
 @Entity
-@Table(name = "key")
-public class Key implements Serializable {
+@Table(name = "keytype")
+public class KeyType implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Column(name = "typeDescription")
+    private String typeDescription;
     
-    @Column(name = "buyprice")
-    private double buyprice;
-    
-    @Column(name = "keystate")
-    private KeyState keyState;
-    
-    @Column(name = "keytype")
-    private KeyType keyType;
-    
-    public Key(){
+    public KeyType() {
         
     }
 
-    public Key(double buyprice, KeyState keyState, KeyType keyType) {
-        this.buyprice = buyprice;
-        this.keyState = keyState;
-        this.keyType = keyType;
+    public KeyType(String typeDescription) {
+        this.typeDescription = typeDescription;
+    }
+//////////////////////////////////////////////
+
+    public String getTypeDescription() {
+        return typeDescription;
     }
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-///////////////////////////////////////////////////
-    public double getBuyprice() {
-        return buyprice;
-    }
-
-    public KeyState getKeyState() {
-        return keyState;
-    }
-
-    public KeyType getKeyType() {
-        return keyType;
-    }
-
-    public void setBuyprice(double buyprice) {
-        this.buyprice = buyprice;
-    }
-
-    public void setKeyState(KeyState keyState) {
-        this.keyState = keyState;
-    }
-
-    public void setKeyType(KeyType keyType) {
-        this.keyType = keyType;
+    public void setTypeDescription(String typeDescription) {
+        this.typeDescription = typeDescription;
     }
     
-    /////////////////////////
+    
+/////////////////////////////////////////////    
     
     public Long getId() {
         return id;
@@ -93,10 +68,10 @@ public class Key implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Key)) {
+        if (!(object instanceof KeyType)) {
             return false;
         }
-        Key other = (Key) object;
+        KeyType other = (KeyType) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -105,7 +80,7 @@ public class Key implements Serializable {
 
     @Override
     public String toString() {
-        return "Model.Key[ id=" + id + " ]";
+        return "Model.KeyType[ id=" + id + " ]";
     }
     
 }

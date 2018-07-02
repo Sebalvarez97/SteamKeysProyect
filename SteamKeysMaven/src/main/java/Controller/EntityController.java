@@ -28,18 +28,17 @@ public class EntityController {
         
         //PRUEBA DE CREACION DE LLAVE
         //Key k = new Key(63.99, "untradeable", "Revolver");
-        
         //keysController.create(k);
         //////////////////////////////////////////////////////
         
         //PRUEBA DE LISTAR LLAVES
         List<Key> keys = (List<Key>) keysController.findKeyEntities();
         Key key;
-        Iterator iter = keys.iterator();
-        while(iter.hasNext()){
-            key = (Key)iter.next(); 
-            System.out.println(key.getId() + " " + key.getKeyState() + " " + key.getKeyType());
-        }
+//        Iterator iter = keys.iterator();
+//        while(iter.hasNext()){
+//            key = (Key)iter.next(); 
+//            System.out.println(key.getId() + " " + key.getKeyState() + " " + key.getKeyType());
+//        }
         //////////////////////////////////////////////////////
        
         //PRUEBA DE DESTRUCCION DE LLAVE
