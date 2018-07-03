@@ -93,6 +93,10 @@ public class Key implements Serializable {
         return this.buydate;
     }
     
+    public void setBuyDate(Date date){
+        this.buydate = date;
+    }
+    
     public void setBuyDate(){ //SETEA LA FECHA CON LA FECHA DE HOY EN LA ZONA HORARIA DE STEAM
         Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT -7:00"));
         this.buydate = c.getTime();
