@@ -7,6 +7,7 @@ package Controller;
 
 import Controller.exceptions.NonexistentEntityException;
 import Model.*;
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -77,18 +78,36 @@ public class EntityController {
         }
  
     }
+     //DESTRUYE LAS ENTIDADES POR TIPO DE ENTIDAD   
+    public static void destroy(Object entity) throws NonexistentEntityException{
         
-    public static void destroy(Object entity){
-        
+        switch(entity.getClass().toString()){
+            case "class Model.Key":
+               Key k = (Key) entity;
+               keysController.destroy(k.getId());
+               break;
+            case "class Model.KeyState":
+               KeyState ks = (KeyState) entity;
+               stateController.destroy(ks.getId());
+               break;
+            case "class Model.KeyType":
+                KeyType kt = (KeyType) entity;
+                typeController.destroy(kt.getId());
+                break;
+            default:
+                System.out.println("The entity you want to destroy does not exist");
+                break;
+        }
     }   
     
      public static void main(String[] args) throws NonexistentEntityException{
         
-        
+//           
 //         KeyState ks = new KeyState();
 //         ks.setStateDescription("Untradeable");
 //         KeyType kt = new KeyType();
 //         kt.setTypeDescription("Revolver");
+         
 //         Key k = new Key();
 //         k.setKeyState(ks);
 //         k.setKeyType(kt);
@@ -99,11 +118,13 @@ public class EntityController {
 //         EntityController.create(ks);
 //         EntityController.create(kt);
 //         EntityController.create(k);
-         
+//         KeyType kt2 = new KeyType();
+//         kt2.setTypeDescription("Huntsman");
 //         EntityController.List("KeyState");
-//         
+//         EntityController.create(kt2);  
 //         EntityController.KeyCounter();
-         
+//         List("KeyType");
+//         List("KeyState");
         //PRUEBA DE CREACION DE LLAVE
         //Key k = new Key(63.99, "untradeable", "Revolver");
         //keysController.create(k);
