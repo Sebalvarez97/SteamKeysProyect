@@ -148,6 +148,7 @@ public class KeyTypeJpaController implements Serializable {
                                      em.close();
                                     }
                                 }
+//LISTA LAS ENTIDADES
         public void List(){
             List <KeyType> types = (List<KeyType>) findKeyTypeEntities();
             KeyType type;

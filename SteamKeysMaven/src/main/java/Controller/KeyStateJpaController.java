@@ -148,7 +148,7 @@ public class KeyStateJpaController implements Serializable {
                                 em.close();
                             }
                         }
-    
+    //LISTA LAS ENTIDADES
     public void List(){
             List <KeyState> states = (List<KeyState>) findKeyStateEntities();
             KeyState state;

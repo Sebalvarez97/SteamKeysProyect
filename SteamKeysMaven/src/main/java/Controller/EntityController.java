@@ -60,16 +60,16 @@ public class EntityController {
     }  
     
     //LISTA LAS ENTIDADES por tipo de entidad
-    public static void List(String clase){
+    public static void List(String type){
         
-        switch(clase){
-            case "Key":
+        switch(type){
+            case "class Modle.Key":
                 keysController.List();
                 break;
-            case "KeyState":
+            case "class Model.KeyState":
                 stateController.List();
                 break;
-            case "KeyType":
+            case "class Model.KeyType":
                 typeController.List();
                 break;
             default:
@@ -98,7 +98,22 @@ public class EntityController {
                 System.out.println("The entity you want to destroy does not exist");
                 break;
         }
-    }   
+    }
+    
+    public static Object find(String type, long id){
+        
+        switch(type){
+            case "class Model.Key":
+                return keysController.findKey(id);
+            case "class Model.KeyState":
+                return stateController.findKeyState(id);
+            case "class Model.KeyType":
+                return typeController.findKeyType(id);
+            default:
+                return null;
+        }
+        
+    }
     
      public static void main(String[] args) throws NonexistentEntityException{
         
@@ -107,7 +122,9 @@ public class EntityController {
 //         ks.setStateDescription("Untradeable");
 //         KeyType kt = new KeyType();
 //         kt.setTypeDescription("Revolver");
-         
+//         KeyType kt = (KeyType)find("class Model.KeyType", 418);
+//         System.out.println("El tipo de llave correspondiente al numero 418 es "+ kt.getTypeDescription());
+           
 //         Key k = new Key();
 //         k.setKeyState(ks);
 //         k.setKeyType(kt);
