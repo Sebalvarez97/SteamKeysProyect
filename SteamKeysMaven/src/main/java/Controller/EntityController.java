@@ -99,7 +99,7 @@ public class EntityController {
                 break;
         }
     }
-    
+   //ENCUENTRA LA ENTIDAD SEGUN EL TIPO 
     public static Object find(String type, long id){
         
         switch(type){
@@ -114,11 +114,26 @@ public class EntityController {
         }
         
     }
+   //CUENTA LAS ENTIDADES DEL TIPO ESPECIFICADO Y DEVUELVE EL VALOR 
+    public static int count(String type){
+        
+        switch(type){
+            case "class Model.Key":
+                return keysController.getKeyCount();
+            case "class Model.KeyState":
+                return stateController.getKeyStateCount();
+            case "class Model.KeyType":
+                return typeController.getKeyTypeCount();
+        }
+        return 0;
+    }
+    
     
      public static void main(String[] args) throws NonexistentEntityException{
-        
+            
+           KeyType kt = new KeyType();
            List("class Model.KeyType");
-           System.out.println("Existen " + typeController.getKeyTypeCount() + " tipos de llave");
+           System.out.println("Existen " + count(kt.getClass().toString()) + " tipos de llave");
         
 //         KeyType kt = new KeyType();
 //         kt.setTypeDescription("Guantes");
