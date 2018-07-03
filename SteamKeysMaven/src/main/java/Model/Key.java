@@ -43,7 +43,7 @@ public class Key implements Serializable {
     @Column(name = "buydate")
     private Date buydate;
     
-    @ManyToOne//(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "keystate")
     private KeyState keyState;
     

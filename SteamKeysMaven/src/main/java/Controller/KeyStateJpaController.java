@@ -8,6 +8,7 @@ package Controller;
 import Controller.exceptions.NonexistentEntityException;
 import Model.KeyState;
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -147,7 +148,19 @@ public class KeyStateJpaController implements Serializable {
                                 em.close();
                             }
                         }
-                  
+    
+    public void List(){
+            List <KeyState> states = (List<KeyState>) findKeyStateEntities();
+            KeyState state;
+            Iterator iter = states.iterator();
+        while(iter.hasNext()){
+            state = (KeyState)iter.next(); 
+            System.out.println(state.getId() + " " + state.getStateDescription());
+            
+        }
+        
+    }                      
+                          
     public KeyState findKeyState(Long id) {
         EntityManager em = getEntityManager();
         try {

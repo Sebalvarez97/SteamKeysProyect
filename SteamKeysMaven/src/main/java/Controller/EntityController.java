@@ -26,14 +26,15 @@ public class EntityController {
     private static KeyStateJpaController stateController = new KeyStateJpaController(emf);
     
     
-     //CUENTA LAS LLAVES EN LA BASE DE DATOS
+    //CUENTA LAS LLAVES EN LA BASE DE DATOS
     public static void KeyCounter(){
         
          int cantidadkeys = keysController.getKeyCount(); 
         // List<Key> keys = (List<Key>) manager.createQuery("FROM key").getResultList();
         System.out.println("En esta base de datos hay " + cantidadkeys + " keys");
         
-    }    
+    }
+    //CREA UNA ENTIDAD EN BASE DE DATOS SEGUN TIPO
     public static void create(Object entity){
         
         switch(entity.getClass().toString()){
@@ -57,25 +58,51 @@ public class EntityController {
         }
     }  
     
+    //LISTA LAS ENTIDADES por tipo de entidad
+    public static void List(String clase){
+        
+        switch(clase){
+            case "Key":
+                keysController.List();
+                break;
+            case "KeyState":
+                stateController.List();
+                break;
+            case "KeyType":
+                typeController.List();
+                break;
+            default:
+                System.out.println("The entity you want to list does not exist");
+                break;
+        }
+ 
+    }
+        
+    public static void destroy(Object entity){
+        
+    }   
+    
      public static void main(String[] args) throws NonexistentEntityException{
         
         
-         KeyState ks = new KeyState();
-         ks.setStateDescription("Untradeable");
-         KeyType kt = new KeyType();
-         kt.setTypeDescription("Revolver");
-         Key k = new Key();
-         k.setKeyState(ks);
-         k.setKeyType(kt);
-         k.setBuyprice(63.99);
+//         KeyState ks = new KeyState();
+//         ks.setStateDescription("Untradeable");
+//         KeyType kt = new KeyType();
+//         kt.setTypeDescription("Revolver");
+//         Key k = new Key();
+//         k.setKeyState(ks);
+//         k.setKeyType(kt);
+//         k.setBuyprice(63.99);
+//         
+//         System.out.println(ks.getClass().toString());
+//         
+//         EntityController.create(ks);
+//         EntityController.create(kt);
+//         EntityController.create(k);
          
-         System.out.println(ks.getClass().toString());
-         
-         EntityController.create(ks);
-         EntityController.create(kt);
-         EntityController.create(k);
-         
-         EntityController.KeyCounter();
+//         EntityController.List("KeyState");
+//         
+//         EntityController.KeyCounter();
          
         //PRUEBA DE CREACION DE LLAVE
         //Key k = new Key(63.99, "untradeable", "Revolver");
@@ -121,15 +148,6 @@ public class EntityController {
 //            System.out.println(key.getId() + " " + key.getKeyState().getStateDescription() + " " + key.getKeyType().getTypeDescription());
 //        }
         //////////////////////////////////////////////////////
-        //LISTA LAS LLAVES
-//         List<Key> keys = (List<Key>) keysController.findKeyEntities();
-//        Key key;
-//        Iterator iter = keys.iterator();
-//        while(iter.hasNext()){
-//            key = (Key)iter.next(); 
-//            System.out.println(key.getId() + " " + key.getKeyState().getStateDescription() + " " + key.getKeyType().getTypeDescription());
-//            keysController.destroy(key.getId());
-//        }
        
        //LISTA LOS TIPOS DE LLAVE
 //          List<KeyType> keytype = (List<KeyType>) typeController.findKeyTypeEntities();
@@ -148,7 +166,8 @@ public class EntityController {
     
         
     }
-    
+
+  
     
     
 }

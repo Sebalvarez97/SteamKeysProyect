@@ -8,6 +8,7 @@ package Controller;
 import Controller.exceptions.NonexistentEntityException;
 import Model.KeyType;
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -147,7 +148,17 @@ public class KeyTypeJpaController implements Serializable {
                                      em.close();
                                     }
                                 }
-                          
+        public void List(){
+            List <KeyType> types = (List<KeyType>) findKeyTypeEntities();
+            KeyType type;
+            Iterator iter = types.iterator();
+        while(iter.hasNext()){
+            type = (KeyType)iter.next(); 
+            System.out.println(type.getId() + " " + type.getTypeDescription());
+            
+        }
+        
+    }                           
     public KeyType findKeyType(Long id) {
         EntityManager em = getEntityManager();
         try {
