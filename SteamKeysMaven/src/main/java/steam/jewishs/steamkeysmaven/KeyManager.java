@@ -3,12 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Model;
+package steam.jewishs.steamkeysmaven;
 
 import Controller.EntityController;
 import Controller.exceptions.NonexistentEntityException;
 import Controller.exceptions.PreexistingEntityException;
+import Model.Key;
+import Model.KeyState;
+import Model.KeyType;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,14 +21,13 @@ import java.util.logging.Logger;
  *
  * @author eltet
  */
-public class KeyManager {
+public class KeyManager { 
     
     public static void EnterKey(double buyprice, String type){
         try{
          KeyState ks = EntityController.find(new KeyState("Untradeable"));
          KeyType kt = EntityController.find(new KeyType(type));
-        if(ks != null && kt != null){
-            
+        if(ks != null && kt != null){ 
             Key k = new Key();
             k.setBuyDate();
             k.setBuyprice(buyprice);
@@ -42,7 +45,9 @@ public class KeyManager {
 
     }
 
-    public static void DeleteKey(Key key){
+    public static void DeleteKey(long id){
+        Key key = new Key();
+        key.setId(id);
         try {
             EntityController.destroy(key);
         } catch (NonexistentEntityException ex) {
@@ -51,7 +56,26 @@ public class KeyManager {
         
     }
     
-    
-    
+  public static List<Key> ListKeys(){
+        try {
+            return EntityController.List(new Key());
+        } catch (NonexistentEntityException ex) {
+            System.out.println("NO EXISTEN LLAVES");//se enviara en ExceptionManager
+            return null;
+        }  
+  }  
+  public static List<KeyType> ListTypes(){
+      try{
+          return EntityController.List(new KeyType());
+      }catch(NonexistentEntityException ex){
+          System.out.println("NO EXISTEN TIPOS");//se enviara al ExceptionManager
+          return null;
+      }
+  } 
+  //QUIERO QUE ESTE SEA EL MAIN DE LA APP
+     public static void main(String[] args){
+     
+     
+     }
     
 }
