@@ -132,17 +132,20 @@ public class EntityController {
         typeController.List();
     }
      public static void main(String[] args) throws NonexistentEntityException, PreexistingEntityException{
-//        
-    //List(new KeyType());
-            
-//           KeyManager.EnterKey(63.99, "Croma");
+//  
+//
+
+  //List(new KeyType());
+  //create(new Key(63.99, find(new KeyState("Untradeable")), find(new KeyType("Revolver"))));          
+//            KeyManager.EnterKey(63.99, "Croma");
 //            KeyManager.EnterKey(63.99, "Revolver");
 //            KeyManager.EnterKey(63.99, "Croma 2");
 //            KeyManager.EnterKey(63.99, "Espectro");
-          //List("class Model.KeyType");
-        //KeyManager.EnterKey(63.99, "Espectro 2");
-List(new Key());
-        //List("class Model.KeyState");
+        
+//        //KeyManager.EnterKey(63.99, "Espectro 2");
+//List(new Key());
+//KeyCounter();
+//        
           //KeyCounter();
 //         KeyState ks = new KeyState();
 //         ks.setStateDescription("Tradeable");

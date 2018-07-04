@@ -26,7 +26,7 @@ public class KeyManager {//"""""""NO ESTA FUNCIONANDO"""""""
         if(ks != null && kt != null){
             
             Key k = new Key();
-            k.setBuyDate();
+           // k.setBuyDate();
             k.setBuyprice(buyprice);
             k.setKeyState(ks);
             k.setKeyType(kt);
@@ -41,7 +41,14 @@ public class KeyManager {//"""""""NO ESTA FUNCIONANDO"""""""
         }
 
     }
-    
+//    public static void EnterKey(double buyprice, String type) throws PreexistingEntityException{
+//    KeyState ks = EntityController.find(new KeyState("Untradeable"));
+//    KeyType kt = EntityController.find(new KeyType(type));
+//    Key k = new Key(buyprice, ks, kt);
+//    EntityController.create(k);
+//        
+//        
+//    }
     public static void DeleteKey(Key key){
       
     }
