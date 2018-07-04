@@ -39,11 +39,8 @@ public class EntityController {
        //CREA UNA ENTIDAD EN BASE DE DATOS SEGUN TIPO 
     public static void create(Key key) throws PreexistingEntityException{
         
-           if(findIfExist(key)){
-               throw new PreexistingEntityException("Key Creation duplicate");}
-           else{ 
            keysController.create(key); 
-        }
+        
     }
     public static void create(KeyState ks) throws PreexistingEntityException{
         
@@ -133,17 +130,17 @@ public class EntityController {
     }
      public static void main(String[] args) throws NonexistentEntityException, PreexistingEntityException{
 //  
-//
+    
 
   //List(new KeyType());
   //create(new Key(63.99, find(new KeyState("Untradeable")), find(new KeyType("Revolver"))));          
-//            KeyManager.EnterKey(63.99, "Croma");
+            KeyManager.EnterKey(63.99, "Croma");
 //            KeyManager.EnterKey(63.99, "Revolver");
 //            KeyManager.EnterKey(63.99, "Croma 2");
 //            KeyManager.EnterKey(63.99, "Espectro");
         
 //        //KeyManager.EnterKey(63.99, "Espectro 2");
-//List(new Key());
+List(new Key());
 //KeyCounter();
 //        
           //KeyCounter();
