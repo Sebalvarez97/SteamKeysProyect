@@ -94,7 +94,7 @@ public class Key implements Serializable {
     }
     
     public void setBuyDate(Date date){
-        this.buydate = date;    
+        this.buydate = date;
     }
     
     public void setBuyDate(){ //SETEA LA FECHA CON LA FECHA DE HOY EN LA ZONA HORARIA DE STEAM

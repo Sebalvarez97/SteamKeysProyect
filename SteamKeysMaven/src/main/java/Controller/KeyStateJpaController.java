@@ -136,18 +136,7 @@ public class KeyStateJpaController implements Serializable {
                             }
                         }
                         
-                          public boolean findIfExists(KeyState state){
-                            EntityManager em = getEntityManager();
-                            try {
-                                List <Object> query = em.createQuery("select ks.id from KeyState as ks where ks.stateDescription='" + state.getStateDescription() + "'").getResultList();
-                                if(query.isEmpty()){
-                                    return false;
-                                }else return true;
-                                
-                            } finally {
-                                em.close();
-                            }
-                        }
+
     //LISTA LAS ENTIDADES
     public void List(){
             List <KeyState> states = (List<KeyState>) findKeyStateEntities();

@@ -7,6 +7,8 @@ package Model;
 
 import Controller.EntityController;
 import Controller.exceptions.NonexistentEntityException;
+import Controller.exceptions.PreexistingEntityException;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,34 +17,33 @@ import java.util.logging.Logger;
  *
  * @author eltet
  */
-public class KeyManager {
+public class KeyManager {//"""""""NO ESTA FUNCIONANDO"""""""
     
     public static void EnterKey(double buyprice, String type){
-        
-        KeyType kt = (KeyType) EntityController.findIfExists("class Model.KeyType", type);
-        KeyState ks = (KeyState) EntityController.findIfExists("class Model.KeyState", "Untradeable");
-        
-        if(kt != null & ks != null){
-             Key k = new Key();
-        k.setBuyDate();
-        k.setBuyprice(buyprice);
-        k.setKeyState(ks);
-        k.setKeyType(kt);
-        EntityController.create(k);
+        try{
+         KeyState ks = EntityController.find(new KeyState("Untradeable"));
+         KeyType kt = EntityController.find(new KeyType(type));
+        if(ks != null && kt != null){
+            
+            Key k = new Key();
+            k.setBuyDate();
+            k.setBuyprice(buyprice);
+            k.setKeyState(ks);
+            k.setKeyType(kt);
+            EntityController.create(k);
         }else {
-            System.out.println("The key you want to create does not pair with an existing type");
+            throw new NonexistentEntityException("The type or the state does not exist");
         }
+        }catch(NonexistentEntityException Ne){
+            //se enviaran al ExceptionManager
+        }catch(PreexistingEntityException Pe){
+            //se enviaran al ExceptionManager
+        }
+
     }
     
     public static void DeleteKey(Key key){
-        
-        try {
-            EntityController.destroy(key);
-        } catch (NonexistentEntityException ex) {
-            System.out.println("The Key you want to delete does not exist"); 
-        }
-        
-        
+      
     }
     
     

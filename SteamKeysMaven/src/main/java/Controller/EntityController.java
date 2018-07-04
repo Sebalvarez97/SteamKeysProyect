@@ -32,24 +32,22 @@ public class EntityController {
     public static void KeyCounter(){
         
          int cantidadkeys = keysController.getKeyCount(); 
-        // List<Key> keys = (List<Key>) manager.createQuery("FROM key").getResultList();
-        System.out.println("En esta base de datos hay " + cantidadkeys + " keys");
+         System.out.println("En esta base de datos hay " + cantidadkeys + " keys");
         
     }
     
        //CREA UNA ENTIDAD EN BASE DE DATOS SEGUN TIPO 
     public static void create(Key key) throws PreexistingEntityException{
         
-           if(keysController.findKey(key.getId()) == null ){
-               throw new PreexistingEntityException("Key Creation failed");}
-           else{
-               
+           if(findIfExist(key)){
+               throw new PreexistingEntityException("Key Creation duplicate");}
+           else{ 
            keysController.create(key); 
         }
     }
     public static void create(KeyState ks) throws PreexistingEntityException{
         
-            if(stateController.findIfExists(ks.getStateDescription())){
+            if(findIfExist(ks)){
               throw new PreexistingEntityException("KeyState Creation failed");
             }else{
                 stateController.create(ks);
@@ -57,7 +55,7 @@ public class EntityController {
     }
     public static void create(KeyType kt) throws PreexistingEntityException{
         
-            if(stateController.findIfExists(kt.getTypeDescription())){
+            if(findIfExist(kt)){
                 throw new PreexistingEntityException("KeyType Creation failed");
             }else{
                 typeController.create(kt);
@@ -65,135 +63,87 @@ public class EntityController {
     }
     
     
-    //CREA UNA ENTIDAD EN BASE DE DATOS SEGUN TIPO
-    public static void create(Object entity){
-        
-        switch(entity.getClass().toString()){
-            
-            case "class Model.Key":
-                keysController.create((Key) entity);
-                break;
-            case "class Model.KeyState":
-                if(stateController.findIfExists((KeyState)entity)){
-                    System.out.println("The state you want to enter already exists");
-                }else{stateController.create((KeyState) entity);}
-                break;
-            case "class Model.KeyType":
-                if(typeController.findIfExists((KeyType)entity)){
-                    System.out.println("The type you want to enter already exists");
-                }else{typeController.create((KeyType) entity);}
-                break;
-            default:
-                System.out.println("The entity type doesn not exist");
-                break;
-        }
-    }  
     
- 
+   //DESTRUYE LAS ENTIDADES POR TIPO DE ENTIDAD 
     public static void destroy(Key key) throws NonexistentEntityException{
         
-        if(keysController.findKey(key.getId()) == null ){
+        if(!findIfExist(key)){
             throw new NonexistentEntityException("Key destruction failed");
         }else{
             keysController.destroy(key.getId());
-        }
-        
+        }  
     }
     public static void destroy(KeyState ks) throws NonexistentEntityException{
         
-        if(stateController.findIfExists(ks.getStateDescription())){
+        if(!findIfExist(ks)){
             throw new NonexistentEntityException("KeyState destruction failed");
         }else{
             stateController.destroy(ks.getId());
         }
     }
     public static void destroy(KeyType kt) throws NonexistentEntityException{
-        if(typeController.findIfExists(kt.getTypeDescription())){
+        if(!findIfExist(kt)){
             throw new NonexistentEntityException("KeyType destruction failed");
         }else{
             typeController.destroy(kt.getId());
         }
     }
-     //DESTRUYE LAS ENTIDADES POR TIPO DE ENTIDAD   
-    public static void destroy(Object entity) throws NonexistentEntityException{
-        
-        switch(entity.getClass().toString()){
-            case "class Model.Key":
-               Key k = (Key) entity;
-               keysController.destroy(k.getId());
-               break;
-            case "class Model.KeyState":
-               KeyState ks = (KeyState) entity;
-               stateController.destroy(ks.getId());
-               break;
-            case "class Model.KeyType":
-                KeyType kt = (KeyType) entity;
-                typeController.destroy(kt.getId());
-                break;
-            default:
-                System.out.println("The entity you want to destroy does not exist");
-                break;
+     
+    //BUSCA SI EXISTE LA ENTIDAD 
+    public static boolean findIfExist(Key k){
+        if(find(k) == null){
+            return false;
+        }else {
+            return true;
         }
     }
-    //BUSCA SI EXISTE LA ENTIDAD DE TIPO LLAVE O ESTADO Y LA DEVUELVE
-    public static Object findIfExists(String type, String typeState){
-        
-        switch(type){
-            case "class Model.KeyType":
-                if(typeController.findIfExists(typeState)){
-                    return typeController.findKeyType(typeState);
-                }else{
-                    return null;
-                }
-            case "class Model.KeyState":
-                if(stateController.findIfExists(typeState)){
-                    return stateController.findKeyState(typeState);
-                }else {
-                    return null;
-                }
-            default:
-                return null;
+    public static boolean findIfExist(KeyState k){
+        if(find(k) == null){
+            return false;
+        }else {
+            return true;
         }
-        
-    }
-   //ENCUENTRA LA ENTIDAD SEGUN EL TIPO 
-    public static Object find(String type, long id){
-        
-        switch(type){
-            case "class Model.Key":
-                return keysController.findKey(id);
-            case "class Model.KeyState":
-                return stateController.findKeyState(id);
-            case "class Model.KeyType":
-                return typeController.findKeyType(id);
-            default:
-                return null;
-        }
-        
-    }
-   //CUENTA LAS ENTIDADES DEL TIPO ESPECIFICADO Y DEVUELVE EL VALOR 
-    public static int count(String type){
-        
-        switch(type){
-            case "class Model.Key":
-                return keysController.getKeyCount();
-            case "class Model.KeyState":
-                return stateController.getKeyStateCount();
-            case "class Model.KeyType":
-                return typeController.getKeyTypeCount();
-        }
-        return 0;
     }
     
-    
-     public static void main(String[] args) throws NonexistentEntityException{
+    public static boolean findIfExist(KeyType k){
+        if(find(k) == null){
+            return false;
+        }else {
+            return true;
+        }
+    }
+      //ENCUENTRA LA ENTIDAD SEGUN EL TIPO 
+    public static Key find(Key k){
+        return keysController.findKey(k.getId());
+    }
+    public static KeyState find(KeyState ks){
+        return stateController.findKeyState(ks.getStateDescription());
+    }
+    public static KeyType find(KeyType kt){
+        return typeController.findKeyType(kt.getTypeDescription());
+    }
+    public static void List(Key k){
+        keysController.List();
+    }
+    public static void List(KeyState ks){
+        stateController.List();
+    }
+    public static void List(KeyType kt){
+        typeController.List();
+    }
+     public static void main(String[] args) throws NonexistentEntityException, PreexistingEntityException{
 //        
+    //List(new KeyType());
+            
+//           KeyManager.EnterKey(63.99, "Croma");
+//            KeyManager.EnterKey(63.99, "Revolver");
+//            KeyManager.EnterKey(63.99, "Croma 2");
+//            KeyManager.EnterKey(63.99, "Espectro");
           //List("class Model.KeyType");
         //KeyManager.EnterKey(63.99, "Espectro 2");
-
+List(new Key());
         //List("class Model.KeyState");
-        //List("class Model.Key");
-
+          //KeyCounter();
 //         KeyState ks = new KeyState();
 //         ks.setStateDescription("Tradeable");
 //         create(ks); 
