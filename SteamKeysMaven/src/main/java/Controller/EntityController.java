@@ -6,6 +6,7 @@
 package Controller;
 
 import Controller.exceptions.NonexistentEntityException;
+import Controller.exceptions.PreexistingEntityException;
 import Model.*;
 import java.io.Serializable;
 import java.util.Iterator;
@@ -35,6 +36,35 @@ public class EntityController {
         System.out.println("En esta base de datos hay " + cantidadkeys + " keys");
         
     }
+    
+       //CREA UNA ENTIDAD EN BASE DE DATOS SEGUN TIPO 
+    public static void create(Key key) throws PreexistingEntityException{
+        
+           if(keysController.findKey(key.getId()) == null ){
+               throw new PreexistingEntityException("Key Creation failed");}
+           else{
+               
+           keysController.create(key); 
+        }
+    }
+    public static void create(KeyState ks) throws PreexistingEntityException{
+        
+            if(stateController.findIfExists(ks.getStateDescription())){
+              throw new PreexistingEntityException("KeyState Creation failed");
+            }else{
+                stateController.create(ks);
+            }
+    }
+    public static void create(KeyType kt) throws PreexistingEntityException{
+        
+            if(stateController.findIfExists(kt.getTypeDescription())){
+                throw new PreexistingEntityException("KeyType Creation failed");
+            }else{
+                typeController.create(kt);
+            }
+    }
+    
+    
     //CREA UNA ENTIDAD EN BASE DE DATOS SEGUN TIPO
     public static void create(Object entity){
         
@@ -59,24 +89,30 @@ public class EntityController {
         }
     }  
     
-    //LISTA LAS ENTIDADES por tipo de entidad
-    public static void List(String type){
-        
-        switch(type){
-            case "class Model.Key":
-                keysController.List();
-                break;
-            case "class Model.KeyState":
-                stateController.List();
-                break;
-            case "class Model.KeyType":
-                typeController.List();
-                break;
-            default:
-                System.out.println("The entity you want to list does not exist");
-                break;
-        }
  
+    public static void destroy(Key key) throws NonexistentEntityException{
+        
+        if(keysController.findKey(key.getId()) == null ){
+            throw new NonexistentEntityException("Key destruction failed");
+        }else{
+            keysController.destroy(key.getId());
+        }
+        
+    }
+    public static void destroy(KeyState ks) throws NonexistentEntityException{
+        
+        if(stateController.findIfExists(ks.getStateDescription())){
+            throw new NonexistentEntityException("KeyState destruction failed");
+        }else{
+            stateController.destroy(ks.getId());
+        }
+    }
+    public static void destroy(KeyType kt) throws NonexistentEntityException{
+        if(typeController.findIfExists(kt.getTypeDescription())){
+            throw new NonexistentEntityException("KeyType destruction failed");
+        }else{
+            typeController.destroy(kt.getId());
+        }
     }
      //DESTRUYE LAS ENTIDADES POR TIPO DE ENTIDAD   
     public static void destroy(Object entity) throws NonexistentEntityException{
@@ -153,10 +189,10 @@ public class EntityController {
      public static void main(String[] args) throws NonexistentEntityException{
 //        
           //List("class Model.KeyType");
-        KeyManager.EnterKey(63.99, "Espectro 2");
+        //KeyManager.EnterKey(63.99, "Espectro 2");
 
         //List("class Model.KeyState");
-        List("class Model.Key");
+        //List("class Model.Key");
 
 //         KeyState ks = new KeyState();
 //         ks.setStateDescription("Tradeable");

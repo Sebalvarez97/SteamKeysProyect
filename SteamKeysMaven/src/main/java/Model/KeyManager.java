@@ -6,7 +6,10 @@
 package Model;
 
 import Controller.EntityController;
+import Controller.exceptions.NonexistentEntityException;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -31,8 +34,13 @@ public class KeyManager {
         }
     }
     
-    public static void DeleteKey(){
+    public static void DeleteKey(Key key){
         
+        try {
+            EntityController.destroy(key);
+        } catch (NonexistentEntityException ex) {
+            System.out.println("The Key you want to delete does not exist"); 
+        }
         
         
     }
