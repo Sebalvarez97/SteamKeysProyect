@@ -63,7 +63,7 @@ public class EntityController {
     public static void List(String type){
         
         switch(type){
-            case "class Modle.Key":
+            case "class Model.Key":
                 keysController.List();
                 break;
             case "class Model.KeyState":
@@ -99,6 +99,27 @@ public class EntityController {
                 break;
         }
     }
+    //BUSCA SI EXISTE LA ENTIDAD DE TIPO LLAVE O ESTADO Y LA DEVUELVE
+    public static Object findIfExists(String type, String typeState){
+        
+        switch(type){
+            case "class Model.KeyType":
+                if(typeController.findIfExists(typeState)){
+                    return typeController.findKeyType(typeState);
+                }else{
+                    return null;
+                }
+            case "class Model.KeyState":
+                if(stateController.findIfExists(typeState)){
+                    return stateController.findKeyState(typeState);
+                }else {
+                    return null;
+                }
+            default:
+                return null;
+        }
+        
+    }
    //ENCUENTRA LA ENTIDAD SEGUN EL TIPO 
     public static Object find(String type, long id){
         
@@ -130,11 +151,20 @@ public class EntityController {
     
     
      public static void main(String[] args) throws NonexistentEntityException{
-            
-           KeyType kt = new KeyType();
-           List("class Model.KeyType");
-           System.out.println("Existen " + count(kt.getClass().toString()) + " tipos de llave");
-        
+//        
+          //List("class Model.KeyType");
+        KeyManager.EnterKey(63.99, "Espectro 2");
+
+        //List("class Model.KeyState");
+        List("class Model.Key");
+
+//         KeyState ks = new KeyState();
+//         ks.setStateDescription("Tradeable");
+//         create(ks); 
+//         KeyType kt = new KeyType();
+//         List("class Model.KeyType");
+//         System.out.println("Existen " + count(kt.getClass().toString()) + " tipos de llave");
+//           List("class Model.KeyState");
 //         KeyType kt = new KeyType();
 //         kt.setTypeDescription("Guantes");
 //         create(kt);
