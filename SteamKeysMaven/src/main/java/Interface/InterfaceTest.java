@@ -5,10 +5,7 @@
  */
 package Interface;
 
-import Model.Key;//ESTO NO TIENE QUE ESTAR EN LA INTERFAZ
-import java.util.Iterator;
-import steam.jewishs.steamkeysmaven.KeyManager;//ESTA COMUNICACION DEBER SER POR TRANSPORTER
-import java.util.List;
+import steam.jewishs.steamkeysmaven.KeyManager;
 
 /**
  *
@@ -17,19 +14,37 @@ import java.util.List;
 public class InterfaceTest {
 //  NO PUEDE TENER NADA QUE VER CON LA BASE DE DATOS
 //  DEBEMOS DEFINIR UN TRANSPORTER PARA NO TRABAJAR CON CLASES DEL MODELO    
-    
-    
-      public static void main(String[] args){
+public static void PrintKeys(){
+    int keys = KeyManager.KeyCounter();
+    System.out.println("CANTIDAD DE LLAVES " + keys);
+}
+public static void PrintStates(){
+    int states = KeyManager.StateCounter();
+    System.out.println("CANTIDAD DE ESTADOS " + states);
+}
+public static void PrintTypes(){
+    int types = KeyManager.TypeCounter();
+    System.out.println("CANTIDAD DE TIPOS " + types);
+}
+public static void main(String[] args){
          
-         KeyManager.EnterKey(63.99, "Espectro 2");
-         //LISTA LLAVES EN LA CONSOLA ******NO DEBERIA ESTAR*******
-         List<Key> keys = (List<Key>) KeyManager.ListKeys();
-         Key key;
-         Iterator iter = keys.iterator();
-         while(iter.hasNext()){
-            key = (Key)iter.next(); 
-            System.out.println(key.getId() + " " + key.getKeyState().getStateDescription() + " " + key.getKeyType().getTypeDescription());
-            }
+          
+         
+         
+         
+          
+          PrintKeys();
+          PrintStates();
+          PrintTypes();
+          
+         System.out.println("FIN");
+          
+          
+          //ShowListKeys();
+//         KeyManager.EnterKey(new KeyTU(63.99, "Gamma", "Untradeable"));
+////         KeyManager.KeyCounter();
+//         ShowListKeys();
+         //ShowListKeys();
     
   //List(new KeyType());
   //create(new Key(63.99, find(new KeyState("Untradeable")), find(new KeyType("Revolver"))));          

@@ -11,9 +11,10 @@ import Controller.exceptions.PreexistingEntityException;
 import Model.Key;
 import Model.KeyState;
 import Model.KeyType;
-import java.util.HashSet;
+import TransporterUnits.KeyTU;
+import TransporterUnits.TypeStateTU;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,14 +24,14 @@ import java.util.logging.Logger;
  */
 public class KeyManager { 
     
-    public static void EnterKey(double buyprice, String type){
+    public static void EnterKey(KeyTU ktu){
         try{
-         KeyState ks = EntityController.find(new KeyState("Untradeable"));
-         KeyType kt = EntityController.find(new KeyType(type));
+         KeyState ks = EntityController.find(new KeyState(ktu.getState()));
+         KeyType kt = EntityController.find(new KeyType(ktu.getType()));
         if(ks != null && kt != null){ 
             Key k = new Key();
             k.setBuyDate();
-            k.setBuyprice(buyprice);
+            k.setBuyprice(ktu.getBuyprice());
             k.setKeyState(ks);
             k.setKeyType(kt);
             EntityController.create(k);
@@ -39,43 +40,65 @@ public class KeyManager {
         }
         }catch(NonexistentEntityException Ne){
             //se enviaran al ExceptionManager
-        }catch(PreexistingEntityException Pe){
-            //se enviaran al ExceptionManager
         }
-
     }
 
-    public static void DeleteKey(long id){
+    public static void DeleteKey(KeyTU ktu){
         Key key = new Key();
-        key.setId(id);
+        key.setId(ktu.getId());
         try {
             EntityController.destroy(key);
         } catch (NonexistentEntityException ex) {
            //se enviaran al ExceptionManager
-        }
-        
+        }  
     }
     
-  public static List<Key> ListKeys(){
-        try {
-            return EntityController.List(new Key());
-        } catch (NonexistentEntityException ex) {
-            System.out.println("NO EXISTEN LLAVES");//se enviara en ExceptionManager
-            return null;
-        }  
-  }  
-  public static List<KeyType> ListTypes(){
-      try{
-          return EntityController.List(new KeyType());
-      }catch(NonexistentEntityException ex){
-          System.out.println("NO EXISTEN TIPOS");//se enviara al ExceptionManager
-          return null;
-      }
-  } 
+
+  public static int KeyCounter(){
+     return EntityController.KeyCant();
+  }
+  public static int StateCounter(){
+     return EntityController.StateCant();
+  }
+  public static int TypeCounter(){
+     return EntityController.TypeCant();
+  }
   //QUIERO QUE ESTE SEA EL MAIN DE LA APP
-     public static void main(String[] args){
-     
-     
+     public static void main(String[] args) throws PreexistingEntityException {
+      
+        // EntityController.create(new KeyType("Croma 2"));
+//         EntityController.create(new KeyType("Croma"));
+//         EntityController.create(new KeyType("Croma 3"));
+//         EntityController.create(new KeyType("Esports"));
+//         EntityController.create(new KeyType("Guantes"));
+//         EntityController.create(new KeyType("Espectro"));
+//         EntityController.create(new KeyType("Espectro 2"));
+//         EntityController.create(new KeyType("Clutch"));
+//         EntityController.create(new KeyType("Gamma"));
+//         EntityController.create(new KeyType("Gamma 2"));
+//         EntityController.create(new KeyType("Wildfire"));
+//         EntityController.create(new KeyType("Phoenix"));
+//         EntityController.create(new KeyType("Sombria"));
+//         EntityController.create(new KeyType("CS:GO"));
+//         EntityController.create(new KeyType("Cazador"));
+//         EntityController.create(new KeyType("Revolver"));
+//         EntityController.create(new KeyType("Breakout"));
+//         EntityController.create(new KeyType("Alfanje"));
+//         EntityController.create(new KeyType("Vanguard"));
+//         EntityController.create(new KeyType("Invernal Offensive"));
+//         EntityController.create(new KeyType("Hydra"));
+//         EntityController.create(new KeyType("cápsula comunidad 1"));
+//         EntityController.create(new KeyType("cápsula CS:GO"));
+//
+//EntityController.create(new KeyState("Untradeable"));
+//EntityController.create(new KeyState("Tradeable"));
+
+//EnterKey(new KeyTU(63.99,"Revolver", "Untradeable"));
+
+
+            
+       
+        
      }
     
 }

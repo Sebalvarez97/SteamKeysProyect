@@ -29,13 +29,13 @@
     </dependency>
     
     <!--Using mysql database-->
-    <!--
+  
     <dependency>
         <groupId>mysql</groupId>
         <artifactId>mysql-connector-java</artifactId>
         <version>8.0.11</version>
     </dependency>
-    -->
+   
     
     <!--Using h2 database-->
     <dependency>

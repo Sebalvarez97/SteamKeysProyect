@@ -138,17 +138,17 @@ public class KeyStateJpaController implements Serializable {
                         
 
     //LISTA LAS ENTIDADES
-    public void List(){
-            List <KeyState> states = (List<KeyState>) findKeyStateEntities();
-            KeyState state;
-            Iterator iter = states.iterator();
-        while(iter.hasNext()){
-            state = (KeyState)iter.next(); 
-            System.out.println(state.getId() + " " + state.getStateDescription());
-            
-        }
-        
-    }                      
+//    public void List(){
+//            List <KeyState> states = (List<KeyState>) findKeyStateEntities();
+//            KeyState state;
+//            Iterator iter = states.iterator();
+//        while(iter.hasNext()){
+//            state = (KeyState)iter.next(); 
+//            System.out.println(state.getId() + " " + state.getStateDescription());
+//            
+//        }
+//        
+//    }                      
                           
     public KeyState findKeyState(Long id) {
         EntityManager em = getEntityManager();
