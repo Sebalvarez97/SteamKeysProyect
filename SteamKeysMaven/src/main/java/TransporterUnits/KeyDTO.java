@@ -9,17 +9,17 @@ package TransporterUnits;
  *
  * @author eltet
  */
-public class KeyTU extends Transporter{
+public class KeyDTO extends DTO{
     
     private long id;
     private double buyprice;
     private String type;
     private String state;
     
-    public KeyTU() {
+    public KeyDTO() {
     }
 
-    public KeyTU(double buyprice, String type, String state) {
+    public KeyDTO(double buyprice, String type, String state) {
         this.buyprice = buyprice;
         this.type = type;
         this.state = state;

@@ -9,17 +9,17 @@ package TransporterUnits;
  *
  * @author eltet
  */
-public class TypeStateTU extends Transporter{
+public class TypeStateDTO extends DTO{
     
     private long id;
     private String description;
 
-    public TypeStateTU(long id, String description) {
+    public TypeStateDTO(long id, String description) {
         this.id = id;
         this.description = description;
     }
 
-    public TypeStateTU() {
+    public TypeStateDTO() {
     }
 
     public long getId() {

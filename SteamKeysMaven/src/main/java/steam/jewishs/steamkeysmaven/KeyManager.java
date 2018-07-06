@@ -11,8 +11,8 @@ import Controller.exceptions.PreexistingEntityException;
 import Model.Key;
 import Model.KeyState;
 import Model.KeyType;
-import TransporterUnits.KeyTU;
-import TransporterUnits.TypeStateTU;
+import TransporterUnits.*;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -23,8 +23,8 @@ import java.util.logging.Logger;
  * @author eltet
  */
 public class KeyManager { 
-    
-    public static void EnterKey(KeyTU ktu){
+ //INGRESA UNA NUEVA KEY
+    public static void EnterKey(KeyDTO ktu){
         try{
          KeyState ks = EntityController.find(new KeyState(ktu.getState()));
          KeyType kt = EntityController.find(new KeyType(ktu.getType()));
@@ -42,8 +42,8 @@ public class KeyManager {
             //se enviaran al ExceptionManager
         }
     }
-
-    public static void DeleteKey(KeyTU ktu){
+//BORRA LA KEY
+    public static void DeleteKey(KeyDTO ktu){
         Key key = new Key();
         key.setId(ktu.getId());
         try {
@@ -53,7 +53,18 @@ public class KeyManager {
         }  
     }
     
-
+    //DEVUELVE UNA LISTA DE KEYTU CON LAS LLAVES **FUNCIONA**
+//    public static void List() throws NonexistentEntityException{
+//               List <Key> keys = (List<Key>) EntityController.ListKeys();
+//            Key key;
+//            Iterator iter = keys.iterator();
+//        while(iter.hasNext()){
+//            key = (Key)iter.next();
+//            System.out.println(key.getId() + " " + key.getKeyState().getStateDescription() + " " + key.getKeyType().getTypeDescription());
+//             
+//    }
+//    }
+//    
   public static int KeyCounter(){
      return EntityController.KeyCant();
   }
@@ -64,7 +75,7 @@ public class KeyManager {
      return EntityController.TypeCant();
   }
   //QUIERO QUE ESTE SEA EL MAIN DE LA APP
-     public static void main(String[] args) throws PreexistingEntityException {
+     public static void main(String[] args) {
       
         // EntityController.create(new KeyType("Croma 2"));
 //         EntityController.create(new KeyType("Croma"));
@@ -93,9 +104,9 @@ public class KeyManager {
 //EntityController.create(new KeyState("Untradeable"));
 //EntityController.create(new KeyState("Tradeable"));
 
-//EnterKey(new KeyTU(63.99,"Revolver", "Untradeable"));
-
-
+//
+       
+         System.out.println("FIN");
             
        
         

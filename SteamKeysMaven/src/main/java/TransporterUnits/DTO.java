@@ -9,6 +9,6 @@ package TransporterUnits;
  *
  * @author eltet
  */
-public class Transporter {
+public class DTO {
     
 }
