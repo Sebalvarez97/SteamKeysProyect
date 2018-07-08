@@ -5,7 +5,12 @@
  */
 package Interface;
 
+import Controller.exceptions.NonexistentEntityException;
 import TransporterUnits.KeyDTO;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import steam.jewishs.steamkeysmaven.KeyManager;
 
 /**
@@ -14,7 +19,22 @@ import steam.jewishs.steamkeysmaven.KeyManager;
  */
 public class InterfaceTest {
 //  NO PUEDE TENER NADA QUE VER CON LA BASE DE DATOS
-//  DEBEMOS DEFINIR UN TRANSPORTER PARA NO TRABAJAR CON CLASES DEL MODELO    
+//  DEBEMOS DEFINIR UN TRANSPORTER PARA NO TRABAJAR CON CLASES DEL MODELO
+public static void PrintAllKeys(){
+    try {
+        
+        List<KeyDTO> dtos = KeyManager.ListKeys();
+        Iterator iter = dtos.iterator();
+        KeyDTO dto;
+        System.out.println("____LLAVES____");
+        while(iter.hasNext()){
+            dto = (KeyDTO) iter.next();
+            System.out.println(dto.getId() + " " + dto.getType() + " " + dto.getState());
+        }
+    } catch (NonexistentEntityException ex) {
+        System.out.println("ERROR LISTANDO LLAVES");//Logger.getLogger(InterfaceTest.class.getName()).log(Level.SEVERE, null, ex);
+    }
+}
 public static void PrintKeys(){
     int keys = KeyManager.KeyCounter();
     System.out.println("CANTIDAD DE LLAVES " + keys);
@@ -31,9 +51,10 @@ public static void main(String[] args){
          
           
          
-         //KeyManager.EnterKey(new KeyDTO(63.99, "Breakout", "Untradeable"));
-         
+    //KeyManager.EnterKey(new KeyDTO(63.99, "Breakout", "Untradeable"));
           
+                  
+                  
           PrintKeys();
           PrintStates();
           PrintTypes();

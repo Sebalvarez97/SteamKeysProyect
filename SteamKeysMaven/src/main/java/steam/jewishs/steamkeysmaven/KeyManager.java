@@ -12,6 +12,7 @@ import Model.Key;
 import Model.KeyState;
 import Model.KeyType;
 import TransporterUnits.*;
+import java.util.ArrayList;
 
 import java.util.Iterator;
 import java.util.List;
@@ -53,7 +54,21 @@ public class KeyManager {
         }  
     }
     
-    //DEVUELVE UNA LISTA DE KEYTU CON LAS LLAVES **FUNCIONA**
+    public static List<KeyDTO> ListKeys() throws NonexistentEntityException{
+        List<Key> keys = EntityController.ListKeys();
+        Key key;
+        List<KeyDTO> dtos = new ArrayList();
+        Iterator iter = keys.iterator();
+        while(iter.hasNext()){
+            key = (Key) iter.next();
+            KeyDTO dto = new KeyDTO(63.99, key.getKeyType().getTypeDescription(), key.getKeyState().getStateDescription());
+            dto.setId(key.getId());
+            dtos.add(dto);
+        }
+        return dtos;
+    }
+    
+    //DEVUELVE UNA LISTA CON LAS LLAVES **FUNCIONA**
 //    public static void List() throws NonexistentEntityException{
 //               List <Key> keys = (List<Key>) EntityController.ListKeys();
 //            Key key;
