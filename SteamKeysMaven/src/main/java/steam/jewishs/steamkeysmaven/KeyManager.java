@@ -53,7 +53,7 @@ public class KeyManager {
            //se enviaran al ExceptionManager
         }  
     }
-    
+    //DEVUELVE UNA LISTA DE LAS LLAVES PARA LA INTERFAZ
     public static List<KeyDTO> ListKeys() throws NonexistentEntityException{
         List<Key> keys = EntityController.ListKeys();
         Key key;
@@ -67,19 +67,20 @@ public class KeyManager {
         }
         return dtos;
     }
+    //DEVUELVE UNA LISTA DE LOS TIPOS DE LLAVE EXISTENTES
+    public static List<TypeStateDTO> ListTypes() throws NonexistentEntityException{
+        List<KeyType> types = EntityController.ListTypes();
+        KeyType type;
+        List<TypeStateDTO> dtos = new ArrayList();
+        Iterator iter = types.iterator();
+        while(iter.hasNext()){
+            type = (KeyType) iter.next();
+            TypeStateDTO dto = new TypeStateDTO(type.getId(), type.getTypeDescription());
+            dtos.add(dto);
+        }
+        return dtos;
+    }
     
-    //DEVUELVE UNA LISTA CON LAS LLAVES **FUNCIONA**
-//    public static void List() throws NonexistentEntityException{
-//               List <Key> keys = (List<Key>) EntityController.ListKeys();
-//            Key key;
-//            Iterator iter = keys.iterator();
-//        while(iter.hasNext()){
-//            key = (Key)iter.next();
-//            System.out.println(key.getId() + " " + key.getKeyState().getStateDescription() + " " + key.getKeyType().getTypeDescription());
-//             
-//    }
-//    }
-//    
   public static int KeyCounter(){
      return EntityController.KeyCant();
   }

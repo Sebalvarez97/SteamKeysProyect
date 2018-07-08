@@ -7,6 +7,7 @@ package Interface;
 
 import Controller.exceptions.NonexistentEntityException;
 import TransporterUnits.KeyDTO;
+import TransporterUnits.TypeStateDTO;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -33,6 +34,21 @@ public static void PrintAllKeys(){
         }
     } catch (NonexistentEntityException ex) {
         System.out.println("ERROR LISTANDO LLAVES");//Logger.getLogger(InterfaceTest.class.getName()).log(Level.SEVERE, null, ex);
+    }
+}
+public static void PrintAllTypes(){
+     try {
+        
+        List<TypeStateDTO> dtos = KeyManager.ListTypes();
+        Iterator iter = dtos.iterator();
+        TypeStateDTO dto;
+        System.out.println("____TIPOS____");
+        while(iter.hasNext()){
+            dto = (TypeStateDTO) iter.next();
+            System.out.println(dto.getId() + " " + dto.getDescription());
+        }
+    } catch (NonexistentEntityException ex) {
+        System.out.println("ERROR LISTANDO TIPOS");//Logger.getLogger(InterfaceTest.class.getName()).log(Level.SEVERE, null, ex);
     }
 }
 public static void PrintKeys(){
