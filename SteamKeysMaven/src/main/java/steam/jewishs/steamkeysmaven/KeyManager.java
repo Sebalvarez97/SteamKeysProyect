@@ -7,17 +7,13 @@ package steam.jewishs.steamkeysmaven;
 
 import Controller.EntityController;
 import Controller.exceptions.NonexistentEntityException;
-import Controller.exceptions.PreexistingEntityException;
 import Model.Key;
 import Model.KeyState;
 import Model.KeyType;
 import TransporterUnits.*;
 import java.util.ArrayList;
-
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -117,10 +113,6 @@ public class KeyManager {
   
   
   
-  //QUIERO QUE ESTE SEA EL MAIN DE LA APP
-     public static void main(String[] args) {
-       
-        
-     }
+ 
     
 }
