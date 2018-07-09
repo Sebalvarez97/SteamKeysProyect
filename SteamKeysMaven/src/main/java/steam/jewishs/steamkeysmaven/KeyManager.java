@@ -80,6 +80,30 @@ public class KeyManager {
         }
         return dtos;
     }
+    //DEVUELVE UNA LISTA CON LOS ESTADOS
+        public static List<TypeStateDTO> ListStates() throws NonexistentEntityException{
+        List<KeyState> states = EntityController.ListStates();
+        KeyState state;
+        List<TypeStateDTO> dtos = new ArrayList();
+        Iterator iter = states.iterator();
+        while(iter.hasNext()){
+            state = (KeyState) iter.next();
+            TypeStateDTO dto = new TypeStateDTO(state.getId(), state.getStateDescription());
+            dtos.add(dto);
+        }
+        return dtos;
+    }
+        
+    //DESTRUYE TODAS LAS LLAVES
+    public static void DeleteAllKeys() throws NonexistentEntityException{
+        List<Key> keys = EntityController.ListKeys();
+        Key key;
+        Iterator iter = keys.iterator();
+        while(iter.hasNext()){
+            key = (Key) iter.next();
+            EntityController.destroy(key);
+        } 
+    }
     
   public static int KeyCounter(){
      return EntityController.KeyCant();
@@ -90,40 +114,11 @@ public class KeyManager {
   public static int TypeCounter(){
      return EntityController.TypeCant();
   }
+  
+  
+  
   //QUIERO QUE ESTE SEA EL MAIN DE LA APP
      public static void main(String[] args) {
-      
-        // EntityController.create(new KeyType("Croma 2"));
-//         EntityController.create(new KeyType("Croma"));
-//         EntityController.create(new KeyType("Croma 3"));
-//         EntityController.create(new KeyType("Esports"));
-//         EntityController.create(new KeyType("Guantes"));
-//         EntityController.create(new KeyType("Espectro"));
-//         EntityController.create(new KeyType("Espectro 2"));
-//         EntityController.create(new KeyType("Clutch"));
-//         EntityController.create(new KeyType("Gamma"));
-//         EntityController.create(new KeyType("Gamma 2"));
-//         EntityController.create(new KeyType("Wildfire"));
-//         EntityController.create(new KeyType("Phoenix"));
-//         EntityController.create(new KeyType("Sombria"));
-//         EntityController.create(new KeyType("CS:GO"));
-//         EntityController.create(new KeyType("Cazador"));
-//         EntityController.create(new KeyType("Revolver"));
-//         EntityController.create(new KeyType("Breakout"));
-//         EntityController.create(new KeyType("Alfanje"));
-//         EntityController.create(new KeyType("Vanguard"));
-//         EntityController.create(new KeyType("Invernal Offensive"));
-//         EntityController.create(new KeyType("Hydra"));
-//         EntityController.create(new KeyType("cápsula comunidad 1"));
-//         EntityController.create(new KeyType("cápsula CS:GO"));
-//
-//EntityController.create(new KeyState("Untradeable"));
-//EntityController.create(new KeyState("Tradeable"));
-
-//
-       
-         System.out.println("FIN");
-            
        
         
      }

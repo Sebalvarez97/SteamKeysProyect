@@ -89,18 +89,6 @@ public class KeyJpaController implements Serializable {
             }
         }
     }
-//      LISTA LAS ENTIDADES
-//    public void List(){
-//            List <Key> keys = (List<Key>) findKeyEntities();
-//            Key key;
-//            Iterator iter = keys.iterator();
-//        while(iter.hasNext()){
-//            key = (Key)iter.next(); 
-//            System.out.println(key.getId() + " " + key.getKeyState().getStateDescription() + " " + key.getKeyType().getTypeDescription());
-//            
-//        }
-//        
-//    }
 
     public List<Key> findKeyEntities() {
         return findKeyEntities(true, -1, -1);

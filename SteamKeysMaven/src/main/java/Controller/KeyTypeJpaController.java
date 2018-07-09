@@ -137,18 +137,7 @@ public class KeyTypeJpaController implements Serializable {
                                      em.close();
                                     }
                                 }
-//LISTA LAS ENTIDADES
-//        public void List(){
-//            List <KeyType> types = (List<KeyType>) findKeyTypeEntities();
-//            KeyType type;
-//            Iterator iter = types.iterator();
-//        while(iter.hasNext()){
-//            type = (KeyType)iter.next(); 
-//            System.out.println(type.getId() + " " + type.getTypeDescription());
-//            
-//        }
-//        
-//    }                           
+                        
     public KeyType findKeyType(Long id) {
         EntityManager em = getEntityManager();
         try {

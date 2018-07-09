@@ -19,8 +19,8 @@ import steam.jewishs.steamkeysmaven.KeyManager;
  * @author eltet
  */
 public class InterfaceTest {
-//  NO PUEDE TENER NADA QUE VER CON LA BASE DE DATOS
-//  DEBEMOS DEFINIR UN TRANSPORTER PARA NO TRABAJAR CON CLASES DEL MODELO
+
+    
 public static void PrintAllKeys(){
     try {
         
@@ -33,12 +33,11 @@ public static void PrintAllKeys(){
             System.out.println(dto.getId() + " " + dto.getType() + " " + dto.getState());
         }
     } catch (NonexistentEntityException ex) {
-        System.out.println("ERROR LISTANDO LLAVES");//Logger.getLogger(InterfaceTest.class.getName()).log(Level.SEVERE, null, ex);
+        //se enviara al ExceptionManager
     }
 }
 public static void PrintAllTypes(){
      try {
-        
         List<TypeStateDTO> dtos = KeyManager.ListTypes();
         Iterator iter = dtos.iterator();
         TypeStateDTO dto;
@@ -48,9 +47,10 @@ public static void PrintAllTypes(){
             System.out.println(dto.getId() + " " + dto.getDescription());
         }
     } catch (NonexistentEntityException ex) {
-        System.out.println("ERROR LISTANDO TIPOS");//Logger.getLogger(InterfaceTest.class.getName()).log(Level.SEVERE, null, ex);
+        //se enviara al ExceptionManager
     }
 }
+
 public static void PrintCantKeys(){
     int keys = KeyManager.KeyCounter();
     System.out.println("CANTIDAD DE LLAVES " + keys);
@@ -63,14 +63,20 @@ public static void PrintCantTypes(){
     int types = KeyManager.TypeCounter();
     System.out.println("CANTIDAD DE TIPOS " + types);
 }
-
+public static void Deletekeys(){
+    try {
+        KeyManager.DeleteAllKeys();
+    } catch (NonexistentEntityException ex) {
+        //se enviara al ExceptionManager
+    }
+}
 
 
 
 public static void main(String[] args){
          
-         PrintAllKeys();
-         PrintAllTypes();
+         
+        
          System.out.println("FIN");
           
   
