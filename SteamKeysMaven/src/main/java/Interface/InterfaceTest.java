@@ -71,15 +71,14 @@ public static void Deletekeys(){
     }
 }
 
-
-
 public static void main(String[] args){
-         
-         
+      
+      PrintAllKeys();
+      
         
-         System.out.println("FIN");
-          
-  
-    }
-    
+      System.out.println("FIN");
+      
+  }
+
+
 }

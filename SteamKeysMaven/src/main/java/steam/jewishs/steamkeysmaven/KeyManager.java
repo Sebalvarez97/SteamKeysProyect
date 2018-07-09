@@ -7,6 +7,7 @@ package steam.jewishs.steamkeysmaven;
 
 import Controller.EntityController;
 import Controller.exceptions.NonexistentEntityException;
+import Interface.GraphicInterface;
 import Model.Key;
 import Model.KeyState;
 import Model.KeyType;
@@ -110,9 +111,22 @@ public class KeyManager {
   public static int TypeCounter(){
      return EntityController.TypeCant();
   }
+  private static void InitWindow(){
+      GraphicInterface ventana = new GraphicInterface();
+      ventana.setTitle("SteamKeysApp");
+      ventana.setVisible(true);
+  }
   
   
-  
- 
+  public static void main(String[] args){
+      
+      //EnterKey(new KeyDTO(63.99, "Espectro 2" , "Untradeable"));
+      InitWindow();
+      
+      
+      
+      System.out.println("FIN");
+      
+  }
     
 }
