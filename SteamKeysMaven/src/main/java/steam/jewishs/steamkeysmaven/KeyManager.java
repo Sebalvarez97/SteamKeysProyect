@@ -111,7 +111,7 @@ public class KeyManager {
   public static int TypeCounter(){
      return EntityController.TypeCant();
   }
-  private static void InitWindow(){
+  private static void InitInventory(){
       GraphicInterface ventana = new GraphicInterface();
       ventana.setTitle("SteamKeysApp");
       ventana.setVisible(true);
@@ -120,8 +120,8 @@ public class KeyManager {
   
   public static void main(String[] args){
       
-      //EnterKey(new KeyDTO(63.99, "Espectro 2" , "Untradeable"));
-      InitWindow();
+      EnterKey(new KeyDTO(63.99, "Clutch" , "Untradeable"));
+      InitInventory();
       
       
       
