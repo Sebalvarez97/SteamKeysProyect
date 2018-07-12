@@ -17,30 +17,34 @@ import javax.swing.table.TableColumn;
 import steam.jewishs.steamkeysmaven.KeyManager;
 
 
-public class GraphicInterface extends javax.swing.JFrame {
+public class Inventory extends javax.swing.JFrame {
     
  
     
     DefaultTableModel modelotabla;
     
-    public GraphicInterface() {
-     
-        
-        ListTable();
-       
+    public Inventory() {
+
         
         initComponents();
-        //CONFIGURACION DE LA TABLA
+        ReloadTable();
+       
+        this.setLocationRelativeTo(null); 
+    }
+    //CONFIGURACION DE LA TABLA
+    private void SetKeyTable(){
         KeyTable.setModel(modelotabla);
         KeyTable.getTableHeader().setResizingAllowed(false);//DESABILITA LA EDICION DE LAS COLUMNAS
         TableColumn columnaid = KeyTable.getColumn("ID");
         columnaid.setPreferredWidth(40);
         columnaid.setMaxWidth(100);
         
-        
-        this.setLocationRelativeTo(null);
-        
     }
+    private void ReloadTable(){
+        ListTable();
+        SetKeyTable();
+    }
+            
     //CONFIGURA EL MODELO DE LA TABLA DE LLAVES
     private void ListTable(){
            try {
@@ -57,15 +61,10 @@ public class GraphicInterface extends javax.swing.JFrame {
                modelotabla.addRow(row);
             }
         } catch (NonexistentEntityException ex) {
-            System.out.println("FALLA");// Logger.getLogger(GraphicInterface.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("FALLA");// Logger.getLogger(Inventory.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
     }
-    private void AddNewKey(){
-        
-        
-    }
-    
+
     //BORRA LA LLAVE SELECCIONADA
     private void DeleteKey(){
         int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete it?");
@@ -87,7 +86,6 @@ public class GraphicInterface extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        AddKeyPanel = new javax.swing.JPanel();
         InventoryPanel = new javax.swing.JPanel();
         InitialMessage = new javax.swing.JLabel();
         InventoryTittle = new javax.swing.JLabel();
@@ -95,19 +93,11 @@ public class GraphicInterface extends javax.swing.JFrame {
         NewKeyButton = new javax.swing.JButton();
         KeyTableScroll = new javax.swing.JScrollPane();
         KeyTable = new javax.swing.JTable();
+        ReloadButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        javax.swing.GroupLayout AddKeyPanelLayout = new javax.swing.GroupLayout(AddKeyPanel);
-        AddKeyPanel.setLayout(AddKeyPanelLayout);
-        AddKeyPanelLayout.setHorizontalGroup(
-            AddKeyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 734, Short.MAX_VALUE)
-        );
-        AddKeyPanelLayout.setVerticalGroup(
-            AddKeyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 529, Short.MAX_VALUE)
-        );
+        setName("InventoryFrame"); // NOI18N
+        setResizable(false);
 
         InitialMessage.setFont(new java.awt.Font("Comic Sans MS", 0, 24)); // NOI18N
         InitialMessage.setText("Welcome to JewishApp");
@@ -143,43 +133,57 @@ public class GraphicInterface extends javax.swing.JFrame {
         KeyTableScroll.setViewportView(KeyTable);
         KeyTable.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
+        ReloadButton.setText("Reload");
+        ReloadButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ReloadButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout InventoryPanelLayout = new javax.swing.GroupLayout(InventoryPanel);
         InventoryPanel.setLayout(InventoryPanelLayout);
         InventoryPanelLayout.setHorizontalGroup(
             InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(InventoryPanelLayout.createSequentialGroup()
+                .addGap(70, 70, 70)
+                .addComponent(InventoryTittle, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(ReloadButton)
+                .addGap(82, 82, 82))
+            .addGroup(InventoryPanelLayout.createSequentialGroup()
                 .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(InventoryPanelLayout.createSequentialGroup()
-                        .addGap(222, 222, 222)
-                        .addComponent(InitialMessage))
                     .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(InventoryPanelLayout.createSequentialGroup()
                             .addContainerGap()
                             .addComponent(NewKeyButton, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(18, 18, 18)
                             .addComponent(DeleteButton))
-                        .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(InventoryPanelLayout.createSequentialGroup()
-                                .addGap(70, 70, 70)
-                                .addComponent(InventoryTittle, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(InventoryPanelLayout.createSequentialGroup()
-                                .addGap(104, 104, 104)
-                                .addComponent(KeyTableScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 532, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, InventoryPanelLayout.createSequentialGroup()
+                            .addGap(104, 104, 104)
+                            .addComponent(KeyTableScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 532, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(InventoryPanelLayout.createSequentialGroup()
+                        .addGap(232, 232, 232)
+                        .addComponent(InitialMessage)))
                 .addContainerGap(98, Short.MAX_VALUE))
         );
         InventoryPanelLayout.setVerticalGroup(
             InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(InventoryPanelLayout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(InitialMessage)
-                .addGap(51, 51, 51)
-                .addComponent(InventoryTittle, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(KeyTableScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35)
-                .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(DeleteButton)
-                    .addComponent(NewKeyButton))
+                .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(InventoryPanelLayout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addComponent(InitialMessage)
+                        .addGap(48, 48, 48)
+                        .addComponent(InventoryTittle, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(KeyTableScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(35, 35, 35)
+                        .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(DeleteButton)
+                            .addComponent(NewKeyButton)))
+                    .addGroup(InventoryPanelLayout.createSequentialGroup()
+                        .addGap(115, 115, 115)
+                        .addComponent(ReloadButton)))
                 .addContainerGap(36, Short.MAX_VALUE))
         );
 
@@ -188,14 +192,10 @@ public class GraphicInterface extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(InventoryPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(AddKeyPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(InventoryPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(AddKeyPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         getAccessibleContext().setAccessibleName("MenuWindow");
@@ -208,14 +208,18 @@ public class GraphicInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_DeleteButtonActionPerformed
 
     private void NewKeyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewKeyButtonActionPerformed
-               // TODO add your handling code here:
+      KeyManager.InitAddKey();
+              // TODO add your handling code here:
     }//GEN-LAST:event_NewKeyButtonActionPerformed
+
+    private void ReloadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReloadButtonActionPerformed
+        ReloadTable();        // TODO add your handling code here:
+    }//GEN-LAST:event_ReloadButtonActionPerformed
 
    
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel AddKeyPanel;
     private javax.swing.JButton DeleteButton;
     private javax.swing.JLabel InitialMessage;
     private javax.swing.JPanel InventoryPanel;
@@ -223,5 +227,6 @@ public class GraphicInterface extends javax.swing.JFrame {
     private javax.swing.JTable KeyTable;
     private javax.swing.JScrollPane KeyTableScroll;
     private javax.swing.JButton NewKeyButton;
+    private javax.swing.JButton ReloadButton;
     // End of variables declaration//GEN-END:variables
 }
