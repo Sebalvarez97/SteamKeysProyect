@@ -13,6 +13,7 @@ import Model.Key;
 import Model.KeyState;
 import Model.KeyType;
 import TransporterUnits.*;
+import java.awt.Window;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAccessor;
@@ -63,6 +64,7 @@ public class KeyManager {
     //DEVUELVE SI ES TRADEABLE LA LLAVE
     private static boolean isTradeable(Key key){
         Date datenow = Calendar.getInstance().getTime();
+        datenow = ConvertDate(datenow);
         Calendar cal = Calendar.getInstance();
         cal.clear();
         cal.setTime(key.getBuyDate());
@@ -75,7 +77,7 @@ public class KeyManager {
         }
         
     }
-    //ACTUALIZA EL ESTADO DE LAS LLAVES DEL INVENTARIO *********ARREGLAR*******
+    //ACTUALIZA EL ESTADO DE LAS LLAVES DEL INVENTARIO 
     public static void UpdateState(){
         try {
             List<Key> keys = EntityController.ListKeys();
@@ -102,12 +104,13 @@ public class KeyManager {
         return (int)TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
         
     }
+
 //DEVUELVE LA FECHA CONVERTIDA AL HORARIO DE STEAM 
     public static Date ConvertDate(Date date){
         
         ZonedDateTime inicial = ZonedDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
-        ZonedDateTime finaldate = inicial.withZoneSameInstant(ZoneId.of("GMT"));
-        
+//        ZonedDateTime finaldate = inicial.withZoneSameInstant(ZoneId.of("GMT")); //TRABAJAR CON LA HORA DE GMT
+        ZonedDateTime finaldate = inicial.withZoneSameInstant(ZoneId.systemDefault());
         Calendar cal = Calendar.getInstance();
         cal.clear();
         cal.set(finaldate.getYear(), finaldate.getMonthValue()-1, finaldate.getDayOfMonth(), finaldate.getHour(), finaldate.getMinute());
@@ -178,16 +181,33 @@ public class KeyManager {
   public static int TypeCounter(){
      return EntityController.TypeCant();
   }
+  
+  
+  
+  //INTERFAZ
   public static void InitInventory(){
-      Inventory ventana = new Inventory();
-      ventana.setTitle("SteamKeysApp");
-      ventana.setVisible(true);
+      inventory = new Inventory();
+      inventory.setTitle("SteamKeysApp");
+      inventory.setVisible(true);
   }
  public static void InitAddKey(){
-     AddKey ventana = new AddKey();
-     ventana.setTitle("SteamKeysApp");
-     ventana.setVisible(true);
+     add = new AddKey();
+     add.setTitle("SteamKeysApp");
+     add.setVisible(true);
  } 
+  private static AddKey add = null;
+  private static Inventory inventory = null;
+  
+  
+  public static AddKey getAddKey(){
+      return KeyManager.add;
+  }
+  public static Inventory getInventory(){
+      return KeyManager.inventory;
+  }
+  
+  
+  
   
   public static void main(String[] args){
        

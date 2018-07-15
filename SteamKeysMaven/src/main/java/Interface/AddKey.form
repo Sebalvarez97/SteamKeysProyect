@@ -4,7 +4,6 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
     <Property name="name" type="java.lang.String" value="AddKeyFrame" noResource="true"/>
-    <Property name="undecorated" type="boolean" value="true"/>
     <Property name="resizable" type="boolean" value="false"/>
   </Properties>
   <SyntheticProperties>
@@ -234,7 +233,7 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="CheckBox">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Before 8:00 PM?"/>
+        <Property name="text" type="java.lang.String" value="After 4:00 AM?"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="CheckBoxActionPerformed"/>

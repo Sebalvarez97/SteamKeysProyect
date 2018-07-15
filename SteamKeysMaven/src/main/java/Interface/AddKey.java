@@ -39,7 +39,7 @@ public class AddKey extends javax.swing.JFrame {
     public AddKey() {
         initComponents();
         SetAddKeyParameters();
-        this.setLocationRelativeTo(null); 
+        this.setLocationRelativeTo(KeyManager.getInventory()); 
     }
 //ESTABLECE LOS PARAMETROS PARA LA CREACION DE LLAVES
 private void SetAddKeyParameters(){
@@ -126,7 +126,7 @@ private void AddNewKey(){
           cal.set(year, month-1, day);
           
       }else{
-          cal.set(year,month-1,day+1);
+          cal.set(year,month-1,day-1);
       }
       returnated = cal.getTime();
 
@@ -155,7 +155,6 @@ private void AddNewKey(){
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setName("AddKeyFrame"); // NOI18N
-        setUndecorated(true);
         setResizable(false);
 
         BackButton.setText("Back");
@@ -200,7 +199,7 @@ private void AddNewKey(){
 
         YearTittle.setText("Year");
 
-        CheckBox.setText("Before 8:00 PM?");
+        CheckBox.setText("After 4:00 AM?");
         CheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 CheckBoxActionPerformed(evt);
@@ -300,7 +299,9 @@ private void AddNewKey(){
     }// </editor-fold>//GEN-END:initComponents
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
-            this.setVisible(false);// TODO add your handling code here:
+            // TODO add your handling code here:
+            KeyManager.InitInventory();
+            this.setVisible(false);
     }//GEN-LAST:event_BackButtonActionPerformed
 
     private void ComboBoxTypesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboBoxTypesActionPerformed

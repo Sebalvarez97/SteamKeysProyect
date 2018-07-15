@@ -20,7 +20,7 @@ import javax.swing.table.TableColumn;
 import steam.jewishs.steamkeysmaven.KeyManager;
 
 
-public class Inventory extends javax.swing.JFrame {
+public class Inventory extends javax.swing.JFrame{
     
     DefaultTableModel modelotabla;
     
@@ -28,7 +28,7 @@ public class Inventory extends javax.swing.JFrame {
     public Inventory() {
         initComponents();
         ReloadTable();
-        this.setLocationRelativeTo(null); 
+        this.setLocationRelativeTo(KeyManager.getAddKey()); 
     }
     //CONFIGURACION DE LA TABLA
     private void SetKeyTable(){
@@ -209,7 +209,14 @@ public class Inventory extends javax.swing.JFrame {
     }//GEN-LAST:event_DeleteButtonActionPerformed
 
     private void NewKeyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewKeyButtonActionPerformed
-      KeyManager.InitAddKey();
+      
+        
+        if(KeyManager.getAddKey() == null){
+          KeyManager.InitAddKey();
+      }else{
+          KeyManager.getAddKey().setVisible(true);
+      }
+      this.setVisible(false);
               // TODO add your handling code here:
     }//GEN-LAST:event_NewKeyButtonActionPerformed
 
