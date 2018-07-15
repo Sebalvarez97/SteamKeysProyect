@@ -95,13 +95,18 @@ private void AddNewKey(){
    
     String type = (String) ComboBoxTypes.getSelectedItem();
     String state = "Untradeable";
-    int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you want to create a " + type + " key?");
+    int cantidad = (int) CantSpinner.getValue();
+    int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you want to create " + cantidad + " of "+ type + " key/s?");
     if (confirmation == 0){
-        KeyDTO ktu = new KeyDTO();
-        ktu.setState(state);
-        ktu.setType(type);
-        ktu.setbuydate(getImputDate());
-        KeyManager.EnterKey(ktu);
+        int i = 1;
+        while(i<=cantidad){
+            KeyDTO ktu = new KeyDTO();
+            ktu.setState(state);
+            ktu.setType(type);
+            ktu.setbuydate(getImputDate());
+            KeyManager.EnterKey(ktu);
+            i++;
+        }
     }
   }catch(Exception e){
       System.out.println("FALLA");
@@ -145,6 +150,8 @@ private void AddNewKey(){
         YearTittle = new javax.swing.JLabel();
         CheckBox = new javax.swing.JCheckBox();
         CheckboxAclaration = new javax.swing.JLabel();
+        CantSpinner = new javax.swing.JSpinner();
+        CantTittle = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setName("AddKeyFrame"); // NOI18N
@@ -202,6 +209,9 @@ private void AddNewKey(){
 
         CheckboxAclaration.setText("(It is important to set the exact day of release)");
 
+        CantTittle.setFont(new java.awt.Font("Comic Sans MS", 0, 12)); // NOI18N
+        CantTittle.setText("Cant");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -225,7 +235,6 @@ private void AddNewKey(){
                             .addComponent(BuyDateTittle))
                         .addGap(51, 51, 51)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(ComboBoxTypes, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(DayComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -238,12 +247,18 @@ private void AddNewKey(){
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(YearTittle)
                                     .addGroup(layout.createSequentialGroup()
+                                        .addGap(114, 114, 114)
+                                        .addComponent(CheckboxAclaration))
+                                    .addGroup(layout.createSequentialGroup()
                                         .addComponent(YearComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(43, 43, 43)
                                         .addComponent(CheckBox))
                                     .addGroup(layout.createSequentialGroup()
-                                        .addGap(114, 114, 114)
-                                        .addComponent(CheckboxAclaration)))))
+                                        .addGap(94, 94, 94)
+                                        .addComponent(CantTittle)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(CantSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(ComboBoxTypes, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(22, 22, 22))))
         );
         layout.setVerticalGroup(
@@ -253,14 +268,16 @@ private void AddNewKey(){
                     .addGroup(layout.createSequentialGroup()
                         .addGap(59, 59, 59)
                         .addComponent(NeyKeyTittle)
-                        .addGap(52, 52, 52)
+                        .addGap(49, 49, 49)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(KeyTypeTittle)
-                            .addComponent(ComboBoxTypes, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(ComboBoxTypes, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(CantTittle)
+                            .addComponent(CantSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(46, 46, 46)
                         .addComponent(BackButton)))
-                .addGap(31, 31, 31)
+                .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(DayTittle)
                     .addComponent(MonthTittle)
@@ -274,7 +291,7 @@ private void AddNewKey(){
                     .addComponent(CheckBox))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(CheckboxAclaration)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 148, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 154, Short.MAX_VALUE)
                 .addComponent(CreateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(35, 35, 35))
         );
@@ -336,6 +353,8 @@ private void AddNewKey(){
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BackButton;
     private javax.swing.JLabel BuyDateTittle;
+    private javax.swing.JSpinner CantSpinner;
+    private javax.swing.JLabel CantTittle;
     private javax.swing.JCheckBox CheckBox;
     private javax.swing.JLabel CheckboxAclaration;
     private javax.swing.JComboBox<String> ComboBoxTypes;
