@@ -7,13 +7,14 @@
              version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
 -->
   <persistence-unit name="SteamKeysPU" transaction-type="RESOURCE_LOCAL">
-   <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <!--<provider>org.hibernate.ejb.HibernatePersistence</provider>-->
     <!--
     Representacion de las clases-->
     <class>Moel.Key</class>
     <class>Model.KeyType</class>
     <class>Model.KeyState</class>
+    <class>Model.SteamParameters</class>
     <properties>
       <!-- Using mysql database
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/steamkeys?zeroDateTimeBehavior=convertToNull"/>
@@ -28,7 +29,6 @@
       <property name="javax.persistence.jdbc.user" value="sa"/>
       <property name="javax.persistence.jdbc.password" value=" "/>
       <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
-      
       <!---->
       <property name="hibernate.hbm2ddl.auto" value="update"/>
       <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>

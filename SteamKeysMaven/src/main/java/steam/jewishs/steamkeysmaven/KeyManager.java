@@ -12,6 +12,7 @@ import Interface.Inventory;
 import Model.Key;
 import Model.KeyState;
 import Model.KeyType;
+import Model.SteamParameters;
 import TransporterUnits.*;
 import java.awt.Window;
 import java.time.ZoneId;
@@ -65,17 +66,20 @@ public class KeyManager {
     private static boolean isTradeable(Key key){
         Date datenow = Calendar.getInstance().getTime();
         datenow = ConvertDate(datenow);
-        Calendar cal = Calendar.getInstance();
-        cal.clear();
-        cal.setTime(key.getBuyDate());
-        cal.add(Calendar.DAY_OF_MONTH, 7);
-        Date keydate = cal.getTime();
-        if(datenow.after(keydate)){
+        Date release = ReleaseDate(key.getBuyDate());
+        if(datenow.after(release)){
             return true;
         }else{
             return false;
         }
         
+    }//FECHA DE LIBERACION
+    public static Date ReleaseDate(Date date){
+        Calendar cal = Calendar.getInstance();
+        cal.clear();
+        cal.setTime(date);
+        cal.add(Calendar.DAY_OF_MONTH, 7);
+        return cal.getTime();
     }
     //ACTUALIZA EL ESTADO DE LAS LLAVES DEL INVENTARIO 
     public static void UpdateState(){
@@ -104,7 +108,14 @@ public class KeyManager {
         return (int)TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
         
     }
-
+    public static String SimpleFormatDate(Date date){
+        String returned;
+        Calendar cal = Calendar.getInstance();
+        cal.clear();
+        cal.setTime(date);
+        returned = cal.get(Calendar.DAY_OF_MONTH) + "-" + cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.YEAR);
+        return returned;
+    }
 //DEVUELVE LA FECHA CONVERTIDA AL HORARIO DE STEAM 
     public static Date ConvertDate(Date date){
         
@@ -210,14 +221,11 @@ public class KeyManager {
   
   
   public static void main(String[] args){
-       
-      
-      
-      
 
+     
+      
       InitInventory();
-      
-      
+     
       
       System.out.println("FIN");
       

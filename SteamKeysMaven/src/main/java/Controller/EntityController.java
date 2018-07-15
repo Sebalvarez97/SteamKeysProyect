@@ -18,6 +18,7 @@ public interface EntityController {
     static EntityManagerFactory emf = Persistence.createEntityManagerFactory("SteamKeysPU");
     static EntityManager Ownmanager = emf.createEntityManager();
     
+    static SteamParametersJpaController paramController = new SteamParametersJpaController(emf); 
     static KeyJpaController keysController = new KeyJpaController(emf);
     static KeyTypeJpaController typeController = new KeyTypeJpaController(emf);
     static KeyStateJpaController stateController = new KeyStateJpaController(emf);
@@ -33,6 +34,9 @@ public interface EntityController {
     public static int TypeCant(){
          return typeController.getKeyTypeCount(); 
     }
+    public static int ParameterCant(){
+        return paramController.getSteamParametersCount();
+    }
     
     
        //CREA UNA ENTIDAD EN BASE DE DATOS SEGUN TIPO 
@@ -45,7 +49,10 @@ public interface EntityController {
     public static void create(KeyType kt){
         typeController.create(kt);
     }
-
+    public static void create(SteamParameters sp){
+        paramController.create(sp);
+    }
+    
    //DESTRUYE LAS ENTIDADES POR TIPO DE ENTIDAD 
     public static void destroy(Key key) throws NonexistentEntityException{
             keysController.destroy(key.getId());
@@ -56,7 +63,11 @@ public interface EntityController {
     public static void destroy(KeyType kt) throws NonexistentEntityException{
             typeController.destroy(kt.getId());
     }
-     
+    public static void destroy(SteamParameters sp) throws NonexistentEntityException{
+            paramController.destroy(sp.getId());
+    }
+    
+    
     //BUSCA SI EXISTE LA ENTIDAD 
     public static boolean findIfExist(Key k){
         if(find(k) == null){
@@ -79,6 +90,13 @@ public interface EntityController {
             return true;
         }
     }
+    public static boolean findIfExist(SteamParameters sp){
+        if(find(sp) == null){
+            return false;
+        }else {
+            return true;
+        }
+    }
 
       //ENCUENTRA LA ENTIDAD SEGUN EL TIPO 
     public static Key find(Key k){
@@ -90,17 +108,24 @@ public interface EntityController {
     public static KeyType find(KeyType kt){
         return typeController.findKeyType(kt.getTypeDescription());
     }
-    //OBTIENE LA LISTA DE ENTIDADES
-    public static List<Key> ListKeys() throws NonexistentEntityException{
-            return keysController.findKeyEntities();
-    }
-    public static List<KeyState> ListStates() throws NonexistentEntityException{
-            return stateController.findKeyStateEntities();
-    }
-    public static List<KeyType> ListTypes() throws NonexistentEntityException{
-            return typeController.findKeyTypeEntities();
+    public static SteamParameters find(SteamParameters sp){
+        return paramController.findSteamParameters(sp.getName());
     }
     
+    //OBTIENE LA LISTA DE ENTIDADES
+    public static List<Key> ListKeys(){
+            return keysController.findKeyEntities();
+    }
+    public static List<KeyState> ListStates(){
+            return stateController.findKeyStateEntities();
+    }
+    public static List<KeyType> ListTypes(){
+            return typeController.findKeyTypeEntities();
+    }
+    public static List<SteamParameters> ListParameters(){
+            return paramController.findSteamParametersEntities();
+    }
+    //EDITA LA ENTIDAD
     public static void Edit(Key key) throws Exception{
         keysController.edit(key);
     }
@@ -109,5 +134,8 @@ public interface EntityController {
     }
     public static void Edit(KeyType kt) throws Exception{
         typeController.edit(kt);
+    }
+    public static void Edit(SteamParameters sp) throws Exception{
+        paramController.edit(sp);
     }
 }

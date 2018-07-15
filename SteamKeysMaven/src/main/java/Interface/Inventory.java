@@ -52,12 +52,20 @@ public class Inventory extends javax.swing.JFrame{
             Iterator iter = keys.iterator();
             KeyDTO dto;
             //CONFIGURACION DEL MODELO DE LA TABLA
-            String[] columnames = {"ID", "Type","BuyDate", "State"};
+            String[] columnames = {"ID", "Type","BuyDate", "State","Release in"};
             modelotabla = new DefaultTableModel(null, columnames);
+            
             //LENADO DEL MODELO DE LA TABLA
             while(iter.hasNext()){
                dto = (KeyDTO) iter.next();
-               Object[] row = {dto.getId(), dto.getType() ,dto.getbuydate() , dto.getState() };
+               String type = dto.getType();
+               String date = KeyManager.SimpleFormatDate(dto.getbuydate());
+               String state = dto.getState();
+               int days = 0;
+               if(state.equals("Untradeable")){
+                   days = KeyManager.DayDiference(Calendar.getInstance().getTime(), KeyManager.ReleaseDate(dto.getbuydate())) + 1;//SE AGREGA UN DIA PARA CONSIDERAR EL DIA DE HOY
+               }
+               Object[] row = {dto.getId(), type , date , state , days };
                modelotabla.addRow(row);
             }
             KeyTable.setModel(modelotabla);
@@ -67,7 +75,7 @@ public class Inventory extends javax.swing.JFrame{
     }
 
     //BORRA LA LLAVE SELECCIONADA
-    private void DeleteKey(){
+    private void DeleteKey(){ //**FUNCIONA MAL***
         int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete it?");
         if (confirmation == 0){
             int[] seleccion = KeyTable.getSelectedRows();
@@ -76,9 +84,10 @@ public class Inventory extends javax.swing.JFrame{
                 long id = (long) KeyTable.getValueAt(index, 0);//FORMATO (fila, columna)
                 KeyDTO dto = new KeyDTO();
                 dto.setId(id);
+                System.out.println(dto.getId());
                 KeyManager.DeleteKey(dto);
-                modelotabla.removeRow(index);
             }
+            ReloadTable();
         }
     }
     
