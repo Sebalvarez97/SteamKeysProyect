@@ -37,8 +37,8 @@ public class Key implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    @Column(name = "buyprice")
-    private double buyprice;
+//    @Column(name = "buyprice")
+//    private double buyprice;
     
     @Column(name = "buydate")
     private Date buydate;
@@ -55,8 +55,8 @@ public class Key implements Serializable {
         
     }
 
-    public Key(double buyprice, KeyState keyState, KeyType keyType) {
-        this.buyprice = buyprice;
+    public Key(KeyState keyState, KeyType keyType) {
+//        this.buyprice = buyprice;
         this.keyState = keyState;
         this.keyType = keyType;
     }
@@ -65,9 +65,9 @@ public class Key implements Serializable {
         return serialVersionUID;
     }
 ///////////////////////////////////////////////////
-    public double getBuyprice() {
-        return buyprice;
-    }
+//    public double getBuyprice() {
+//        return buyprice;
+//    }
 
     public KeyState getKeyState() {
         return keyState;
@@ -77,9 +77,9 @@ public class Key implements Serializable {
         return keyType;
     }
 
-    public void setBuyprice(double buyprice) {
-        this.buyprice = buyprice;
-    }
+//    public void setBuyprice(double buyprice) {
+//        this.buyprice = buyprice;
+//    }
 
     public void setKeyState(KeyState keyState) {
         this.keyState = keyState;

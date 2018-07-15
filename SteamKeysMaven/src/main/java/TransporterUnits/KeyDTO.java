@@ -5,6 +5,8 @@
  */
 package TransporterUnits;
 
+import java.util.Date;
+
 /**
  *
  * @author eltet
@@ -12,15 +14,16 @@ package TransporterUnits;
 public class KeyDTO extends DTO{
     
     private long id;
-    private double buyprice;
+    private Date buydate;
+    //private double buyprice;
     private String type;
     private String state;
     
     public KeyDTO() {
     }
 
-    public KeyDTO(double buyprice, String type, String state) {
-        this.buyprice = buyprice;
+    public KeyDTO(String type, String state) {
+//        this.buyprice = buyprice;
         this.type = type;
         this.state = state;
     }
@@ -28,10 +31,15 @@ public class KeyDTO extends DTO{
     public long getId() {
         return id;
     }
-
-    public double getBuyprice() {
-        return buyprice;
+    public Date getbuydate(){
+        return this.buydate;
     }
+    public void setbuydate(Date buydate){
+        this.buydate = buydate;
+    }
+//    public double getBuyprice() {
+//        return buyprice;
+//    }
 
     public String getType() {
         return type;
@@ -45,9 +53,9 @@ public class KeyDTO extends DTO{
         this.id = id;
     }
 
-    public void setBuyprice(double buyprice) {
-        this.buyprice = buyprice;
-    }
+//    public void setBuyprice(double buyprice) {
+//        this.buyprice = buyprice;
+//    }
 
     public void setType(String type) {
         this.type = type;

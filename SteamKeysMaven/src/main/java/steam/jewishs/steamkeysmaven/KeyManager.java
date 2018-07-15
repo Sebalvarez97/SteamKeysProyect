@@ -13,15 +13,25 @@ import Model.Key;
 import Model.KeyState;
 import Model.KeyType;
 import TransporterUnits.*;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-/**
- *
- * @author eltet
- */
+
+
 public class KeyManager { 
+    
  //INGRESA UNA NUEVA KEY
     public static void EnterKey(KeyDTO ktu){
         try{
@@ -29,8 +39,7 @@ public class KeyManager {
          KeyType kt = EntityController.find(new KeyType(ktu.getType()));
         if(ks != null && kt != null){ 
             Key k = new Key();
-            k.setBuyDate();
-            k.setBuyprice(ktu.getBuyprice());
+            k.setBuyDate(ConvertDate(ktu.getbuydate())); //PERMITE GUARDAR EN BASE DE DATOS LA FECHA PARA STEAM
             k.setKeyState(ks);
             k.setKeyType(kt);
             EntityController.create(k);
@@ -51,6 +60,62 @@ public class KeyManager {
            //se enviaran al ExceptionManager
         }  
     }
+    //DEVUELVE SI ES TRADEABLE LA LLAVE
+    private static boolean isTradeable(Key key){
+        Date datenow = Calendar.getInstance().getTime();
+        Calendar cal = Calendar.getInstance();
+        cal.clear();
+        cal.setTime(key.getBuyDate());
+        cal.add(Calendar.DAY_OF_MONTH, 7);
+        Date keydate = cal.getTime();
+        if(datenow.after(keydate)){
+            return true;
+        }else{
+            return false;
+        }
+        
+    }
+    //ACTUALIZA EL ESTADO DE LAS LLAVES DEL INVENTARIO *********ARREGLAR*******
+    public static void UpdateState(){
+        try {
+            List<Key> keys = EntityController.ListKeys();
+            Key key;
+            Iterator iter = keys.iterator();
+            while(iter.hasNext()){
+                key = (Key) iter.next();
+                if(isTradeable(key)){
+                    key.setKeyState(EntityController.find(new KeyState("Tradeable")));
+                    EntityController.Edit(key);
+                }               
+            }
+        } catch (NonexistentEntityException ex) {
+            Logger.getLogger(KeyManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(KeyManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    //DEVUELVE LA DIFERENCIA EN DIAS
+    public static int DayDiference(Date date1, Date date2){
+        long startime = date1.getTime();
+        long endtime = date2.getTime();
+        long diff = endtime - startime;
+        return (int)TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+        
+    }
+//DEVUELVE LA FECHA CONVERTIDA AL HORARIO DE STEAM 
+    public static Date ConvertDate(Date date){
+        
+        ZonedDateTime inicial = ZonedDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+        ZonedDateTime finaldate = inicial.withZoneSameInstant(ZoneId.of("GMT"));
+        
+        Calendar cal = Calendar.getInstance();
+        cal.clear();
+        cal.set(finaldate.getYear(), finaldate.getMonthValue()-1, finaldate.getDayOfMonth(), finaldate.getHour(), finaldate.getMinute());
+        
+        Date returnated = cal.getTime();
+        
+       return returnated;
+    }
     //DEVUELVE UNA LISTA DE LAS LLAVES PARA LA INTERFAZ
     public static List<KeyDTO> ListKeys() throws NonexistentEntityException{
         List<Key> keys = EntityController.ListKeys();
@@ -59,7 +124,8 @@ public class KeyManager {
         Iterator iter = keys.iterator();
         while(iter.hasNext()){
             key = (Key) iter.next();
-            KeyDTO dto = new KeyDTO(63.99, key.getKeyType().getTypeDescription(), key.getKeyState().getStateDescription());
+            KeyDTO dto = new KeyDTO(key.getKeyType().getTypeDescription(), key.getKeyState().getStateDescription());
+            dto.setbuydate(key.getBuyDate());
             dto.setId(key.getId());
             dtos.add(dto);
         }
@@ -124,8 +190,11 @@ public class KeyManager {
  } 
   
   public static void main(String[] args){
+       
       
-      //EnterKey(new KeyDTO(63.99, "Espectro 2" , "Untradeable"));
+      
+      
+
       InitInventory();
       
       

@@ -9,8 +9,14 @@ import Controller.exceptions.NonexistentEntityException;
 import TransporterUnits.KeyDTO;
 import TransporterUnits.TypeStateDTO;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
@@ -25,20 +31,26 @@ public class AddKey extends javax.swing.JFrame {
 
     DefaultComboBoxModel modelocombobox;
     
+    DefaultComboBoxModel modelodia;
+    DefaultComboBoxModel modelomes;
+    DefaultComboBoxModel modeloano;
     
+//CONSTRUCTOR DE LA VENTANA
     public AddKey() {
         initComponents();
         SetAddKeyParameters();
-        this.setLocationRelativeTo(null);
-        
+        this.setLocationRelativeTo(null); 
     }
+//ESTABLECE LOS PARAMETROS PARA LA CREACION DE LLAVES
 private void SetAddKeyParameters(){
-    modelocombobox = new DefaultComboBoxModel();
-    ListTypes();
-    ComboBoxTypes.setModel(modelocombobox);
-}  
     
+    ListDate();
+    ListTypes();
+    
+}  
+// LISTA LOS TIPOS DE LLAVE  
 private void ListTypes(){
+        modelocombobox = new DefaultComboBoxModel();
         try {
             List<TypeStateDTO> types = KeyManager.ListTypes();
             Iterator iter = types.iterator();
@@ -49,42 +61,90 @@ private void ListTypes(){
                 type = dto.getDescription();
                 modelocombobox.addElement(type);
             }
+            ComboBoxTypes.setModel(modelocombobox);
         } catch (NonexistentEntityException ex) {
             System.out.println("FALLA");Logger.getLogger(AddKey.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }  
 }
+//LISTA LOS COMBOBOX DE LA FECHA
+private void ListDate(){
+    modelodia = new DefaultComboBoxModel();
+    modelomes = new DefaultComboBoxModel();
+    modeloano = new DefaultComboBoxModel();
+    Calendar cal = Calendar.getInstance(Locale.ROOT);
+    int daynow = cal.get(Calendar.DAY_OF_MONTH);
+    int monthnow = cal.get(Calendar.MONTH);
+    int yearnow = cal.get(Calendar.YEAR);
+    
+    for(int i = 1; i< 32;i++){
+        modelodia.addElement(i);;
+    }
+    for(int i = 1; i< 13; i++){
+        modelomes.addElement(i);
+    }
+    for(int i = yearnow; i> yearnow-10; i--){
+        modeloano.addElement(i);
+    }
+    DayComboBox.setModel(modelodia);
+    MonthComboBox.setModel(modelomes);
+    YearComboBox.setModel(modeloano);
+}
+//GENERA LA LLAVE NUEVA
 private void AddNewKey(){
   try{  
+   
     String type = (String) ComboBoxTypes.getSelectedItem();
-    //double price = 63.99;
-    
-    double price = Double.parseDouble(BuyPriceImput.getText());
-    
     String state = "Untradeable";
-    int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you want to create a " + type + " key with " +price + " price?");
+    int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you want to create a " + type + " key?");
     if (confirmation == 0){
-        KeyManager.EnterKey(new KeyDTO(price, type, state));
+        KeyDTO ktu = new KeyDTO();
+        ktu.setState(state);
+        ktu.setType(type);
+        ktu.setbuydate(getImputDate());
+        KeyManager.EnterKey(ktu);
     }
   }catch(Exception e){
       System.out.println("FALLA");
   }
-   
     
-}
-    
+}//GENERA EL CALENDARIO CON LA FECHA INGRESADA
+  private Date getImputDate(){
+      
+      int day = (int) modelodia.getSelectedItem();
+      int month = (int) modelomes.getSelectedItem();
+      int year = (int) modeloano.getSelectedItem();
+      Date returnated = new Date();
+      
+      Calendar cal = Calendar.getInstance();
+      cal.clear();
+      if(CheckBox.isSelected()){
+          cal.set(year, month-1, day);
+          
+      }else{
+          cal.set(year,month-1,day+1);
+      }
+      returnated = cal.getTime();
+
+     return returnated;      
+  }  
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         BackButton = new javax.swing.JButton();
         NeyKeyTittle = new javax.swing.JLabel();
-        BuyPriceTittle = new javax.swing.JLabel();
         ComboBoxTypes = new javax.swing.JComboBox<>();
         KeyTypeTittle = new javax.swing.JLabel();
         BuyDateTittle = new javax.swing.JLabel();
         CreateButton = new javax.swing.JButton();
-        BuyPriceImput = new javax.swing.JTextField();
-        buypriceMessage = new javax.swing.JLabel();
+        DayComboBox = new javax.swing.JComboBox<>();
+        MonthComboBox = new javax.swing.JComboBox<>();
+        YearComboBox = new javax.swing.JComboBox<>();
+        DayTittle = new javax.swing.JLabel();
+        MonthTittle = new javax.swing.JLabel();
+        YearTittle = new javax.swing.JLabel();
+        CheckBox = new javax.swing.JCheckBox();
+        CheckboxAclaration = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setName("AddKeyFrame"); // NOI18N
@@ -100,9 +160,6 @@ private void AddNewKey(){
 
         NeyKeyTittle.setFont(new java.awt.Font("Comic Sans MS", 1, 24)); // NOI18N
         NeyKeyTittle.setText("New Key");
-
-        BuyPriceTittle.setFont(new java.awt.Font("Comic Sans MS", 0, 12)); // NOI18N
-        BuyPriceTittle.setText("BuyPrice");
 
         ComboBoxTypes.setName("KeyTypeImput"); // NOI18N
         ComboBoxTypes.addActionListener(new java.awt.event.ActionListener() {
@@ -124,15 +181,26 @@ private void AddNewKey(){
             }
         });
 
-        BuyPriceImput.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        BuyPriceImput.setName("BuyPriceImput"); // NOI18N
-        BuyPriceImput.addActionListener(new java.awt.event.ActionListener() {
+        DayComboBox.setName("DayImput"); // NOI18N
+
+        MonthComboBox.setName("DayImput"); // NOI18N
+
+        YearComboBox.setName("DayImput"); // NOI18N
+
+        DayTittle.setText("Day");
+
+        MonthTittle.setText("Month");
+
+        YearTittle.setText("Year");
+
+        CheckBox.setText("Before 8:00 PM?");
+        CheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BuyPriceImputActionPerformed(evt);
+                CheckBoxActionPerformed(evt);
             }
         });
 
-        buypriceMessage.setText("(use . to separate decimal part)");
+        CheckboxAclaration.setText("(It is important to set the exact day of release)");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -145,29 +213,38 @@ private void AddNewKey(){
                 .addComponent(BackButton, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(25, 25, 25))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(53, 53, 53)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(CreateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(37, 37, 37))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(53, 53, 53)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(KeyTypeTittle)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(BuyPriceTittle)
-                                    .addGap(47, 47, 47)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(BuyPriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGap(46, 46, 46)
-                                            .addComponent(buypriceMessage))
-                                        .addComponent(ComboBoxTypes, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(KeyTypeTittle)
+                            .addComponent(BuyDateTittle))
+                        .addGap(51, 51, 51)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(ComboBoxTypes, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(BuyDateTittle)
-                                .addGap(299, 299, 299)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 213, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(CreateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(37, 37, 37))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(DayComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(DayTittle))
+                                .addGap(26, 26, 26)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(MonthComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(MonthTittle))
+                                .addGap(30, 30, 30)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(YearTittle)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(YearComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(43, 43, 43)
+                                        .addComponent(CheckBox))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(114, 114, 114)
+                                        .addComponent(CheckboxAclaration)))))
+                        .addGap(22, 22, 22))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -176,21 +253,28 @@ private void AddNewKey(){
                     .addGroup(layout.createSequentialGroup()
                         .addGap(59, 59, 59)
                         .addComponent(NeyKeyTittle)
-                        .addGap(45, 45, 45)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(BuyPriceTittle, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(BuyPriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(buypriceMessage))
-                        .addGap(46, 46, 46)
+                        .addGap(52, 52, 52)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(KeyTypeTittle)
                             .addComponent(ComboBoxTypes, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(46, 46, 46)
                         .addComponent(BackButton)))
-                .addGap(47, 47, 47)
-                .addComponent(BuyDateTittle)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 114, Short.MAX_VALUE)
+                .addGap(31, 31, 31)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(DayTittle)
+                    .addComponent(MonthTittle)
+                    .addComponent(YearTittle))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(BuyDateTittle)
+                    .addComponent(DayComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(MonthComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(YearComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(CheckBox))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(CheckboxAclaration)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 148, Short.MAX_VALUE)
                 .addComponent(CreateButton, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(35, 35, 35))
         );
@@ -210,9 +294,9 @@ private void AddNewKey(){
        AddNewKey(); // TODO add your handling code here:
     }//GEN-LAST:event_CreateButtonActionPerformed
 
-    private void BuyPriceImputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuyPriceImputActionPerformed
+    private void CheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CheckBoxActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_BuyPriceImputActionPerformed
+    }//GEN-LAST:event_CheckBoxActionPerformed
 //
 //    /**
 //     * @param args the command line arguments
@@ -252,12 +336,17 @@ private void AddNewKey(){
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BackButton;
     private javax.swing.JLabel BuyDateTittle;
-    private javax.swing.JTextField BuyPriceImput;
-    private javax.swing.JLabel BuyPriceTittle;
+    private javax.swing.JCheckBox CheckBox;
+    private javax.swing.JLabel CheckboxAclaration;
     private javax.swing.JComboBox<String> ComboBoxTypes;
     private javax.swing.JButton CreateButton;
+    private javax.swing.JComboBox<String> DayComboBox;
+    private javax.swing.JLabel DayTittle;
     private javax.swing.JLabel KeyTypeTittle;
+    private javax.swing.JComboBox<String> MonthComboBox;
+    private javax.swing.JLabel MonthTittle;
     private javax.swing.JLabel NeyKeyTittle;
-    private javax.swing.JLabel buypriceMessage;
+    private javax.swing.JComboBox<String> YearComboBox;
+    private javax.swing.JLabel YearTittle;
     // End of variables declaration//GEN-END:variables
 }

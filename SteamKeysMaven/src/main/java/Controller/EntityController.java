@@ -101,4 +101,13 @@ public interface EntityController {
             return typeController.findKeyTypeEntities();
     }
     
+    public static void Edit(Key key) throws Exception{
+        keysController.edit(key);
+    }
+    public static void Edit(KeyState ks) throws Exception{
+        stateController.edit(ks);
+    }
+    public static void Edit(KeyType kt) throws Exception{
+        typeController.edit(kt);
+    }
 }
