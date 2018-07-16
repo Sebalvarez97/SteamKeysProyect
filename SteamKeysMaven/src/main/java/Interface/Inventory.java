@@ -88,7 +88,7 @@ public class Inventory extends javax.swing.JFrame{
     }
 
     //BORRA LA LLAVE SELECCIONADA
-    private void DeleteKey(){ //**FUNCIONA MAL***
+    private void DeleteKey(){ 
         int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete it?");
         if (confirmation == 0){
             int[] seleccion = KeyTable.getSelectedRows();
