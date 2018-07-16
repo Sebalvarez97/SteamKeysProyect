@@ -18,7 +18,9 @@ public class TypeStateDTO extends DTO{
         this.id = id;
         this.description = description;
     }
-
+    public TypeStateDTO(String description){
+        this.description = description;
+    }
     public TypeStateDTO() {
     }
 

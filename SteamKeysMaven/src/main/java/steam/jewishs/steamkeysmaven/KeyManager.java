@@ -116,6 +116,19 @@ public class KeyManager {
         returned = cal.get(Calendar.DAY_OF_MONTH) + "-" + cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.YEAR);
         return returned;
     }
+    public static int CantWithState(TypeStateDTO dto) throws NonexistentEntityException{
+        List<KeyDTO> keys = ListKeys();
+        Iterator iter = keys.iterator();
+        KeyDTO k;
+        int cantidad = 0;
+        while(iter.hasNext()){
+            k = (KeyDTO) iter.next();
+            if(k.getState().equals(dto.getDescription())){
+                cantidad++;
+            }
+        }
+        return cantidad;
+    }
 //DEVUELVE LA FECHA CONVERTIDA AL HORARIO DE STEAM 
     public static Date ConvertDate(Date date){
         
