@@ -97,7 +97,7 @@ public class Inventory extends javax.swing.JFrame{
                 long id = (long) KeyTable.getValueAt(index, 0);//FORMATO (fila, columna)
                 KeyDTO dto = new KeyDTO();
                 dto.setId(id);
-                System.out.println(dto.getId());
+//                System.out.println(dto.getId());
                 KeyManager.DeleteKey(dto);
             }
             ReloadTable();
