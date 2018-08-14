@@ -3,6 +3,7 @@ package Interface;
 
 import Controller.exceptions.NonexistentEntityException;
 import TransporterUnits.KeyDTO;
+import TransporterUnits.ParameterDTO;
 import TransporterUnits.TypeStateDTO;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,6 +29,7 @@ public class Inventory extends javax.swing.JFrame{
     //CONSTRUCTOR
     public Inventory() {
         initComponents();
+        initSaldo();
         ReloadTable();
         this.setLocationRelativeTo(KeyManager.getAddKey()); 
     }
@@ -45,6 +47,21 @@ public class Inventory extends javax.swing.JFrame{
         SetKeyTable();
         SetEstadistics();
     }
+    private void initSaldo(){
+        double saldo = KeyManager.findParameter("Saldo").getValue();
+        Balance.setText(String.valueOf(saldo));
+    }
+    private void showTotal(){
+        
+        int cantidad = KeyManager.KeyCounter();
+        double saldo = Double.parseDouble(Balance.getText());
+        KeyManager.setValue(new ParameterDTO("Saldo", "",saldo));
+        saldo = KeyManager.findParameter("Saldo").getValue();
+        double llave = KeyManager.findParameter("KeysPrice").getValue();
+        double total = llave * cantidad + saldo;
+        TotalTittle.setText("TOTAL   "+ " $ " + Double.toString(total));
+        
+    }
     private void SetEstadistics(){
         try {
             int cantidad = KeyManager.KeyCounter();
@@ -53,6 +70,8 @@ public class Inventory extends javax.swing.JFrame{
             CantTittle.setText("Cant.Keys: "+Integer.toString(cantidad));
             TradTittle.setText("Tradeables: "+Integer.toString(tradeables));
             UntradTittle.setText("Untradeables: "+Integer.toString(untradeables));
+            showTotal();
+            
         } catch (NonexistentEntityException ex) {
             Logger.getLogger(Inventory.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -73,12 +92,20 @@ public class Inventory extends javax.swing.JFrame{
                dto = (KeyDTO) iter.next();
                String type = dto.getType();
                String date = KeyManager.SimpleFormatDate(dto.getbuydate());
+               //Date date =dto.getbuydate();
                String state = dto.getState();
-               int days = 0;
+               String days = "-";
                if(state.equals("Untradeable")){
-                   days = KeyManager.DayDiference(Calendar.getInstance().getTime(), KeyManager.ReleaseDate(dto.getbuydate())) + 1;//SE AGREGA UN DIA PARA CONSIDERAR EL DIA DE HOY
+                   int day = KeyManager.DayDiference(Calendar.getInstance().getTime(), KeyManager.ReleaseDate(dto.getbuydate()));
+                   if(day == 0){
+                       days = "<24hs";
+                   }else{
+                    days = String.valueOf(day);
+                   }
+                   
                }
-               Object[] row = {dto.getId(), type , date , state , days };
+               String release = KeyManager.SimpleFormatDate(KeyManager.ReleaseDate(dto.getbuydate()));
+               Object[] row = {dto.getId(), type , date , state ,"("+ days + ")"};
                modelotabla.addRow(row);
             }
             KeyTable.setModel(modelotabla);
@@ -120,6 +147,9 @@ public class Inventory extends javax.swing.JFrame{
         CantTittle = new javax.swing.JLabel();
         TradTittle = new javax.swing.JLabel();
         UntradTittle = new javax.swing.JLabel();
+        BalanceTittle = new javax.swing.JLabel();
+        Balance = new javax.swing.JTextField();
+        TotalTittle = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setName("InventoryFrame"); // NOI18N
@@ -172,6 +202,19 @@ public class Inventory extends javax.swing.JFrame{
 
         UntradTittle.setText("Untradeables:");
 
+        BalanceTittle.setFont(new java.awt.Font("Comic Sans MS", 0, 14)); // NOI18N
+        BalanceTittle.setText("Saldo");
+
+        Balance.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        Balance.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BalanceActionPerformed(evt);
+            }
+        });
+
+        TotalTittle.setFont(new java.awt.Font("Comic Sans MS", 1, 14)); // NOI18N
+        TotalTittle.setText("Total");
+
         javax.swing.GroupLayout InventoryPanelLayout = new javax.swing.GroupLayout(InventoryPanel);
         InventoryPanel.setLayout(InventoryPanelLayout);
         InventoryPanelLayout.setHorizontalGroup(
@@ -188,23 +231,34 @@ public class Inventory extends javax.swing.JFrame{
                 .addComponent(ReloadButton)
                 .addGap(83, 83, 83))
             .addGroup(InventoryPanelLayout.createSequentialGroup()
-                .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(InventoryPanelLayout.createSequentialGroup()
-                            .addGap(170, 170, 170)
-                            .addComponent(CantTittle)
-                            .addGap(45, 45, 45)
-                            .addComponent(TradTittle)
-                            .addGap(43, 43, 43)
-                            .addComponent(UntradTittle))
-                        .addGroup(InventoryPanelLayout.createSequentialGroup()
-                            .addGap(104, 104, 104)
-                            .addComponent(KeyTableScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 532, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(InventoryPanelLayout.createSequentialGroup()
-                        .addGap(113, 113, 113)
-                        .addComponent(NewKeyButton, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(DeleteButton)))
+                        .addGap(104, 104, 104)
+                        .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(KeyTableScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 532, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(InventoryPanelLayout.createSequentialGroup()
+                                .addComponent(CantTittle)
+                                .addGap(45, 45, 45)
+                                .addComponent(TradTittle)
+                                .addGap(43, 43, 43)
+                                .addComponent(UntradTittle)
+                                .addGap(196, 196, 196))))
+                    .addGroup(InventoryPanelLayout.createSequentialGroup()
+                        .addGap(61, 61, 61)
+                        .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, InventoryPanelLayout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(NewKeyButton, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(DeleteButton))
+                            .addGroup(InventoryPanelLayout.createSequentialGroup()
+                                .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(TotalTittle)
+                                    .addGroup(InventoryPanelLayout.createSequentialGroup()
+                                        .addComponent(BalanceTittle)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(Balance, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap(98, Short.MAX_VALUE))
         );
         InventoryPanelLayout.setVerticalGroup(
@@ -228,8 +282,14 @@ public class Inventory extends javax.swing.JFrame{
                     .addComponent(TradTittle, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(UntradTittle))
                 .addGap(18, 18, 18)
-                .addComponent(KeyTableScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35)
+                .addComponent(KeyTableScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
+                .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(BalanceTittle)
+                    .addComponent(Balance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(TotalTittle)
+                .addGap(20, 20, 20)
                 .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(DeleteButton)
                     .addComponent(NewKeyButton))
@@ -272,10 +332,16 @@ public class Inventory extends javax.swing.JFrame{
         ReloadTable();        // TODO add your handling code here:
     }//GEN-LAST:event_ReloadButtonActionPerformed
 
+    private void BalanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BalanceActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BalanceActionPerformed
+
    
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField Balance;
+    private javax.swing.JLabel BalanceTittle;
     private javax.swing.JLabel CantTittle;
     private javax.swing.JButton DeleteButton;
     private javax.swing.JLabel InitialMessage;
@@ -285,6 +351,7 @@ public class Inventory extends javax.swing.JFrame{
     private javax.swing.JScrollPane KeyTableScroll;
     private javax.swing.JButton NewKeyButton;
     private javax.swing.JButton ReloadButton;
+    private javax.swing.JLabel TotalTittle;
     private javax.swing.JLabel TradTittle;
     private javax.swing.JLabel UntradTittle;
     // End of variables declaration//GEN-END:variables

@@ -115,21 +115,20 @@ private void AddNewKey(){
 }//GENERA EL CALENDARIO CON LA FECHA INGRESADA
   private Date getImputDate(){
       
-      int day = (int) modelodia.getSelectedItem();
-      int month = (int) modelomes.getSelectedItem();
-      int year = (int) modeloano.getSelectedItem();
+      int day = (int) DayComboBox.getSelectedItem();
+      int month = (int) MonthComboBox.getSelectedItem()-1;
+      int year = (int) YearComboBox.getSelectedItem();
       Date returnated = new Date();
       
       Calendar cal = Calendar.getInstance();
       cal.clear();
       if(CheckBox.isSelected()){
-          cal.set(year, month-1, day);
+          cal.set(year, month, day);
           
       }else{
-          cal.set(year,month-1,day-1);
+          cal.set(year,month,day-1);
       }
       returnated = cal.getTime();
-
      return returnated;      
   }  
     @SuppressWarnings("unchecked")

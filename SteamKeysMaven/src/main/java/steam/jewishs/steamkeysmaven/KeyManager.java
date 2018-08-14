@@ -78,7 +78,8 @@ public class KeyManager {
         Calendar cal = Calendar.getInstance();
         cal.clear();
         cal.setTime(date);
-        cal.add(Calendar.DAY_OF_MONTH, 7);
+        cal.add(Calendar.DAY_OF_MONTH, 8);
+        
         return cal.getTime();
     }
     //ACTUALIZA EL ESTADO DE LAS LLAVES DEL INVENTARIO 
@@ -113,7 +114,10 @@ public class KeyManager {
         Calendar cal = Calendar.getInstance();
         cal.clear();
         cal.setTime(date);
-        returned = cal.get(Calendar.DAY_OF_MONTH) + "-" + cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.YEAR);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        int month = cal.get(Calendar.MONTH) +1;
+        int year = cal.get(Calendar.YEAR);
+        returned = day + "-" +month  + "-" + year;
         return returned;
     }
     //DEVUELVE LA CANTIDAD DE LLAVES CON CIERTO ESTADO
@@ -134,8 +138,8 @@ public class KeyManager {
     public static Date ConvertDate(Date date){
         
         ZonedDateTime inicial = ZonedDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
-//        ZonedDateTime finaldate = inicial.withZoneSameInstant(ZoneId.of("GMT")); //TRABAJAR CON LA HORA DE GMT
-        ZonedDateTime finaldate = inicial.withZoneSameInstant(ZoneId.systemDefault());
+       ZonedDateTime finaldate = inicial.withZoneSameInstant(ZoneId.of("GMT+1")); //TRABAJAR CON LA HORA DE GMT
+        //ZonedDateTime finaldate = inicial.withZoneSameInstant(ZoneId.systemDefault());
         Calendar cal = Calendar.getInstance();
         cal.clear();
         cal.set(finaldate.getYear(), finaldate.getMonthValue()-1, finaldate.getDayOfMonth(), finaldate.getHour(), finaldate.getMinute());
@@ -158,6 +162,25 @@ public class KeyManager {
             dtos.add(dto);
         }
         return dtos;
+    }
+    public static void setValue(ParameterDTO dto){
+        SteamParameters sp = EntityController.find(new SteamParameters(dto.getName()));
+        sp.setValue(dto.getValue());
+        try {
+            EntityController.Edit(sp);
+        } catch (Exception ex) {
+            Logger.getLogger(KeyManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    //BUSCA EL PARAMETRO INDICADO
+    public static ParameterDTO findParameter(String name){
+        SteamParameters sp = EntityController.find(new SteamParameters(name));
+        ParameterDTO p = new ParameterDTO();
+        p.setDescription(sp.getDescription());
+        p.setName(sp.getName());
+        p.setValue(sp.getValue());
+        return p;
     }
     //DEVUELVE UNA LISTA DE LOS TIPOS DE LLAVE EXISTENTES
     public static List<TypeStateDTO> ListTypes() throws NonexistentEntityException{
@@ -237,9 +260,9 @@ public class KeyManager {
   public static void main(String[] args){
 
      
-      
-      InitInventory();
      
+      InitInventory();
+      
       
       System.out.println("FIN");
       
