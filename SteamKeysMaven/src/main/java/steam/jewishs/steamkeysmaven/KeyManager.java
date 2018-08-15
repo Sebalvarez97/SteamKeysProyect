@@ -260,8 +260,7 @@ public class KeyManager {
   public static void main(String[] args){
 
      
-     
-      InitInventory();
+     InitInventory();
       
       
       System.out.println("FIN");
