@@ -157,6 +157,7 @@ private void AddNewKey(){
         setResizable(false);
 
         BackButton.setText("Back");
+        BackButton.setFocusable(false);
         BackButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BackButtonActionPerformed(evt);
@@ -166,7 +167,9 @@ private void AddNewKey(){
         NeyKeyTittle.setFont(new java.awt.Font("Comic Sans MS", 1, 24)); // NOI18N
         NeyKeyTittle.setText("New Key");
 
+        ComboBoxTypes.setFocusable(false);
         ComboBoxTypes.setName("KeyTypeImput"); // NOI18N
+        ComboBoxTypes.setOpaque(false);
         ComboBoxTypes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ComboBoxTypesActionPerformed(evt);
@@ -186,10 +189,13 @@ private void AddNewKey(){
             }
         });
 
+        DayComboBox.setFocusable(false);
         DayComboBox.setName("DayImput"); // NOI18N
 
+        MonthComboBox.setFocusable(false);
         MonthComboBox.setName("DayImput"); // NOI18N
 
+        YearComboBox.setFocusable(false);
         YearComboBox.setName("DayImput"); // NOI18N
 
         DayTittle.setText("Day");

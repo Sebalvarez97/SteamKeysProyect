@@ -8,6 +8,7 @@ package steam.jewishs.steamkeysmaven;
 import Controller.EntityController;
 import Controller.exceptions.NonexistentEntityException;
 import Interface.AddKey;
+import Interface.Configurations;
 import Interface.Inventory;
 import Model.Key;
 import Model.KeyState;
@@ -173,6 +174,17 @@ public class KeyManager {
         }
     }
     
+    //MODIFICAR VALOR DE LA KEY
+    private static void setKeyPrice(double price){
+        SteamParameters sp = EntityController.find(new SteamParameters("KeysPrice"));
+        sp.setValue(price);
+        try {
+            EntityController.Edit(sp);
+        } catch (Exception ex) {
+            System.out.println("THE PARAMETER DOES NOT EXIST");
+        }
+    }
+    
     //BUSCA EL PARAMETRO INDICADO
     public static ParameterDTO findParameter(String name){
         SteamParameters sp = EntityController.find(new SteamParameters(name));
@@ -245,7 +257,13 @@ public class KeyManager {
  } 
   private static AddKey add = null;
   private static Inventory inventory = null;
+  private static Configurations config = null;
   
+ public static void InitConfig(){
+    config = new Configurations();
+    config.setTitle("Configurations");
+    config.setVisible(true);
+}
   
   public static AddKey getAddKey(){
       return KeyManager.add;
@@ -253,7 +271,9 @@ public class KeyManager {
   public static Inventory getInventory(){
       return KeyManager.inventory;
   }
-  
+  public static Configurations getConfig(){
+      return KeyManager.config;
+  }
   
   
   

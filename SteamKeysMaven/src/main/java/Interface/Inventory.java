@@ -150,6 +150,7 @@ public class Inventory extends javax.swing.JFrame{
         BalanceTittle = new javax.swing.JLabel();
         Balance = new javax.swing.JTextField();
         TotalTittle = new javax.swing.JLabel();
+        ConfigButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setName("InventoryFrame"); // NOI18N
@@ -162,6 +163,7 @@ public class Inventory extends javax.swing.JFrame{
         InventoryTittle.setText("Inventory");
 
         DeleteButton.setText("Delete Key");
+        DeleteButton.setFocusable(false);
         DeleteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 DeleteButtonActionPerformed(evt);
@@ -169,6 +171,7 @@ public class Inventory extends javax.swing.JFrame{
         });
 
         NewKeyButton.setText("Add Key");
+        NewKeyButton.setFocusable(false);
         NewKeyButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 NewKeyButtonActionPerformed(evt);
@@ -190,6 +193,7 @@ public class Inventory extends javax.swing.JFrame{
         KeyTable.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
         ReloadButton.setText("Reload");
+        ReloadButton.setFocusable(false);
         ReloadButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ReloadButtonActionPerformed(evt);
@@ -215,6 +219,14 @@ public class Inventory extends javax.swing.JFrame{
         TotalTittle.setFont(new java.awt.Font("Comic Sans MS", 1, 14)); // NOI18N
         TotalTittle.setText("Total");
 
+        ConfigButton.setText("...");
+        ConfigButton.setFocusable(false);
+        ConfigButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ConfigButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout InventoryPanelLayout = new javax.swing.GroupLayout(InventoryPanel);
         InventoryPanel.setLayout(InventoryPanelLayout);
         InventoryPanelLayout.setHorizontalGroup(
@@ -222,7 +234,9 @@ public class Inventory extends javax.swing.JFrame{
             .addGroup(InventoryPanelLayout.createSequentialGroup()
                 .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(InventoryPanelLayout.createSequentialGroup()
-                        .addGap(232, 232, 232)
+                        .addGap(21, 21, 21)
+                        .addComponent(ConfigButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(179, 179, 179)
                         .addComponent(InitialMessage))
                     .addGroup(InventoryPanelLayout.createSequentialGroup()
                         .addGap(48, 48, 48)
@@ -268,11 +282,13 @@ public class Inventory extends javax.swing.JFrame{
                     .addGroup(InventoryPanelLayout.createSequentialGroup()
                         .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(InventoryPanelLayout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addComponent(InitialMessage))
-                            .addGroup(InventoryPanelLayout.createSequentialGroup()
                                 .addGap(56, 56, 56)
-                                .addComponent(ReloadButton)))
+                                .addComponent(ReloadButton))
+                            .addGroup(InventoryPanelLayout.createSequentialGroup()
+                                .addGap(24, 24, 24)
+                                .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(ConfigButton)
+                                    .addComponent(InitialMessage))))
                         .addGap(33, 33, 33))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, InventoryPanelLayout.createSequentialGroup()
                         .addComponent(InventoryTittle, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -336,6 +352,16 @@ public class Inventory extends javax.swing.JFrame{
         // TODO add your handling code here:
     }//GEN-LAST:event_BalanceActionPerformed
 
+    private void ConfigButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfigButtonActionPerformed
+        // TODO add your handling code here:
+        
+        
+        
+          KeyManager.InitConfig();
+      
+      this.setVisible(false);
+    }//GEN-LAST:event_ConfigButtonActionPerformed
+
    
 
 
@@ -343,6 +369,7 @@ public class Inventory extends javax.swing.JFrame{
     private javax.swing.JTextField Balance;
     private javax.swing.JLabel BalanceTittle;
     private javax.swing.JLabel CantTittle;
+    private javax.swing.JButton ConfigButton;
     private javax.swing.JButton DeleteButton;
     private javax.swing.JLabel InitialMessage;
     private javax.swing.JPanel InventoryPanel;

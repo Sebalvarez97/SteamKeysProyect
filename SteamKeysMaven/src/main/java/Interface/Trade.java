@@ -5,6 +5,8 @@
  */
 package Interface;
 
+import steam.jewishs.steamkeysmaven.KeyManager;
+
 /**
  *
  * @author eltet
@@ -17,6 +19,8 @@ public class Trade extends javax.swing.JFrame {
      */
     public Trade() {
         initComponents();
+        this.setSize(KeyManager.getInventory().getSize());
+        this.setLocationRelativeTo(KeyManager.getInventory()); 
     }
     private void calculate(){
         double entrada = (double) Imput.getValue();
@@ -59,6 +63,7 @@ public class Trade extends javax.swing.JFrame {
         Imput.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
 
         Calculate.setText("Calculate");
+        Calculate.setFocusable(false);
         Calculate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 CalculateActionPerformed(evt);
