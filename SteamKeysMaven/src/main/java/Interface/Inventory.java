@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -25,13 +26,30 @@ import steam.jewishs.steamkeysmaven.KeyManager;
 public class Inventory extends javax.swing.JFrame{
     
     DefaultTableModel modelotabla;
+    //MANEJO DE VENTANAS
+    public static List<JFrame> windows = new ArrayList();
+    public static JFrame getLastWindow(){
+       return windows.get(windows.size()-1);
+    }
+    private void initWindows(){
+        windows.add(null);
+    }
+    public void OpenWindow(JFrame window){
+        windows.add(window);
+    }
+    public static void CloseLastWindow(){
+        int lastindex = windows.size()-1;
+        windows.remove(lastindex);
+    }
     
     //CONSTRUCTOR
     public Inventory() {
         initComponents();
         initSaldo();
+        initWindows();
         ReloadTable();
-        this.setLocationRelativeTo(KeyManager.getAddKey()); 
+        this.setLocationRelativeTo(getLastWindow());
+        OpenWindow(this);
     }
     //CONFIGURACION DE LA TABLA
     private void SetKeyTable(){
@@ -47,10 +65,12 @@ public class Inventory extends javax.swing.JFrame{
         SetKeyTable();
         SetEstadistics();
     }
+    //INICIALIZA EL SALDO DE STEAM
     private void initSaldo(){
         double saldo = KeyManager.findParameter("Saldo").getValue();
         Balance.setText(String.valueOf(saldo));
     }
+    //MUESTRA EL TOTAL EN PESOS
     private void showTotal(){
         
         int cantidad = KeyManager.KeyCounter();
@@ -62,6 +82,7 @@ public class Inventory extends javax.swing.JFrame{
         TotalTittle.setText("TOTAL   "+ " $ " + Double.toString(total));
         
     }
+    //MUESTRA LAS ESTADISTICAS DE LAS LLAVES (CANT TOTAL, TRADEABLES Y NO TRADEABLES, ETC)
     private void SetEstadistics(){
         try {
             int cantidad = KeyManager.KeyCounter();
@@ -333,14 +354,14 @@ public class Inventory extends javax.swing.JFrame{
     }//GEN-LAST:event_DeleteButtonActionPerformed
 
     private void NewKeyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewKeyButtonActionPerformed
-      
+            
+            AddKey window = new AddKey();
+            window.setTitle("AddKey");
+            OpenWindow(window);
+            this.setVisible(false);
+            window.setVisible(true);
+            
         
-        if(KeyManager.getAddKey() == null){
-          KeyManager.InitAddKey();
-      }else{
-          KeyManager.getAddKey().setVisible(true);
-      }
-      this.setVisible(false);
               // TODO add your handling code here:
     }//GEN-LAST:event_NewKeyButtonActionPerformed
 
@@ -354,12 +375,12 @@ public class Inventory extends javax.swing.JFrame{
 
     private void ConfigButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfigButtonActionPerformed
         // TODO add your handling code here:
-        
-        
-        
-          KeyManager.InitConfig();
-      
+      Configurations window = new Configurations();
+      window.setTitle("Configurations");
+      OpenWindow(window);
       this.setVisible(false);
+      window.setVisible(true);
+      
     }//GEN-LAST:event_ConfigButtonActionPerformed
 
    

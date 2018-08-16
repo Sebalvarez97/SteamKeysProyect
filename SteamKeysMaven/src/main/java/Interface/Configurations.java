@@ -21,8 +21,8 @@ public class Configurations extends javax.swing.JFrame {
     public Configurations() {
         initComponents();
         ShowConfiguration();
-        this.setSize(KeyManager.getInventory().getSize());
-        this.setLocationRelativeTo(KeyManager.getInventory()); 
+        this.setSize(Inventory.getLastWindow().getSize());
+        this.setLocationRelativeTo(Inventory.getLastWindow()); 
     }
 
     private void ShowConfiguration(){
@@ -121,8 +121,12 @@ public class Configurations extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
-            KeyManager.InitInventory();
-            this.setVisible(false);// TODO add your handling code here:
+          Inventory.CloseLastWindow();
+          Inventory inventory = (Inventory) Inventory.getLastWindow();
+          inventory.setLocationRelativeTo(this);
+          inventory.setVisible(true);
+          this.setVisible(false);
+           // TODO add your handling code here:
     }//GEN-LAST:event_BackButtonActionPerformed
 
     private void ChangeKeyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChangeKeyButtonActionPerformed

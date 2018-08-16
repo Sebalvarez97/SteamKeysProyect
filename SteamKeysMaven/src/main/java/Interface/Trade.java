@@ -19,8 +19,8 @@ public class Trade extends javax.swing.JFrame {
      */
     public Trade() {
         initComponents();
-        this.setSize(KeyManager.getInventory().getSize());
-        this.setLocationRelativeTo(KeyManager.getInventory()); 
+        this.setSize(Inventory.getLastWindow().getSize());
+        this.setLocationRelativeTo(Inventory.getLastWindow()); 
     }
     private void calculate(){
         double entrada = (double) Imput.getValue();

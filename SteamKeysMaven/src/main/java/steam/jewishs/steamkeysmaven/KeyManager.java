@@ -250,31 +250,8 @@ public class KeyManager {
       inventory.setTitle("SteamKeysApp");
       inventory.setVisible(true);
   }
- public static void InitAddKey(){
-     add = new AddKey();
-     add.setTitle("SteamKeysApp");
-     add.setVisible(true);
- } 
-  private static AddKey add = null;
+
   private static Inventory inventory = null;
-  private static Configurations config = null;
-  
- public static void InitConfig(){
-    config = new Configurations();
-    config.setTitle("Configurations");
-    config.setVisible(true);
-}
-  
-  public static AddKey getAddKey(){
-      return KeyManager.add;
-  }
-  public static Inventory getInventory(){
-      return KeyManager.inventory;
-  }
-  public static Configurations getConfig(){
-      return KeyManager.config;
-  }
-  
   
   
   public static void main(String[] args){

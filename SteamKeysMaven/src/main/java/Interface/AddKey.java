@@ -39,7 +39,7 @@ public class AddKey extends javax.swing.JFrame {
     public AddKey() {
         initComponents();
         SetAddKeyParameters();
-        this.setLocationRelativeTo(KeyManager.getInventory()); 
+        this.setLocationRelativeTo(Inventory.getLastWindow());
     }
 //ESTABLECE LOS PARAMETROS PARA LA CREACION DE LLAVES
 private void SetAddKeyParameters(){
@@ -305,8 +305,15 @@ private void AddNewKey(){
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
             // TODO add your handling code here:
-            KeyManager.InitInventory();
-            this.setVisible(false);
+          Inventory.CloseLastWindow();
+          Inventory inventory = (Inventory) Inventory.getLastWindow();
+          inventory.setLocationRelativeTo(this);
+          inventory.setVisible(true);
+          this.setVisible(false);
+          
+            
+            
+            
     }//GEN-LAST:event_BackButtonActionPerformed
 
     private void ComboBoxTypesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboBoxTypesActionPerformed
