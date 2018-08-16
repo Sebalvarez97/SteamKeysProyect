@@ -96,7 +96,7 @@ private void AddNewKey(){
     String type = (String) ComboBoxTypes.getSelectedItem();
     String state = "Untradeable";
     int cantidad = (int) CantSpinner.getValue();
-    int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you want to create " + cantidad + " of "+ type + " key/s?");
+    int confirmation = JOptionPane.showConfirmDialog(this, "Are you sure you want to create " + cantidad + " of "+ type + " key/s?");
     if (confirmation == 0){
         int i = 1;
         while(i<=cantidad){
@@ -308,8 +308,9 @@ private void AddNewKey(){
           Inventory.CloseLastWindow();
           Inventory inventory = (Inventory) Inventory.getLastWindow();
           inventory.setLocationRelativeTo(this);
+          inventory.ReloadTable();
           inventory.setVisible(true);
-          this.setVisible(false);
+          dispose();
           
             
             

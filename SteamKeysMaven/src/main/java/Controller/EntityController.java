@@ -18,6 +18,8 @@ public interface EntityController {
     static EntityManagerFactory emf = Persistence.createEntityManagerFactory("SteamKeysPU");
     static EntityManager Ownmanager = emf.createEntityManager();
     
+    static SteamItemJpaController itemController = new SteamItemJpaController(emf);
+    static TradeJpaController tradeController = new TradeJpaController(emf);
     static SteamParametersJpaController paramController = new SteamParametersJpaController(emf); 
     static KeyJpaController keysController = new KeyJpaController(emf);
     static KeyTypeJpaController typeController = new KeyTypeJpaController(emf);
@@ -37,7 +39,9 @@ public interface EntityController {
     public static int ParameterCant(){
         return paramController.getSteamParametersCount();
     }
-    
+    public static int TradeCant(){
+        return tradeController.getTradeCount();
+    }
     
        //CREA UNA ENTIDAD EN BASE DE DATOS SEGUN TIPO 
     public static void create(Key key){
@@ -52,6 +56,12 @@ public interface EntityController {
     public static void create(SteamParameters sp){
         paramController.create(sp);
     }
+    public static void create(SteamItem si){
+        itemController.create(si);
+    }
+    public static void create(Trade t){
+        tradeController.create(t);
+    }
     
    //DESTRUYE LAS ENTIDADES POR TIPO DE ENTIDAD 
     public static void destroy(Key key) throws NonexistentEntityException{
@@ -65,6 +75,12 @@ public interface EntityController {
     }
     public static void destroy(SteamParameters sp) throws NonexistentEntityException{
             paramController.destroy(sp.getId());
+    }
+    public static void destroy(SteamItem si) throws NonexistentEntityException{
+        itemController.destroy(si.getId());
+    }
+    public static void destroy(Trade t) throws NonexistentEntityException{
+        tradeController.destroy(t.getId());
     }
     
     
@@ -97,7 +113,15 @@ public interface EntityController {
             return true;
         }
     }
-
+    public static boolean finIfExist(Trade t){
+        if(find(t) == null){
+            return false;
+        }else{
+            return true;
+        }
+    }
+    
+    
       //ENCUENTRA LA ENTIDAD SEGUN EL TIPO 
     public static Key find(Key k){
         return keysController.findKey(k.getId());
@@ -111,6 +135,10 @@ public interface EntityController {
     public static SteamParameters find(SteamParameters sp){
         return paramController.findSteamParameters(sp.getName());
     }
+    public static Trade find(Trade t){
+        return tradeController.findTrade(t.getDateoftrade());
+    }
+    
     
     //OBTIENE LA LISTA DE ENTIDADES
     public static List<Key> ListKeys(){
@@ -125,6 +153,9 @@ public interface EntityController {
     public static List<SteamParameters> ListParameters(){
             return paramController.findSteamParametersEntities();
     }
+    public static List<Trade> ListTrades(){
+            return tradeController.findTradeEntities();
+    }
     //EDITA LA ENTIDAD
     public static void Edit(Key key) throws Exception{
         keysController.edit(key);
@@ -137,5 +168,8 @@ public interface EntityController {
     }
     public static void Edit(SteamParameters sp) throws Exception{
         paramController.edit(sp);
+    }
+    public static void Edit(Trade t) throws Exception{
+        tradeController.edit(t);
     }
 }

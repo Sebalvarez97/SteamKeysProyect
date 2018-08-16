@@ -30,7 +30,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "key")
-public class Key implements Serializable {
+public class Key implements Serializable{
 
     private static final long serialVersionUID = 1L;
     @Id

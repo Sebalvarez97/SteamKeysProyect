@@ -60,7 +60,7 @@ public class Inventory extends javax.swing.JFrame{
         
     }
     //RECARGA LA LISTA DE LLAVES
-    private void ReloadTable(){
+    public void ReloadTable(){
         ListTable();
         SetKeyTable();
         SetEstadistics();
@@ -134,22 +134,41 @@ public class Inventory extends javax.swing.JFrame{
             System.out.println("FALLA");// Logger.getLogger(Inventory.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    private List<KeyDTO> getKeySelection(){
+        List<KeyDTO> keys = new ArrayList();
+        int[] seleccion = KeyTable.getSelectedRows();
+        for(int i = 0;i < seleccion.length; i++){
+            int index = seleccion[i];
+            long id;
+            id = (long) KeyTable.getValueAt(index, 0);
+            KeyDTO dto = new KeyDTO();
+            dto.setId(id);
+            keys.add(dto);
+        }
+        
+        return keys;
+    }
 
     //BORRA LA LLAVE SELECCIONADA
     private void DeleteKey(){ 
-        int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete it?");
+        List<KeyDTO> keys = getKeySelection();
+        if(keys.size() == 0){
+            JOptionPane.showMessageDialog(this, "You have not selected a key yet");
+        }else{
+        int confirmation = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete it?");
         if (confirmation == 0){
-            int[] seleccion = KeyTable.getSelectedRows();
-            for(int i = 0; i< seleccion.length; i++){
-                int index = seleccion[i];//index es la posicion
-                long id = (long) KeyTable.getValueAt(index, 0);//FORMATO (fila, columna)
-                KeyDTO dto = new KeyDTO();
-                dto.setId(id);
-//                System.out.println(dto.getId());
+           
+           Iterator iter = keys.iterator();
+           while(iter.hasNext()){
+                KeyDTO dto = (KeyDTO) iter.next();
                 KeyManager.DeleteKey(dto);
             }
-            ReloadTable();
+            
         }
+        }
+        
+        ReloadTable();
     }
     
     
@@ -172,6 +191,8 @@ public class Inventory extends javax.swing.JFrame{
         Balance = new javax.swing.JTextField();
         TotalTittle = new javax.swing.JLabel();
         ConfigButton = new javax.swing.JButton();
+        TradeButton = new javax.swing.JButton();
+        SellButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setName("InventoryFrame"); // NOI18N
@@ -248,6 +269,17 @@ public class Inventory extends javax.swing.JFrame{
             }
         });
 
+        TradeButton.setText("Trade");
+        TradeButton.setFocusable(false);
+        TradeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TradeButtonActionPerformed(evt);
+            }
+        });
+
+        SellButton.setText("Sell");
+        SellButton.setFocusable(false);
+
         javax.swing.GroupLayout InventoryPanelLayout = new javax.swing.GroupLayout(InventoryPanel);
         InventoryPanel.setLayout(InventoryPanelLayout);
         InventoryPanelLayout.setHorizontalGroup(
@@ -283,6 +315,10 @@ public class Inventory extends javax.swing.JFrame{
                         .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, InventoryPanelLayout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(SellButton, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(TradeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(40, 40, 40)
                                 .addComponent(NewKeyButton, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(DeleteButton))
@@ -329,7 +365,9 @@ public class Inventory extends javax.swing.JFrame{
                 .addGap(20, 20, 20)
                 .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(DeleteButton)
-                    .addComponent(NewKeyButton))
+                    .addComponent(NewKeyButton)
+                    .addComponent(TradeButton)
+                    .addComponent(SellButton))
                 .addContainerGap(39, Short.MAX_VALUE))
         );
 
@@ -369,10 +407,6 @@ public class Inventory extends javax.swing.JFrame{
         ReloadTable();        // TODO add your handling code here:
     }//GEN-LAST:event_ReloadButtonActionPerformed
 
-    private void BalanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BalanceActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_BalanceActionPerformed
-
     private void ConfigButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfigButtonActionPerformed
         // TODO add your handling code here:
       Configurations window = new Configurations();
@@ -383,8 +417,31 @@ public class Inventory extends javax.swing.JFrame{
       
     }//GEN-LAST:event_ConfigButtonActionPerformed
 
-   
+    private void TradeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TradeButtonActionPerformed
 
+        List<KeyDTO> keys = getKeySelection();
+        if(keys.size() == 0){
+            JOptionPane.showMessageDialog(this, "You have not selected a key yet");
+        }else{
+            int confirmacion = JOptionPane.showConfirmDialog(this, "This key/s selected will be traded, Are you sure?");
+            if(confirmacion == 0){ 
+                    Trade window = new Trade();
+                    window.setTitle("TradeHelper");
+                    OpenWindow(window);
+                    this.setVisible(false);
+                    window.setKeys(keys);
+                    window.setVisible(true);}
+        }
+     
+        ReloadTable();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TradeButtonActionPerformed
+
+    private void BalanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BalanceActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BalanceActionPerformed
+
+   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField Balance;
@@ -399,8 +456,10 @@ public class Inventory extends javax.swing.JFrame{
     private javax.swing.JScrollPane KeyTableScroll;
     private javax.swing.JButton NewKeyButton;
     private javax.swing.JButton ReloadButton;
+    private javax.swing.JButton SellButton;
     private javax.swing.JLabel TotalTittle;
     private javax.swing.JLabel TradTittle;
+    private javax.swing.JButton TradeButton;
     private javax.swing.JLabel UntradTittle;
     // End of variables declaration//GEN-END:variables
 }

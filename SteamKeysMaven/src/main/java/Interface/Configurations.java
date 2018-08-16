@@ -58,6 +58,7 @@ public class Configurations extends javax.swing.JFrame {
         ChangeKeyButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         BackButton.setText("Back");
         BackButton.setFocusable(false);
@@ -124,8 +125,9 @@ public class Configurations extends javax.swing.JFrame {
           Inventory.CloseLastWindow();
           Inventory inventory = (Inventory) Inventory.getLastWindow();
           inventory.setLocationRelativeTo(this);
+          inventory.ReloadTable();  
           inventory.setVisible(true);
-          this.setVisible(false);
+          dispose();
            // TODO add your handling code here:
     }//GEN-LAST:event_BackButtonActionPerformed
 

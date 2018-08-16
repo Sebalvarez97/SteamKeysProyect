@@ -14,6 +14,7 @@ import Model.Key;
 import Model.KeyState;
 import Model.KeyType;
 import Model.SteamParameters;
+import Model.Trade;
 import TransporterUnits.*;
 import java.awt.Window;
 import java.time.ZoneId;
@@ -243,7 +244,6 @@ public class KeyManager {
   }
   
   
-  
   //INTERFAZ
   public static void InitInventory(){
       inventory = new Inventory();
@@ -255,7 +255,7 @@ public class KeyManager {
   
   
   public static void main(String[] args){
-
+     
      
      InitInventory();
       

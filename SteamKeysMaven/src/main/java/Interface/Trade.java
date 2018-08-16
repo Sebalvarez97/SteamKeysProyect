@@ -5,6 +5,8 @@
  */
 package Interface;
 
+import TransporterUnits.KeyDTO;
+import java.util.List;
 import steam.jewishs.steamkeysmaven.KeyManager;
 
 /**
@@ -12,26 +14,28 @@ import steam.jewishs.steamkeysmaven.KeyManager;
  * @author eltet
  */
 public class Trade extends javax.swing.JFrame {
-
     
-    /**
-     * Creates new form TradePrice
-     */
+    private List<KeyDTO> keys;
+    
+    
+    public void setKeys(List<KeyDTO> keys){
+        this.keys = keys;
+    }
+    
+    
     public Trade() {
         initComponents();
         this.setSize(Inventory.getLastWindow().getSize());
         this.setLocationRelativeTo(Inventory.getLastWindow()); 
-    }
-    private void calculate(){
-        double entrada = (double) Imput.getValue();
-        double keyprice = (double) PriceImput.getValue();
-        double razon = (double) (73.57 / keyprice); 
-        double salida = razon * entrada;
-        
-        Output.setText(Double.toString(salida));
+        initTrade();
     }
     
-    
+    private void initTrade(){
+        ListTable();
+    }
+    private void ListTable(){
+        double keyprice = Double.parseDouble(PriceImput.getText());
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -43,12 +47,24 @@ public class Trade extends javax.swing.JFrame {
 
         PriceTittle = new javax.swing.JLabel();
         PriceImput = new javax.swing.JFormattedTextField();
-        Imput = new javax.swing.JFormattedTextField();
-        Output = new javax.swing.JLabel();
-        Calculate = new javax.swing.JButton();
+        TradeTittle = new javax.swing.JLabel();
+        VmrScroll = new javax.swing.JScrollPane();
+        VmrTable = new javax.swing.JTable();
+        SellPriceImput = new javax.swing.JTextField();
+        AddButton = new javax.swing.JButton();
+        BalanceImput = new javax.swing.JTextField();
+        ListScroll = new javax.swing.JScrollPane();
+        TradeListTable = new javax.swing.JTable();
+        BackButton = new javax.swing.JButton();
+        TradeButton = new javax.swing.JButton();
+        BalanceTittle = new javax.swing.JLabel();
+        ReloadButton = new javax.swing.JButton();
+        DeleteButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
+        PriceTittle.setFont(new java.awt.Font("Comic Sans MS", 0, 14)); // NOI18N
         PriceTittle.setText("KeyPrice");
 
         PriceImput.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("¤#,##0"))));
@@ -59,53 +75,155 @@ public class Trade extends javax.swing.JFrame {
             }
         });
 
-        Imput.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("¤#,##0"))));
-        Imput.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        TradeTittle.setFont(new java.awt.Font("Comic Sans MS", 1, 24)); // NOI18N
+        TradeTittle.setText("Trade");
 
-        Calculate.setText("Calculate");
-        Calculate.setFocusable(false);
-        Calculate.addActionListener(new java.awt.event.ActionListener() {
+        VmrTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        VmrTable.setFocusable(false);
+        VmrTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        VmrScroll.setViewportView(VmrTable);
+
+        SellPriceImput.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        SellPriceImput.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CalculateActionPerformed(evt);
+                SellPriceImputActionPerformed(evt);
             }
         });
+
+        AddButton.setText(">>>");
+        AddButton.setFocusable(false);
+
+        BalanceImput.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        BalanceImput.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+
+        TradeListTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        TradeListTable.setFocusable(false);
+        ListScroll.setViewportView(TradeListTable);
+
+        BackButton.setText("Back");
+        BackButton.setFocusable(false);
+        BackButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BackButtonActionPerformed(evt);
+            }
+        });
+
+        TradeButton.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        TradeButton.setText("Trade");
+        TradeButton.setFocusable(false);
+
+        BalanceTittle.setText("Balance");
+        BalanceTittle.setToolTipText("");
+        BalanceTittle.setFocusable(false);
+
+        ReloadButton.setText("Reload");
+
+        DeleteButton.setText("Delete");
+        DeleteButton.setFocusable(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(49, 49, 49)
+                .addComponent(TradeTittle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(BackButton)
+                .addGap(60, 60, 60))
+            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(31, 31, 31)
+                        .addContainerGap(22, Short.MAX_VALUE)
+                        .addComponent(VmrScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(34, 34, 34))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(75, 75, 75)
                         .addComponent(PriceTittle)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(PriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(PriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(70, 70, 70)
-                        .addComponent(Imput, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(120, 120, 120)
-                        .addComponent(Output, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(82, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(Calculate)
-                .addGap(34, 34, 34))
+                        .addComponent(ReloadButton)
+                        .addGap(302, 302, 302))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(BalanceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(90, 90, 90)
+                            .addComponent(TradeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(BalanceTittle)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(DeleteButton))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                            .addComponent(SellPriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(28, 28, 28))
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(AddButton)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                    .addComponent(ListScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGap(22, 22, 22)))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(66, 66, 66)
+                .addContainerGap(15, Short.MAX_VALUE)
+                .addComponent(TradeTittle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(PriceTittle)
-                    .addComponent(PriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 202, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Imput, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Output, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(Calculate)
-                .addGap(33, 33, 33))
+                    .addComponent(PriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ReloadButton))
+                .addGap(18, 30, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(ListScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(DeleteButton, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(BalanceTittle, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(TradeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(BalanceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(33, 33, 33))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(VmrScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(38, 38, 38)
+                .addComponent(BackButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(SellPriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(AddButton)
+                .addGap(223, 223, 223))
         );
 
         pack();
@@ -117,9 +235,19 @@ public class Trade extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_PriceImputActionPerformed
 
-    private void CalculateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CalculateActionPerformed
-      calculate();  // TODO add your handling code here:
-    }//GEN-LAST:event_CalculateActionPerformed
+    private void SellPriceImputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SellPriceImputActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_SellPriceImputActionPerformed
+
+    private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
+       Inventory.CloseLastWindow();
+       Inventory inventory = (Inventory) Inventory.getLastWindow();
+       inventory.setLocationRelativeTo(this);
+       inventory.ReloadTable();
+       inventory.setVisible(true);
+       dispose();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BackButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -157,10 +285,20 @@ public class Trade extends javax.swing.JFrame {
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Calculate;
-    private javax.swing.JFormattedTextField Imput;
-    private javax.swing.JLabel Output;
+    private javax.swing.JButton AddButton;
+    private javax.swing.JButton BackButton;
+    private javax.swing.JTextField BalanceImput;
+    private javax.swing.JLabel BalanceTittle;
+    private javax.swing.JButton DeleteButton;
+    private javax.swing.JScrollPane ListScroll;
     private javax.swing.JFormattedTextField PriceImput;
     private javax.swing.JLabel PriceTittle;
+    private javax.swing.JButton ReloadButton;
+    private javax.swing.JTextField SellPriceImput;
+    private javax.swing.JButton TradeButton;
+    private javax.swing.JTable TradeListTable;
+    private javax.swing.JLabel TradeTittle;
+    private javax.swing.JScrollPane VmrScroll;
+    private javax.swing.JTable VmrTable;
     // End of variables declaration//GEN-END:variables
 }
