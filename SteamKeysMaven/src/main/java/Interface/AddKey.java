@@ -89,13 +89,27 @@ private void ListDate(){
     MonthComboBox.setModel(modelomes);
     YearComboBox.setModel(modeloano);
 }
+    private boolean isNumber(String str) {
+        return (str.matches("[+-]?\\d*(\\.\\d+)?") && str.equals("")==false);
+    }
+    private double getCantValue() throws Exception{
+        String input = (String) CantSpinner.getValue();
+        if(isNumber(input)){
+            return Integer.parseInt(input);
+        }else{
+            throw new Exception("bad enter");
+        }
+    } 
+    private void MessageDialog(String scr){
+        JOptionPane.showMessageDialog(this, scr);
+    }
 //GENERA LA LLAVE NUEVA
 private void AddNewKey(){
   try{  
    
     String type = (String) ComboBoxTypes.getSelectedItem();
     String state = "Untradeable";
-    int cantidad = (int) CantSpinner.getValue();
+    int cantidad = (int) getCantValue();
     int confirmation = JOptionPane.showConfirmDialog(this, "Are you sure you want to create " + cantidad + " of "+ type + " key/s?");
     if (confirmation == 0){
         int i = 1;
@@ -109,7 +123,9 @@ private void AddNewKey(){
         }
     }
   }catch(Exception e){
-      System.out.println("FALLA");
+      SetAddKeyParameters();
+      MessageDialog("Fail. You entered a bad cant");
+      
   }
     
 }//GENERA EL CALENDARIO CON LA FECHA INGRESADA

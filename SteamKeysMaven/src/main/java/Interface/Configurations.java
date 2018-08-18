@@ -6,6 +6,8 @@
 package Interface;
 
 import TransporterUnits.ParameterDTO;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import steam.jewishs.steamkeysmaven.KeyManager;
 
@@ -25,20 +27,40 @@ public class Configurations extends javax.swing.JFrame {
         this.setLocationRelativeTo(Inventory.getLastWindow()); 
     }
 
+    private boolean isDouble(String str) {
+        return (str.matches("[+-]?\\d*(\\.\\d+)?") && str.equals("")==false);
+    }
+    private double getDoubleInput() throws Exception{
+        String input = KeyField.getText();
+        if(isDouble(input)){
+            return Double.parseDouble(input);
+        }else{
+            throw new Exception("bad enter");
+        }
+    } 
+    private void MessageDialog(String scr){
+        JOptionPane.showMessageDialog(this, scr);
+    }
+    
     private void ShowConfiguration(){
         ParameterDTO dto = KeyManager.findParameter("KeysPrice");
         double keyprice = dto.getValue();
         KeyField.setText(String.valueOf(keyprice));
     }
     private void ChangeKeyValue(){
-        double value = Double.parseDouble(KeyField.getText());
-        ParameterDTO pd = KeyManager.findParameter("KeysPrice");
-        int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you want to change it?");
-        if(confirmation == 0){
-            pd.setValue(value);
-            KeyManager.setValue(pd);
-        }else{
+        try {
+            double value = getDoubleInput();
+            ParameterDTO pd = KeyManager.findParameter("KeysPrice");
+            int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you want to change it?");
+            if(confirmation == 0){
+                pd.setValue(value);
+                KeyManager.setValue(pd);
+            }else{
+                ShowConfiguration();
+            }
+        } catch (Exception ex) {
             ShowConfiguration();
+            MessageDialog("You entered a bad input");
         }
     }
     

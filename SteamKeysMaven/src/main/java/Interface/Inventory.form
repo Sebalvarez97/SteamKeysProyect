@@ -95,7 +95,7 @@
                                       <Group type="102" alignment="0" attributes="0">
                                           <Component id="BalanceTittle" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                                          <Component id="Balance" min="-2" pref="74" max="-2" attributes="0"/>
+                                          <Component id="Balance" min="-2" pref="61" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -252,14 +252,6 @@
             <Property name="text" type="java.lang.String" value="Saldo"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="Balance">
-          <Properties>
-            <Property name="horizontalAlignment" type="int" value="4"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BalanceActionPerformed"/>
-          </Events>
-        </Component>
         <Component class="javax.swing.JLabel" name="TotalTittle">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -291,6 +283,16 @@
             <Property name="text" type="java.lang.String" value="Sell"/>
             <Property name="focusable" type="boolean" value="false"/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JFormattedTextField" name="Balance">
+          <Properties>
+            <Property name="horizontalAlignment" type="int" value="4"/>
+            <Property name="debugGraphicsOptions" type="int" value="-1"/>
+            <Property name="name" type="java.lang.String" value="Balance" noResource="true"/>
+          </Properties>
+          <AccessibilityProperties>
+            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Balance"/>
+          </AccessibilityProperties>
         </Component>
       </SubComponents>
     </Container>

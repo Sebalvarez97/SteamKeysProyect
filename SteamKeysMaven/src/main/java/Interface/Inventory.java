@@ -70,16 +70,37 @@ public class Inventory extends javax.swing.JFrame{
         double saldo = KeyManager.findParameter("Saldo").getValue();
         Balance.setText(String.valueOf(saldo));
     }
+    private boolean isDouble(String str) {
+        return (str.matches("[+-]?\\d*(\\.\\d+)?") && str.equals("")==false);
+    }
+    private double getDoubleInput() throws Exception{
+        String input = Balance.getText();
+        if(isDouble(input)){
+            return Double.parseDouble(input);
+        }else{
+            throw new Exception("bad enter");
+        }
+    } 
+    private void MessageDialog(String scr){
+        JOptionPane.showMessageDialog(this, scr);
+    }
     //MUESTRA EL TOTAL EN PESOS
     private void showTotal(){
-        
-        int cantidad = KeyManager.KeyCounter();
-        double saldo = Double.parseDouble(Balance.getText());
-        KeyManager.setValue(new ParameterDTO("Saldo", "",saldo));
-        saldo = KeyManager.findParameter("Saldo").getValue();
-        double llave = KeyManager.findParameter("KeysPrice").getValue();
-        double total = llave * cantidad + saldo;
-        TotalTittle.setText("TOTAL   "+ " $ " + Double.toString(total));
+        try {
+            int cantidad = KeyManager.KeyCounter();
+            double saldo = getDoubleInput();
+            KeyManager.setValue(new ParameterDTO("Saldo", "",saldo));
+            saldo = KeyManager.findParameter("Saldo").getValue();
+            double llave = KeyManager.findParameter("KeysPrice").getValue();
+            double total = llave * cantidad + saldo;
+            TotalTittle.setText("TOTAL   "+ " $ " + Double.toString(total));
+        } catch (Exception ex) {
+            if (ex.getMessage().equals("bad enter")){
+                initSaldo();
+                MessageDialog("You entered a bad input");
+                ReloadTable();
+            }
+        }
         
     }
     //MUESTRA LAS ESTADISTICAS DE LAS LLAVES (CANT TOTAL, TRADEABLES Y NO TRADEABLES, ETC)
@@ -107,7 +128,6 @@ public class Inventory extends javax.swing.JFrame{
             //CONFIGURACION DEL MODELO DE LA TABLA
             String[] columnames = {"ID", "Type","BuyDate", "State","Release in"};
             modelotabla = new DefaultTableModel(null, columnames);
-            
             //LENADO DEL MODELO DE LA TABLA
             while(iter.hasNext()){
                dto = (KeyDTO) iter.next();
@@ -123,7 +143,6 @@ public class Inventory extends javax.swing.JFrame{
                    }else{
                     days = String.valueOf(day);
                    }
-                   
                }
                String release = KeyManager.SimpleFormatDate(KeyManager.ReleaseDate(dto.getbuydate()));
                Object[] row = {dto.getId(), type , date , state ,"("+ days + ")"};
@@ -131,7 +150,7 @@ public class Inventory extends javax.swing.JFrame{
             }
             KeyTable.setModel(modelotabla);
         } catch (NonexistentEntityException ex) {
-            System.out.println("FALLA");// Logger.getLogger(Inventory.class.getName()).log(Level.SEVERE, null, ex);
+            MessageDialog("The entity does not exist");
         }
     }
     
@@ -154,17 +173,15 @@ public class Inventory extends javax.swing.JFrame{
     private void DeleteKey(){ 
         List<KeyDTO> keys = getKeySelection();
         if(keys.size() == 0){
-            JOptionPane.showMessageDialog(this, "You have not selected a key yet");
+            MessageDialog("Select a key first");
         }else{
-        int confirmation = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete it?");
+        int confirmation = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete selected keys?");
         if (confirmation == 0){
-           
            Iterator iter = keys.iterator();
            while(iter.hasNext()){
                 KeyDTO dto = (KeyDTO) iter.next();
                 KeyManager.DeleteKey(dto);
             }
-            
         }
         }
         
@@ -188,11 +205,11 @@ public class Inventory extends javax.swing.JFrame{
         TradTittle = new javax.swing.JLabel();
         UntradTittle = new javax.swing.JLabel();
         BalanceTittle = new javax.swing.JLabel();
-        Balance = new javax.swing.JTextField();
         TotalTittle = new javax.swing.JLabel();
         ConfigButton = new javax.swing.JButton();
         TradeButton = new javax.swing.JButton();
         SellButton = new javax.swing.JButton();
+        Balance = new javax.swing.JFormattedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setName("InventoryFrame"); // NOI18N
@@ -251,13 +268,6 @@ public class Inventory extends javax.swing.JFrame{
         BalanceTittle.setFont(new java.awt.Font("Comic Sans MS", 0, 14)); // NOI18N
         BalanceTittle.setText("Saldo");
 
-        Balance.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        Balance.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BalanceActionPerformed(evt);
-            }
-        });
-
         TotalTittle.setFont(new java.awt.Font("Comic Sans MS", 1, 14)); // NOI18N
         TotalTittle.setText("Total");
 
@@ -279,6 +289,10 @@ public class Inventory extends javax.swing.JFrame{
 
         SellButton.setText("Sell");
         SellButton.setFocusable(false);
+
+        Balance.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        Balance.setDebugGraphicsOptions(javax.swing.DebugGraphics.NONE_OPTION);
+        Balance.setName("Balance"); // NOI18N
 
         javax.swing.GroupLayout InventoryPanelLayout = new javax.swing.GroupLayout(InventoryPanel);
         InventoryPanel.setLayout(InventoryPanelLayout);
@@ -328,7 +342,7 @@ public class Inventory extends javax.swing.JFrame{
                                     .addGroup(InventoryPanelLayout.createSequentialGroup()
                                         .addComponent(BalanceTittle)
                                         .addGap(18, 18, 18)
-                                        .addComponent(Balance, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(Balance, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap(98, Short.MAX_VALUE))
         );
@@ -370,6 +384,8 @@ public class Inventory extends javax.swing.JFrame{
                     .addComponent(SellButton))
                 .addContainerGap(39, Short.MAX_VALUE))
         );
+
+        Balance.getAccessibleContext().setAccessibleName("Balance");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -421,7 +437,7 @@ public class Inventory extends javax.swing.JFrame{
 
         List<KeyDTO> keys = getKeySelection();
         if(keys.size() == 0){
-            JOptionPane.showMessageDialog(this, "You have not selected a key yet");
+             MessageDialog("Select a key first");
         }else{
             int confirmacion = JOptionPane.showConfirmDialog(this, "This key/s selected will be traded, Are you sure?");
             if(confirmacion == 0){ 
@@ -437,14 +453,10 @@ public class Inventory extends javax.swing.JFrame{
         // TODO add your handling code here:
     }//GEN-LAST:event_TradeButtonActionPerformed
 
-    private void BalanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BalanceActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_BalanceActionPerformed
-
    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField Balance;
+    private javax.swing.JFormattedTextField Balance;
     private javax.swing.JLabel BalanceTittle;
     private javax.swing.JLabel CantTittle;
     private javax.swing.JButton ConfigButton;
