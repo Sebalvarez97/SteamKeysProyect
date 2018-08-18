@@ -7,16 +7,17 @@ package Interface;
 
 import TransporterUnits.KeyDTO;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import steam.jewishs.steamkeysmaven.KeyManager;
 
-/**
- *
- * @author eltet
- */
+
 public class Trade extends javax.swing.JFrame {
     
     private List<KeyDTO> keys;
-    
+    DefaultTableModel modelotabla;
     
     public void setKeys(List<KeyDTO> keys){
         this.keys = keys;
@@ -29,12 +30,45 @@ public class Trade extends javax.swing.JFrame {
         this.setLocationRelativeTo(Inventory.getLastWindow()); 
         initTrade();
     }
-    
+    private void initStorePrice(){
+        PriceImput.setValue(0.0);
+    }
+        private boolean isDouble(String str) {
+        return (str.matches("[+-]?\\d*(\\.\\d+)?") && str.equals("")==false);
+    }
+    private double getDoubleInput() throws Exception{
+        String input = PriceImput.getText(); ///
+        if(isDouble(input) && Double.parseDouble(input)>=0.0){
+            return Double.parseDouble(input);
+        }else{
+            throw new Exception("bad enter");
+        }
+    } 
+    private void MessageDialog(String scr){
+        JOptionPane.showMessageDialog(this, scr);
+    }
     private void initTrade(){
+        initStorePrice();
         ListTable();
     }
     private void ListTable(){
-        double keyprice = Double.parseDouble(PriceImput.getText());
+        try {
+            double storeprice = getDoubleInput();
+            double keyprice = KeyManager.findParameter("KeysPrice").getValue();
+            double razon = keyprice/storeprice;
+            //MODELO
+            String[] columnames = {"Store Price","VMR"}; 
+            modelotabla = new DefaultTableModel(null, columnames);
+            //LLENADO DE LA TABLA
+            for(double i = 0.05; i< 10.01; i= i+0.01){
+                double calculated = i*razon;
+                Object[] row = {i,calculated};
+                modelotabla.addRow(row);
+            }
+            
+        } catch (Exception ex) {
+            MessageDialog("Failed. Bad enter");
+        }
     }
     /**
      * This method is called from within the constructor to initialize the form.

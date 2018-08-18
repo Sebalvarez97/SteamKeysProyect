@@ -160,8 +160,11 @@ public class Inventory extends javax.swing.JFrame{
         for(int i = 0;i < seleccion.length; i++){
             int index = seleccion[i];
             long id;
+            String state;
             id = (long) KeyTable.getValueAt(index, 0);
+            state = (String) KeyTable.getValueAt(index, 3);
             KeyDTO dto = new KeyDTO();
+            dto.setState(state);
             dto.setId(id);
             keys.add(dto);
         }
@@ -433,12 +436,25 @@ public class Inventory extends javax.swing.JFrame{
       
     }//GEN-LAST:event_ConfigButtonActionPerformed
 
+    private boolean ValidateKeySelection(List<KeyDTO> list){
+        boolean validation = true;
+        List<KeyDTO> keys = list;
+        Iterator iter = keys.iterator();
+        while(iter.hasNext()){
+            KeyDTO dto = (KeyDTO) iter.next();;
+            if(!dto.getState().equals("Tradeable")){
+                validation = false;
+            }
+        }
+        return validation;
+    }
+    
     private void TradeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TradeButtonActionPerformed
 
         List<KeyDTO> keys = getKeySelection();
-        if(keys.size() == 0){
-             MessageDialog("Select a key first");
-        }else{
+        if(keys.size() == 0 || !ValidateKeySelection(keys)){
+             MessageDialog("Select a valid key first");
+        }else {
             int confirmacion = JOptionPane.showConfirmDialog(this, "This key/s selected will be traded, Are you sure?");
             if(confirmacion == 0){ 
                     Trade window = new Trade();
