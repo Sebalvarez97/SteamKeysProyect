@@ -5,6 +5,7 @@ import Controller.exceptions.NonexistentEntityException;
 import TransporterUnits.KeyDTO;
 import TransporterUnits.ParameterDTO;
 import TransporterUnits.TypeStateDTO;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -16,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -25,6 +27,7 @@ import steam.jewishs.steamkeysmaven.KeyManager;
 
 public class Inventory extends javax.swing.JFrame{
     
+    DecimalFormat formatter = new DecimalFormat("##.##");
     DefaultTableModel modelotabla;
     //MANEJO DE VENTANAS
     public static List<JFrame> windows = new ArrayList();
@@ -67,17 +70,30 @@ public class Inventory extends javax.swing.JFrame{
     }
     //INICIALIZA EL SALDO DE STEAM
     private void initSaldo(){
-        double saldo = (double)KeyManager.findParameter("Saldo").getValue();
+        ParameterDTO dto = KeyManager.findParameter("Saldo");
+        double saldo = (double) dto.getValue();
         saldo = saldo/100;
         Balance.setText(String.valueOf(saldo));
     }
-    private boolean isDouble(String str) {
+    private boolean isNumber(String str) {
         return (str.matches("[+-]?\\d*(\\.\\d+)?") && str.equals("")==false);
     }
-    private double getDoubleInput() throws Exception{
-        String input = Balance.getText();
-        if(isDouble(input)){
-            return Double.parseDouble(input);
+    private int numberConvertor(String str){
+        int pointindex = str.indexOf(".");
+        String subcadena = str.substring(pointindex, str.length());
+        if(subcadena.length() >= 3){
+            int finalindex = pointindex +3;
+            str = str.substring(0,finalindex);
+        }else if(subcadena.length() < 3){
+            str = str + "0";
+        }
+        str = str.replace(".", "");
+        return Integer.parseInt(str);
+    }
+    private int getBalanceInput() throws Exception{
+        String saldo = Balance.getText();
+        if(isNumber(saldo)){
+            return numberConvertor(saldo);  
         }else{
             throw new Exception("bad enter");
         }
@@ -85,9 +101,9 @@ public class Inventory extends javax.swing.JFrame{
     private void MessageDialog(String scr){
         JOptionPane.showMessageDialog(this, scr);
     }
-    private void UpdateSaldo() throws Exception{
-        double saldo = getDoubleInput()*100;
-        KeyManager.setValue(new ParameterDTO("Saldo", "",(int)saldo));
+    private void UpdateSaldo() throws Exception {
+        int input = getBalanceInput();
+        KeyManager.setValue(new ParameterDTO("Saldo", "",input));
     }
     //MUESTRA EL TOTAL EN PESOS
     private void showTotal(){
@@ -98,7 +114,8 @@ public class Inventory extends javax.swing.JFrame{
             int price = dto.getValue();
             dto = KeyManager.findParameter("Saldo");
             int saldo = dto.getValue();
-            double total = (double) (keycant*price + saldo)/100;
+            double total = (double) (keycant*price + saldo);
+            total = total/100;
             TotalTittle.setText("TOTAL   "+ " $ " + Double.toString(total));
         } catch (Exception ex) {
             if (ex.getMessage().equals("bad enter")){
@@ -458,9 +475,9 @@ public class Inventory extends javax.swing.JFrame{
     private void TradeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TradeButtonActionPerformed
 
         List<KeyDTO> keys = getKeySelection();
-        if(keys.size() == 0 || !ValidateKeySelection(keys)){
+        if(keys.size() == 0){
              MessageDialog("Select a valid key first");
-        }else {
+        }else if(ValidateKeySelection(keys)) {
             int confirmacion = JOptionPane.showConfirmDialog(this, "This key/s selected will be traded, Are you sure?");
             if(confirmacion == 0){ 
                     Trade window = new Trade();
@@ -469,6 +486,8 @@ public class Inventory extends javax.swing.JFrame{
                     this.setVisible(false);
                     window.setKeys(keys);
                     window.setVisible(true);}
+        }else if(!ValidateKeySelection(keys)){
+            MessageDialog("Invalid selection of keys");
         }
      
         ReloadTable();

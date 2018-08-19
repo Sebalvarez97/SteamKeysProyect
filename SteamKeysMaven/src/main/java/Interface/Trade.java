@@ -35,20 +35,7 @@ public class Trade extends javax.swing.JFrame {
         this.setLocationRelativeTo(Inventory.getLastWindow()); 
         initTrade();
     }
-    private void initStorePrice(){
-        PriceImput.setText("0.0");
-    }
-        private boolean isDouble(String str) {
-        return (str.matches("[+-]?\\d*(\\.\\d+)?") && str.equals("")==false);
-    }
-    private double getDoubleInput() throws Exception{
-        String input = PriceImput.getText(); 
-        if(isDouble(input) && Double.parseDouble(input)>=0.0){
-            return Double.parseDouble(input);
-        }else{
-            throw new Exception("bad enter");
-        }
-    }
+
     private void ListITems(){
 
         //MOPDELO
@@ -68,21 +55,53 @@ public class Trade extends javax.swing.JFrame {
         initStorePrice();
         ListTable();
     }
+        private void initStorePrice(){   
+        PriceImput.setText("2.50");
+    }
+        private boolean isNumber(String str) {
+        return (str.matches("[+-]?\\d*(\\.\\d+)?") && str.equals("")==false);
+    }
+    private int numberConvertor(String str){
+        int pointindex = str.indexOf(".");
+        String subcadena = str.substring(pointindex, str.length());
+        if(subcadena.length() >= 3){
+            int finalindex = pointindex +3;
+            str = str.substring(0,finalindex);
+        }else if(subcadena.length() < 3){
+            str = str + "0";
+        }
+        str = str.replace(".", "");
+        return Integer.parseInt(str);
+    }
+        private int getPriceInput() throws Exception{
+        String input = PriceImput.getText(); 
+        if(isNumber(input)){
+            return numberConvertor(input);
+        }else{
+            throw new Exception("bad enter");
+        }
+    }
     private void ListTable(){
         try {
-            double storeprice = getDoubleInput();
-            double keyprice = KeyManager.findParameter("KeysPrice").getValue();
-            double razon = keyprice/KeyManager.sellPrice(keyprice);
+            double storeprice = (double) getPriceInput();
+            double keysellprice = (double) KeyManager.sellPrice(KeyManager.findParameter("KeysPrice").getValue());
+            int razon;
+            razon = (int) (keysellprice/storeprice * 100);
             //MODELO
             String[] columnames = {"Store Price","VMR"}; 
             modelotabla = new DefaultTableModel(null, columnames);
             //LLENADO DE LA TABLA
-            for(double i = 0.05; i< 10.01; i= i+0.01){
-                i = Math.round(i*100d)/100d;
-                double calculated = i*razon;
-                calculated = Math.round(calculated * 100d)/100d;
-                Object[] row = {i,calculated};
-                modelotabla.addRow(row);
+            for(int i = 5; i < 1000; i++){
+               double x = (double) i;
+               x = x/100;
+               int calculated = i * razon;
+               double c = (double) calculated;
+               c = c/10000;
+               calculated = numberConvertor(String.valueOf(c));
+               c = (double) calculated;
+               c = c/100;
+               Object[] row = {x,c};
+               modelotabla.addRow(row);
             }
            VmrTable.setModel(modelotabla);
         } catch (Exception ex) {

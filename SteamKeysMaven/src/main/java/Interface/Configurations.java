@@ -27,13 +27,25 @@ public class Configurations extends javax.swing.JFrame {
         this.setLocationRelativeTo(Inventory.getLastWindow()); 
     }
 
-    private boolean isDouble(String str) {
+    private boolean isNumber(String str) {
         return (str.matches("[+-]?\\d*(\\.\\d+)?") && str.equals("")==false);
     }
-    private double getDoubleInput() throws Exception{
+    private int numberConvertor(String str){
+        int pointindex = str.indexOf(".");
+        String subcadena = str.substring(pointindex, str.length());
+        if(subcadena.length() >= 3){
+            int finalindex = pointindex +3;
+            str = str.substring(0,finalindex);
+        }else if(subcadena.length() < 3){
+            str = str + "0";
+        }
+        str = str.replace(".", "");
+        return Integer.parseInt(str);
+    }
+    private int getKeyFieldInput() throws Exception{
         String input = KeyField.getText();
-        if(isDouble(input)){
-            return Double.parseDouble(input);
+        if(isNumber(input)){
+            return numberConvertor(input);
         }else{
             throw new Exception("bad enter");
         }
@@ -50,12 +62,11 @@ public class Configurations extends javax.swing.JFrame {
     }
     private void ChangeKeyValue(){
         try {
-            double value = getDoubleInput();
-            value = value *100;
+            int value = getKeyFieldInput();
             ParameterDTO pd = KeyManager.findParameter("KeysPrice");
             int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you want to change it?");
             if(confirmation == 0){
-                pd.setValue((int) value);
+                pd.setValue(value);
                 KeyManager.setValue(pd);
             }else{
                 ShowConfiguration();

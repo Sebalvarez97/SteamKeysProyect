@@ -234,8 +234,8 @@ public class KeyManager {
         } 
     }
   //DEVUELVE EL VALOR DE BENEFICIO A PARTIR DE UN VALOR DE VENTA
-    public static double profit(double valor) throws Exception {     //buscar el valor de ganancia de un item a partir del valor de venta
-        int buscar = (int) (valor * 100);           //pasa el valor a int con dos decimales
+    public static int profit(int valor) throws Exception {     //buscar el valor de ganancia de un item a partir del valor de venta
+        int buscar = valor;          //pasa el valor a int con dos decimales
         int cantidad = 1000000;                     //cantidad de digitos del array (de 0.01 a (cantidad/100)-1)
         int[] matriz = new int[cantidad];           //creacion del array
         for (int i = 1; i < cantidad; i++) {        //insercion de valores al array
@@ -252,19 +252,19 @@ public class KeyManager {
                 throw new Exception("bad enter, value does not exist");//o el valor es muy alto, devuelve -1
             }
             if (matriz[i] == buscar) {              //si encuentra el valor
-                return (double) i / 100;            //se retorna el numero del indice del valor
+                return i;            //se retorna el numero del indice del valor
             } else {                                //si no encuentra el valor
                 i++;                                //suma uno y busca el siguiente
             }
         }
     }
     //DEVUELVE EL VALOR DE VENTA A PARTIR DE UN MONTO DE BENEFICIO
-    public static double sellPrice(double valor){
-        int i = (int) (valor * 100);
-        if(i<=20){
-            return (double) i/100 + 0.02;
+    public static int sellPrice(int valor){
+        int i = valor;
+        if(i<=2000){
+            return  i/100 + 2;
         }else{
-            return (double) (i + (i/10) + (i/20))/100;
+            return (i + (i/10) + (i/20));
         } 
     }
     
@@ -289,8 +289,8 @@ public class KeyManager {
   
   public static void main(String[] args){
      
-      EntityController.create(new SteamParameters("KeysPrice", "price of the key ingame",7399));
-      EntityController.create(new SteamParameters("Saldo","balance in steam account",0 ));
+
+      
       InitInventory();
       
       System.out.println("FIN");
