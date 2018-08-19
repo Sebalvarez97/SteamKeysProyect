@@ -42,7 +42,7 @@
                       <EmptySpace min="-2" pref="75" max="-2" attributes="0"/>
                       <Component id="PriceTittle" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="PriceImput" min="-2" pref="60" max="-2" attributes="0"/>
+                      <Component id="PriceImput" min="-2" pref="54" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
@@ -94,8 +94,8 @@
               <EmptySpace pref="21" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="PriceTittle" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="PriceImput" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="ReloadButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="PriceImput" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" pref="30" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
@@ -139,17 +139,6 @@
         </Property>
         <Property name="text" type="java.lang.String" value="KeyPrice"/>
       </Properties>
-    </Component>
-    <Component class="javax.swing.JFormattedTextField" name="PriceImput">
-      <Properties>
-        <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
-          <Format format="&#xa4;#,##0" subtype="-1" type="4"/>
-        </Property>
-        <Property name="horizontalAlignment" type="int" value="4"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="PriceImputActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="TradeTittle">
       <Properties>
@@ -247,12 +236,23 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Reload"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ReloadButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="DeleteButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Delete"/>
         <Property name="focusable" type="boolean" value="false"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="PriceImput">
+      <Properties>
+        <Property name="horizontalAlignment" type="int" value="4"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="PriceImputActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

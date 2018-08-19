@@ -38,15 +38,15 @@ public class SteamItem implements Serializable {
     private int cant;
     
     @Column(name = "storeprice")
-    private double storeprice;
+    private int storeprice;
     
     @Column(name = "sellprice")
-    private double sellprice;
+    private int sellprice;
 
     public SteamItem() {
     }
 
-    public SteamItem(int cant, double storeprice, double sellprice) {
+    public SteamItem(int cant, int storeprice, int sellprice) {
         this.cant = cant;
         this.storeprice = storeprice;
         this.sellprice = sellprice;
@@ -56,11 +56,11 @@ public class SteamItem implements Serializable {
         this.cant = cant;
     }
 
-    public void setStoreprice(double storeprice) {
+    public void setStoreprice(int storeprice) {
         this.storeprice = storeprice;
     }
 
-    public void setSellprice(double sellprice) {
+    public void setSellprice(int sellprice) {
         this.sellprice = sellprice;
     }
 
@@ -72,11 +72,11 @@ public class SteamItem implements Serializable {
         return cant;
     }
 
-    public double getStoreprice() {
+    public int getStoreprice() {
         return storeprice;
     }
 
-    public double getSellprice() {
+    public int getSellprice() {
         return sellprice;
     }
     

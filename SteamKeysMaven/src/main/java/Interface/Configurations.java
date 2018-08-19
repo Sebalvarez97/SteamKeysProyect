@@ -44,16 +44,18 @@ public class Configurations extends javax.swing.JFrame {
     
     private void ShowConfiguration(){
         ParameterDTO dto = KeyManager.findParameter("KeysPrice");
-        double keyprice = dto.getValue();
+        double keyprice = (double) dto.getValue();
+        keyprice = keyprice/100;
         KeyField.setText(String.valueOf(keyprice));
     }
     private void ChangeKeyValue(){
         try {
             double value = getDoubleInput();
+            value = value *100;
             ParameterDTO pd = KeyManager.findParameter("KeysPrice");
             int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you want to change it?");
             if(confirmation == 0){
-                pd.setValue(value);
+                pd.setValue((int) value);
                 KeyManager.setValue(pd);
             }else{
                 ShowConfiguration();

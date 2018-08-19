@@ -111,6 +111,7 @@ public class KeyManager {
         return (int)TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
         
     }
+    //GENERAR UN STRING CON LA FECHA
     public static String SimpleFormatDate(Date date){
         String returned;
         Calendar cal = Calendar.getInstance();
@@ -176,7 +177,7 @@ public class KeyManager {
     }
     
     //MODIFICAR VALOR DE LA KEY
-    private static void setKeyPrice(double price){
+    private static void setKeyPrice(int price){
         SteamParameters sp = EntityController.find(new SteamParameters("KeysPrice"));
         sp.setValue(price);
         try {
@@ -232,6 +233,40 @@ public class KeyManager {
             EntityController.destroy(key);
         } 
     }
+  //DEVUELVE EL VALOR DE BENEFICIO A PARTIR DE UN VALOR DE VENTA
+    public static double profit(double valor) throws Exception {     //buscar el valor de ganancia de un item a partir del valor de venta
+        int buscar = (int) (valor * 100);           //pasa el valor a int con dos decimales
+        int cantidad = 1000000;                     //cantidad de digitos del array (de 0.01 a (cantidad/100)-1)
+        int[] matriz = new int[cantidad];           //creacion del array
+        for (int i = 1; i < cantidad; i++) {        //insercion de valores al array
+            if (i < 20) {                           //si el valor esta entre 0.01 y 0.20 se le suman solo 2 centavos
+                matriz[i] = i + 2;                  //es porque se tosquea si lo hago asi
+            } else {
+                matriz[i] = i + (i / 10) + (i / 20);//valor mas el 10% mas el 5% truncado
+            }
+        }
+        int i = 1;                                  //auxiliar para buscar
+        while (true) {
+            if (i == cantidad) {                    //si llega a la cantidad, es porque no encontro el valor
+                //return -1; 
+                throw new Exception("bad enter, value does not exist");//o el valor es muy alto, devuelve -1
+            }
+            if (matriz[i] == buscar) {              //si encuentra el valor
+                return (double) i / 100;            //se retorna el numero del indice del valor
+            } else {                                //si no encuentra el valor
+                i++;                                //suma uno y busca el siguiente
+            }
+        }
+    }
+    //DEVUELVE EL VALOR DE VENTA A PARTIR DE UN MONTO DE BENEFICIO
+    public static double sellPrice(double valor){
+        int i = (int) (valor * 100);
+        if(i<=20){
+            return (double) i/100 + 0.02;
+        }else{
+            return (double) (i + (i/10) + (i/20))/100;
+        } 
+    }
     
   public static int KeyCounter(){
      return EntityController.KeyCant();
@@ -246,19 +281,17 @@ public class KeyManager {
   
   //INTERFAZ
   public static void InitInventory(){
-      inventory = new Inventory();
+      Inventory inventory = new Inventory();
       inventory.setTitle("SteamKeysApp");
       inventory.setVisible(true);
   }
 
-  private static Inventory inventory = null;
-  
   
   public static void main(String[] args){
      
-     
-     InitInventory();
-      
+      EntityController.create(new SteamParameters("KeysPrice", "price of the key ingame",7399));
+      EntityController.create(new SteamParameters("Saldo","balance in steam account",0 ));
+      InitInventory();
       
       System.out.println("FIN");
       

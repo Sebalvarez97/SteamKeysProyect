@@ -13,9 +13,9 @@ public class ParameterDTO extends DTO {
     
       private String name;
       private String description;
-      private double value;
+      private int value;
 
-    public ParameterDTO(String name, String description, double value) {
+    public ParameterDTO(String name, String description, int value) {
         this.name = name;
         this.description = description;
         this.value = value;
@@ -32,7 +32,7 @@ public class ParameterDTO extends DTO {
         this.description = description;
     }
 
-    public void setValue(double value) {
+    public void setValue(int value) {
         this.value = value;
     }
 
@@ -44,7 +44,7 @@ public class ParameterDTO extends DTO {
         return description;
     }
 
-    public double getValue() {
+    public int getValue() {
         return value;
     }
       

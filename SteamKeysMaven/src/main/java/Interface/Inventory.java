@@ -67,7 +67,8 @@ public class Inventory extends javax.swing.JFrame{
     }
     //INICIALIZA EL SALDO DE STEAM
     private void initSaldo(){
-        double saldo = KeyManager.findParameter("Saldo").getValue();
+        double saldo = (double)KeyManager.findParameter("Saldo").getValue();
+        saldo = saldo/100;
         Balance.setText(String.valueOf(saldo));
     }
     private boolean isDouble(String str) {
@@ -84,15 +85,20 @@ public class Inventory extends javax.swing.JFrame{
     private void MessageDialog(String scr){
         JOptionPane.showMessageDialog(this, scr);
     }
+    private void UpdateSaldo() throws Exception{
+        double saldo = getDoubleInput()*100;
+        KeyManager.setValue(new ParameterDTO("Saldo", "",(int)saldo));
+    }
     //MUESTRA EL TOTAL EN PESOS
     private void showTotal(){
         try {
-            int cantidad = KeyManager.KeyCounter();
-            double saldo = getDoubleInput();
-            KeyManager.setValue(new ParameterDTO("Saldo", "",saldo));
-            saldo = KeyManager.findParameter("Saldo").getValue();
-            double llave = KeyManager.findParameter("KeysPrice").getValue();
-            double total = llave * cantidad + saldo;
+            UpdateSaldo();
+            int keycant = KeyManager.KeyCounter();
+            ParameterDTO dto = KeyManager.findParameter("KeysPrice");
+            int price = dto.getValue();
+            dto = KeyManager.findParameter("Saldo");
+            int saldo = dto.getValue();
+            double total = (double) (keycant*price + saldo)/100;
             TotalTittle.setText("TOTAL   "+ " $ " + Double.toString(total));
         } catch (Exception ex) {
             if (ex.getMessage().equals("bad enter")){
@@ -139,7 +145,7 @@ public class Inventory extends javax.swing.JFrame{
                if(state.equals("Untradeable")){
                    int day = KeyManager.DayDiference(Calendar.getInstance().getTime(), KeyManager.ReleaseDate(dto.getbuydate()));
                    if(day == 0){
-                       days = "<24hs";
+                       days = " < 24hs";
                    }else{
                     days = String.valueOf(day);
                    }

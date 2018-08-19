@@ -38,7 +38,7 @@ public class SteamParameters implements Serializable {
     private String description;
     
     @Column(name = "value")
-    private double value;
+    private int value;
     
     
     public SteamParameters(){
@@ -47,7 +47,7 @@ public class SteamParameters implements Serializable {
     public SteamParameters(String name){
         this.name = name;
     }
-    public SteamParameters(String name, String description, double value) {
+    public SteamParameters(String name, String description, int value) {
         this.name = name;
         this.description = description;
         this.value = value;
@@ -61,7 +61,7 @@ public class SteamParameters implements Serializable {
         this.description = description;
     }
 
-    public void setValue(double value) {
+    public void setValue(int value) {
         this.value = value;
     }
 
@@ -74,7 +74,7 @@ public class SteamParameters implements Serializable {
         return description;
     }
 
-    public double getValue() {
+    public int getValue() {
         return value;
     }
 

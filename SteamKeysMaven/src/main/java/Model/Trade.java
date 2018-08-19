@@ -35,20 +35,20 @@ public class Trade implements Serializable {
     private Date dateoftrade;
     
     @Column(name = "priceinstore")
-    private double priceinstore;
+    private int priceinstore;
     
     @OneToMany
     @JoinColumn(name = "items")
     private List<SteamItem> items;
     
     @Column(name = "balancestore")
-    private double balancestore;
+    private int balancestore;
     
     @OneToMany
     @JoinColumn(name = "keytraded")
     private List <Key> keytraded;
 
-    public Trade(Date dateoftrade, double priceinstore, List<SteamItem> items, double balancestore, List<Key> keytraded) {
+    public Trade(Date dateoftrade, int priceinstore, List<SteamItem> items, int balancestore, List<Key> keytraded) {
         this.dateoftrade = dateoftrade;
         this.priceinstore = priceinstore;
         this.items = items;
@@ -96,7 +96,7 @@ public class Trade implements Serializable {
         return dateoftrade;
     }
 
-    public double getPriceinstore() {
+    public int getPriceinstore() {
         return priceinstore;
     }
 
@@ -104,7 +104,7 @@ public class Trade implements Serializable {
         return items;
     }
 
-    public double getBalancestore() {
+    public int getBalancestore() {
         return balancestore;
     }
 
@@ -116,11 +116,11 @@ public class Trade implements Serializable {
         this.dateoftrade = dateoftrade;
     }
 
-    public void setPriceinstore(double priceinstore) {
+    public void setPriceinstore(int priceinstore) {
         this.priceinstore = priceinstore;
     }
 
-    public void setBalancestore(double balancestore) {
+    public void setBalancestore(int balancestore) {
         this.balancestore = balancestore;
     }
     

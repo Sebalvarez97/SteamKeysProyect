@@ -6,6 +6,7 @@
 package Interface;
 
 import TransporterUnits.KeyDTO;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,11 +19,15 @@ public class Trade extends javax.swing.JFrame {
     
     private List<KeyDTO> keys;
     DefaultTableModel modelotabla;
+    DefaultTableModel modeloitems;
+    private List<Object[]> Items;
     
     public void setKeys(List<KeyDTO> keys){
         this.keys = keys;
     }
-    
+    private void ReloadTable(){
+        ListTable();
+    }
     
     public Trade() {
         initComponents();
@@ -31,19 +36,31 @@ public class Trade extends javax.swing.JFrame {
         initTrade();
     }
     private void initStorePrice(){
-        PriceImput.setValue(0.0);
+        PriceImput.setText("0.0");
     }
         private boolean isDouble(String str) {
         return (str.matches("[+-]?\\d*(\\.\\d+)?") && str.equals("")==false);
     }
     private double getDoubleInput() throws Exception{
-        String input = PriceImput.getText(); ///
+        String input = PriceImput.getText(); 
         if(isDouble(input) && Double.parseDouble(input)>=0.0){
             return Double.parseDouble(input);
         }else{
             throw new Exception("bad enter");
         }
-    } 
+    }
+    private void ListITems(){
+
+        //MOPDELO
+        String [] columnames = {"Item","StorePrice","SellPrice"};
+        modeloitems = new DefaultTableModel(null,columnames);
+        //LLENADO DE LA TABLA
+        Iterator iter = Items.iterator();
+        while(iter.hasNext()){
+            
+        }
+        
+    }
     private void MessageDialog(String scr){
         JOptionPane.showMessageDialog(this, scr);
     }
@@ -55,17 +72,19 @@ public class Trade extends javax.swing.JFrame {
         try {
             double storeprice = getDoubleInput();
             double keyprice = KeyManager.findParameter("KeysPrice").getValue();
-            double razon = keyprice/storeprice;
+            double razon = keyprice/KeyManager.sellPrice(keyprice);
             //MODELO
             String[] columnames = {"Store Price","VMR"}; 
             modelotabla = new DefaultTableModel(null, columnames);
             //LLENADO DE LA TABLA
             for(double i = 0.05; i< 10.01; i= i+0.01){
+                i = Math.round(i*100d)/100d;
                 double calculated = i*razon;
+                calculated = Math.round(calculated * 100d)/100d;
                 Object[] row = {i,calculated};
                 modelotabla.addRow(row);
             }
-            
+           VmrTable.setModel(modelotabla);
         } catch (Exception ex) {
             MessageDialog("Failed. Bad enter");
         }
@@ -80,7 +99,6 @@ public class Trade extends javax.swing.JFrame {
     private void initComponents() {
 
         PriceTittle = new javax.swing.JLabel();
-        PriceImput = new javax.swing.JFormattedTextField();
         TradeTittle = new javax.swing.JLabel();
         VmrScroll = new javax.swing.JScrollPane();
         VmrTable = new javax.swing.JTable();
@@ -94,20 +112,13 @@ public class Trade extends javax.swing.JFrame {
         BalanceTittle = new javax.swing.JLabel();
         ReloadButton = new javax.swing.JButton();
         DeleteButton = new javax.swing.JButton();
+        PriceImput = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
         PriceTittle.setFont(new java.awt.Font("Comic Sans MS", 0, 14)); // NOI18N
         PriceTittle.setText("KeyPrice");
-
-        PriceImput.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("¤#,##0"))));
-        PriceImput.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        PriceImput.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PriceImputActionPerformed(evt);
-            }
-        });
 
         TradeTittle.setFont(new java.awt.Font("Comic Sans MS", 1, 24)); // NOI18N
         TradeTittle.setText("Trade");
@@ -171,9 +182,21 @@ public class Trade extends javax.swing.JFrame {
         BalanceTittle.setFocusable(false);
 
         ReloadButton.setText("Reload");
+        ReloadButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ReloadButtonActionPerformed(evt);
+            }
+        });
 
         DeleteButton.setText("Delete");
         DeleteButton.setFocusable(false);
+
+        PriceImput.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        PriceImput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PriceImputActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -195,7 +218,7 @@ public class Trade extends javax.swing.JFrame {
                         .addGap(75, 75, 75)
                         .addComponent(PriceTittle)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(PriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(PriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -232,8 +255,8 @@ public class Trade extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(PriceTittle)
-                    .addComponent(PriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ReloadButton))
+                    .addComponent(ReloadButton)
+                    .addComponent(PriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 30, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -265,10 +288,6 @@ public class Trade extends javax.swing.JFrame {
 
     
     
-    private void PriceImputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PriceImputActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_PriceImputActionPerformed
-
     private void SellPriceImputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SellPriceImputActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_SellPriceImputActionPerformed
@@ -282,6 +301,14 @@ public class Trade extends javax.swing.JFrame {
        dispose();
         // TODO add your handling code here:
     }//GEN-LAST:event_BackButtonActionPerformed
+
+    private void ReloadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReloadButtonActionPerformed
+     ReloadTable();   // TODO add your handling code here:
+    }//GEN-LAST:event_ReloadButtonActionPerformed
+
+    private void PriceImputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PriceImputActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_PriceImputActionPerformed
 
     /**
      * @param args the command line arguments
@@ -325,7 +352,7 @@ public class Trade extends javax.swing.JFrame {
     private javax.swing.JLabel BalanceTittle;
     private javax.swing.JButton DeleteButton;
     private javax.swing.JScrollPane ListScroll;
-    private javax.swing.JFormattedTextField PriceImput;
+    private javax.swing.JTextField PriceImput;
     private javax.swing.JLabel PriceTittle;
     private javax.swing.JButton ReloadButton;
     private javax.swing.JTextField SellPriceImput;
