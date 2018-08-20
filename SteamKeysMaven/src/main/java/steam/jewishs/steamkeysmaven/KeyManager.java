@@ -54,6 +54,18 @@ public class KeyManager {
             //se enviaran al ExceptionManager
         }
     }
+    //DEVUELVE LA LLAVE SEGUN EL ID INGRESADO EN EL KEYDTO PATRON
+    public static KeyDTO getKey(KeyDTO patron) throws NonexistentEntityException{
+        KeyDTO ret = null;
+        Iterator iter = ListKeys().iterator();
+        while(iter.hasNext()){
+            KeyDTO dto = (KeyDTO) iter.next();
+            if(dto.getId() == patron.getId()){
+                ret = dto;
+            }
+        }
+        return ret;
+    }
 //BORRA LA KEY
     public static void DeleteKey(KeyDTO ktu){
         Key key = new Key();
@@ -180,6 +192,43 @@ public class KeyManager {
         }else {
             throw new Exception("is not a number");
         }
+    }
+    //DEVUELVE TRUE SI LA LLAVE SE ENCUENTRA EN LA LISTA
+    public static boolean keyInTheList(KeyDTO dto, List<KeyDTO> list){
+        boolean ret = false;
+        Iterator iter = list.iterator();
+        while(iter.hasNext()){
+            KeyDTO listelement = (KeyDTO) iter.next();
+            if(listelement.getId() == dto.getId()){
+                ret = true;
+            }
+        }
+        return ret;
+    }
+    //DEVUELVE LAS LLAVES RESTANTES QUE TIENEN EL MISMO ESTADO QUE LA INGRESADA
+    public static List<KeyDTO> getmissingKeys(List<KeyDTO> list) throws NonexistentEntityException{
+        List<KeyDTO> ret = new ArrayList();
+        KeyDTO firstinlist = list.get(0);
+        Iterator iter = ListWithStateKeys(new KeyDTO("",firstinlist.getState())).iterator();
+        while(iter.hasNext()){
+            KeyDTO listelement = (KeyDTO) iter.next();
+            if(!keyInTheList(listelement, list)){
+                ret.add(listelement);
+            }
+        }
+        return ret;
+    }
+    //DEVUELVE UNA LISTA CON SOLO LAS LLAVES TRADEABLES
+    public static List<KeyDTO> ListWithStateKeys(KeyDTO patron) throws NonexistentEntityException{
+        List<KeyDTO> list = new ArrayList();
+        Iterator iter = ListKeys().iterator();
+        while(iter.hasNext()){
+            KeyDTO dto = (KeyDTO) iter.next();
+            if(dto.getState().equals(patron.getState())){
+                list.add(dto);
+            }
+        }
+        return list;
     }
     //LISTA LOS VALORES DE VMR
     public static List<Object[]> ListVMR(double storeprice) throws Exception{

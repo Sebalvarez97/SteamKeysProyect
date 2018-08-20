@@ -5,6 +5,7 @@
  */
 package Interface;
 
+import Controller.exceptions.NonexistentEntityException;
 import TransporterUnits.KeyDTO;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -83,7 +84,28 @@ public class Trade extends javax.swing.JFrame {
         ReloadTable();
     }
     private void AddTradingKey(){
-        
+        try {
+            List<KeyDTO> missing = KeyManager.getmissingKeys(keys);
+            String[] panel = new String[missing.size()];
+            Iterator iter = missing.iterator();
+            int i = 0;
+            while(iter.hasNext()){
+                KeyDTO dto = (KeyDTO) iter.next();
+                String element = String.valueOf(dto.getId()) + "--" + dto.getType();
+                panel[i] = element;
+                i++;
+            }
+            String confirmacion = (String) JOptionPane.showInputDialog(this, "Select de key", "AddKeyToTradeHelper", JOptionPane.QUESTION_MESSAGE,null,panel, "Select");
+            if(confirmacion != null){
+                KeyDTO patron = new KeyDTO();
+                patron.setId(getKeyID(confirmacion));
+                KeyDTO key = KeyManager.getKey(patron);
+                keys.add(key);
+            }
+        } catch (NonexistentEntityException ex) {
+            MessageDialog(ex.getMessage());
+        }
+        ReloadTable();
     }
     private void MessageDialog(String scr){
         JOptionPane.showMessageDialog(this, scr, "WARNING_MESSAGE", JOptionPane.WARNING_MESSAGE);
@@ -404,6 +426,7 @@ public class Trade extends javax.swing.JFrame {
     }//GEN-LAST:event_DeleteKeyButtonActionPerformed
 
     private void AddKeyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddKeyButtonActionPerformed
+       AddTradingKey();
         // TODO add your handling code here:
     }//GEN-LAST:event_AddKeyButtonActionPerformed
 
