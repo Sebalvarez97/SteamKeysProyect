@@ -6,11 +6,13 @@
 package Interface;
 
 import TransporterUnits.KeyDTO;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import steam.jewishs.steamkeysmaven.KeyManager;
@@ -18,18 +20,22 @@ import steam.jewishs.steamkeysmaven.KeyManager;
 
 public class Trade extends javax.swing.JFrame {
     
-    private List<KeyDTO> keys;
+    private List<KeyDTO> keys = new ArrayList();
     DefaultTableModel modelotabla;
     DefaultTableModel modeloitems;
-    private List<Object[]> Items;
+    DefaultListModel modelolista;
+    private List<Object[]> Items = new ArrayList();
     
     public void setKeys(List<KeyDTO> keys){
         this.keys = keys;
+        ReloadTable();
     }
     private void ReloadTable(){
         ListVMRTable();
+        ListItems();
+        ShowKeys();
     }
-    
+
     public Trade() {
         initComponents();
         this.setSize(Inventory.getLastWindow().getSize());
@@ -37,20 +43,50 @@ public class Trade extends javax.swing.JFrame {
         initTrade();
     }
 
-    private void ListITems(){
-
-        //MOPDELO
+    
+    private void ListItems(){
+        //MODELO
         String [] columnames = {"Item","StorePrice","SellPrice"};
         modeloitems = new DefaultTableModel(null,columnames);
         //LLENADO DE LA TABLA
         Iterator iter = Items.iterator();
         while(iter.hasNext()){
-            
+            Object[] row = (Object[]) iter.next();
+            modeloitems.addRow(row);
         }
+    }
+        //MUESTRA LAS LLAVES QUE SE ESTAN TRADEANDO AL MOMENTO
+    private void ShowKeys(){
+        Iterator iter = keys.iterator();
+        modelolista = new DefaultListModel();
+        while(iter.hasNext()){
+            KeyDTO dto = (KeyDTO) iter.next();
+            String datos = String.valueOf(dto.getId()) + "--" + dto.getType();
+            modelolista.addElement(datos);
+        }
+        KeysTradingList.setModel(modelolista);
+    }
+    private long getKeyID(String str){
+        int guion = str.indexOf("-");
+        String id = str.substring( 0,guion);
+        return Long.parseLong(id);
+    }
+    private void DeleteTradingKey(){
+        try {
+            String key = KeysTradingList.getSelectedValue();
+            int index = KeysTradingList.getSelectedIndex();
+            long id = getKeyID(key);
+            keys.remove(index);
+        } catch (Exception ex) {
+            MessageDialog(ex.getMessage());
+        }
+        ReloadTable();
+    }
+    private void AddTradingKey(){
         
     }
     private void MessageDialog(String scr){
-        JOptionPane.showMessageDialog(this, scr);
+        JOptionPane.showMessageDialog(this, scr, "WARNING_MESSAGE", JOptionPane.WARNING_MESSAGE);
     }
     private void initTrade(){
         PriceImput.setText("2.50");
@@ -61,7 +97,7 @@ public class Trade extends javax.swing.JFrame {
         String input = PriceImput.getText(); 
         return KeyManager.numberConvertor(input);
     }
-    private int getSellInput(){
+    private int getSellInput() throws Exception{
         String input = SellPriceImput.getText();
         return KeyManager.numberConvertor(input);
     }
@@ -83,9 +119,6 @@ public class Trade extends javax.swing.JFrame {
         } catch (Exception ex) {
             MessageDialog(ex.getMessage());
         }
-
-            
-     
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -103,14 +136,18 @@ public class Trade extends javax.swing.JFrame {
         SellPriceImput = new javax.swing.JTextField();
         AddButton = new javax.swing.JButton();
         BalanceImput = new javax.swing.JTextField();
-        ListScroll = new javax.swing.JScrollPane();
-        TradeListTable = new javax.swing.JTable();
+        ItemsScroll = new javax.swing.JScrollPane();
+        ItemsTable = new javax.swing.JTable();
         BackButton = new javax.swing.JButton();
         TradeButton = new javax.swing.JButton();
         BalanceTittle = new javax.swing.JLabel();
         ReloadButton = new javax.swing.JButton();
-        DeleteButton = new javax.swing.JButton();
+        DeleteItemButton = new javax.swing.JButton();
         PriceImput = new javax.swing.JTextField();
+        ScrollKeys = new javax.swing.JScrollPane();
+        KeysTradingList = new javax.swing.JList<>();
+        DeleteKeyButton = new javax.swing.JButton();
+        AddKeyButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -149,7 +186,7 @@ public class Trade extends javax.swing.JFrame {
         BalanceImput.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         BalanceImput.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
 
-        TradeListTable.setModel(new javax.swing.table.DefaultTableModel(
+        ItemsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
                 {},
@@ -160,8 +197,8 @@ public class Trade extends javax.swing.JFrame {
 
             }
         ));
-        TradeListTable.setFocusable(false);
-        ListScroll.setViewportView(TradeListTable);
+        ItemsTable.setFocusable(false);
+        ItemsScroll.setViewportView(ItemsTable);
 
         BackButton.setText("Back");
         BackButton.setFocusable(false);
@@ -186,13 +223,39 @@ public class Trade extends javax.swing.JFrame {
             }
         });
 
-        DeleteButton.setText("Delete");
-        DeleteButton.setFocusable(false);
+        DeleteItemButton.setText("Delete Item");
+        DeleteItemButton.setFocusable(false);
+        DeleteItemButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DeleteItemButtonActionPerformed(evt);
+            }
+        });
 
         PriceImput.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         PriceImput.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 PriceImputActionPerformed(evt);
+            }
+        });
+
+        KeysTradingList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        KeysTradingList.setFocusable(false);
+        ScrollKeys.setViewportView(KeysTradingList);
+
+        DeleteKeyButton.setFont(new java.awt.Font("Tahoma", 1, 10)); // NOI18N
+        DeleteKeyButton.setText("X");
+        DeleteKeyButton.setFocusable(false);
+        DeleteKeyButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DeleteKeyButtonActionPerformed(evt);
+            }
+        });
+
+        AddKeyButton.setText("Add");
+        AddKeyButton.setFocusable(false);
+        AddKeyButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddKeyButtonActionPerformed(evt);
             }
         });
 
@@ -204,81 +267,98 @@ public class Trade extends javax.swing.JFrame {
                 .addGap(49, 49, 49)
                 .addComponent(TradeTittle)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(PriceTittle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(PriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(172, 172, 172)
                 .addComponent(BackButton)
                 .addGap(60, 60, 60))
             .addGroup(layout.createSequentialGroup()
+                .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(VmrScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(22, Short.MAX_VALUE)
-                        .addComponent(VmrScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(34, 34, 34))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(75, 75, 75)
-                        .addComponent(PriceTittle)
+                        .addComponent(ScrollKeys, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(PriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(DeleteKeyButton)
+                            .addComponent(AddKeyButton))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(ReloadButton)
-                        .addGap(302, 302, 302))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(BalanceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(90, 90, 90)
-                            .addComponent(TradeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(BalanceTittle)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(DeleteButton))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                            .addComponent(SellPriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGap(28, 28, 28))
-                                        .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(SellPriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(28, 28, 28))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(AddButton)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                    .addComponent(ListScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGap(22, 22, 22)))))
+                                            .addComponent(ReloadButton))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addComponent(ItemsScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(DeleteItemButton)))
+                        .addGap(22, 22, 22))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(BalanceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(90, 90, 90)
+                                .addComponent(TradeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(BalanceTittle, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(15, Short.MAX_VALUE)
-                .addComponent(TradeTittle)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(PriceTittle)
-                    .addComponent(ReloadButton)
-                    .addComponent(PriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 30, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(ListScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(TradeTittle)
+                        .addGap(9, 9, 9))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(37, 37, 37)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(BackButton)
+                            .addComponent(PriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(PriceTittle))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(DeleteButton, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(BalanceTittle, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(21, 21, 21)
+                                .addComponent(ItemsScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(1, 1, 1)
+                                .addComponent(ReloadButton)
+                                .addGap(205, 205, 205)
+                                .addComponent(SellPriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(AddButton)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(DeleteItemButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                        .addComponent(BalanceTittle)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(TradeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(BalanceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(33, 33, 33))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(VmrScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(38, 38, 38)
-                .addComponent(BackButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(SellPriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(AddButton)
-                .addGap(223, 223, 223))
+                        .addGap(10, 10, 10)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(ScrollKeys, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(DeleteKeyButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(AddKeyButton)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(VmrScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addGap(53, 53, 53))))
         );
 
         pack();
@@ -291,12 +371,18 @@ public class Trade extends javax.swing.JFrame {
     }//GEN-LAST:event_SellPriceImputActionPerformed
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
-       Inventory.CloseLastWindow();
-       Inventory inventory = (Inventory) Inventory.getLastWindow();
-       inventory.setLocationRelativeTo(this);
-       inventory.ReloadTable();
-       inventory.setVisible(true);
-       dispose();
+       if(Items.isEmpty()){
+//           int confimacion = JOptionPane.showConfirmDialog(this, "confirm");
+           int confirm = JOptionPane.showOptionDialog(this, "You are trading, Are you sure you wanna leave?", "Leaving TradeHelper", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Yes", "No"}, "Yes");
+           if (confirm == 0){
+                Inventory.CloseLastWindow();
+                Inventory inventory = (Inventory) Inventory.getLastWindow();
+                inventory.setLocationRelativeTo(this);
+                inventory.ReloadTable();
+                inventory.setVisible(true);
+                dispose();
+           }
+       }
         // TODO add your handling code here:
     }//GEN-LAST:event_BackButtonActionPerformed
 
@@ -307,6 +393,19 @@ public class Trade extends javax.swing.JFrame {
     private void PriceImputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PriceImputActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_PriceImputActionPerformed
+
+    private void DeleteItemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteItemButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_DeleteItemButtonActionPerformed
+
+    private void DeleteKeyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteKeyButtonActionPerformed
+       DeleteTradingKey();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_DeleteKeyButtonActionPerformed
+
+    private void AddKeyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddKeyButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_AddKeyButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -345,17 +444,21 @@ public class Trade extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AddButton;
+    private javax.swing.JButton AddKeyButton;
     private javax.swing.JButton BackButton;
     private javax.swing.JTextField BalanceImput;
     private javax.swing.JLabel BalanceTittle;
-    private javax.swing.JButton DeleteButton;
-    private javax.swing.JScrollPane ListScroll;
+    private javax.swing.JButton DeleteItemButton;
+    private javax.swing.JButton DeleteKeyButton;
+    private javax.swing.JScrollPane ItemsScroll;
+    private javax.swing.JTable ItemsTable;
+    private javax.swing.JList<String> KeysTradingList;
     private javax.swing.JTextField PriceImput;
     private javax.swing.JLabel PriceTittle;
     private javax.swing.JButton ReloadButton;
+    private javax.swing.JScrollPane ScrollKeys;
     private javax.swing.JTextField SellPriceImput;
     private javax.swing.JButton TradeButton;
-    private javax.swing.JTable TradeListTable;
     private javax.swing.JLabel TradeTittle;
     private javax.swing.JScrollPane VmrScroll;
     private javax.swing.JTable VmrTable;

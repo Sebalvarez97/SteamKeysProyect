@@ -34,7 +34,7 @@ public class Configurations extends javax.swing.JFrame {
     }
     //PERMITE MOSTRAR UNA ALERTA O MENSAJE EN PANTALLA
     private void MessageDialog(String scr){
-        JOptionPane.showMessageDialog(this, scr);
+        JOptionPane.showMessageDialog(this, scr, "WARNING_MESSAGE", JOptionPane.WARNING_MESSAGE);
     }
     
     private void ShowConfiguration(){

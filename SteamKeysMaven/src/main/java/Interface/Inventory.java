@@ -79,7 +79,7 @@ public class Inventory extends javax.swing.JFrame{
     }
     //PERMITE MOSTRAR UNA ALERTA O MENSAJE EN PANTALLA
     private void MessageDialog(String scr){
-        JOptionPane.showMessageDialog(this, scr);
+        JOptionPane.showMessageDialog(this, scr, "WARNING_MESSAGE", JOptionPane.WARNING_MESSAGE);
     }
     //ACTUALIZA EL VALOR DEL SALDO DE STEAM
     private void UpdateSaldo() throws Exception {
@@ -159,11 +159,14 @@ public class Inventory extends javax.swing.JFrame{
         for(int i = 0;i < seleccion.length; i++){
             int index = seleccion[i];
             long id;
+            String type;
             String state;
             id = (long) KeyTable.getValueAt(index, 0);
+            type = (String) KeyTable.getValueAt(index, 1);
             state = (String) KeyTable.getValueAt(index, 3);
             KeyDTO dto = new KeyDTO();
             dto.setState(state);
+            dto.setType(type);
             dto.setId(id);
             keys.add(dto);
         }
@@ -449,8 +452,10 @@ public class Inventory extends javax.swing.JFrame{
              MessageDialog("Select a valid key first");
         }else if(ValidateTradeSelection(keys)) {
             int confirmacion = JOptionPane.showConfirmDialog(this, "This key/s selected will be traded, Are you sure?");
-            if(confirmacion == 0){ 
-                    AddWindow(new Trade());
+            if(confirmacion == 0){
+                    Trade window = new Trade();
+                    window.setKeys(keys);
+                    AddWindow(window);
             }
         }else if(!ValidateTradeSelection(keys)){
             MessageDialog("Invalid selection of keys");
