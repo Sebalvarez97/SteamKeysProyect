@@ -26,7 +26,7 @@ public class Trade extends javax.swing.JFrame {
         this.keys = keys;
     }
     private void ReloadTable(){
-        ListTable();
+        ListVMRTable();
     }
     
     public Trade() {
@@ -52,39 +52,18 @@ public class Trade extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, scr);
     }
     private void initTrade(){
-        initStorePrice();
-        ListTable();
-    }
-        private void initStorePrice(){   
         PriceImput.setText("2.50");
+        ReloadTable();
     }
-        private boolean isNumber(String str) {
-        return (str.matches("[+-]?\\d*(\\.\\d+)?") && str.equals("")==false);
-    }
-    private int numberConvertor(String str){
-        int pointindex = str.indexOf(".");
-        String subcadena = str.substring(pointindex, str.length());
-        if(subcadena.length() >= 3){
-            int finalindex = pointindex +3;
-            str = str.substring(0,finalindex);
-        }else if(subcadena.length() < 3){
-            str = str + "0";
-        }
-        str = str.replace(".", "");
-        return Integer.parseInt(str);
-    }
-        private int getPriceInput() throws Exception{
+
+    private int getPriceInput() throws Exception{
         String input = PriceImput.getText(); 
-        if(isNumber(input)){
-            return numberConvertor(input);
-        }else{
-            throw new Exception("bad enter");
-        }
+        return KeyManager.numberConvertor(input);
     }
-    private void ListTable(){
+    private void ListVMRTable(){
         try {
-            double storeprice = (double) getPriceInput();
-            double keysellprice = (double) KeyManager.sellPrice(KeyManager.findParameter("KeysPrice").getValue());
+            int storeprice = getPriceInput();
+            int keysellprice = KeyManager.sellPrice(KeyManager.findParameter("KeysPrice").getValue());
             int razon;
             razon = (int) (keysellprice/storeprice * 100);
             //MODELO
@@ -97,7 +76,7 @@ public class Trade extends javax.swing.JFrame {
                int calculated = i * razon;
                double c = (double) calculated;
                c = c/10000;
-               calculated = numberConvertor(String.valueOf(c));
+               calculated = KeyManager.numberConvertor(String.valueOf(c));
                c = (double) calculated;
                c = c/100;
                Object[] row = {x,c};

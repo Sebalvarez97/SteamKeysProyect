@@ -151,6 +151,44 @@ public class KeyManager {
         
        return returnated;
     }
+    //DEVUELVE EL VALOR DINERO TOTAL EN STEAM
+    public static int getTotalMoney(){
+        int total = 0;
+        int keycant = KeyCounter();
+        int keyprice = findParameter("KeysPrice").getValue();
+        int saldo = findParameter("Saldo").getValue();
+        total = keycant * keyprice + saldo;
+        return total;
+    }
+    //DEVUELVE TRUE SI LA CADENA INGRESADA ES UN NUMERO, SINO DEVUELVE FALSE
+    public static boolean isNumber(String str) {
+        return (str.matches("[+-]?\\d*(\\.\\d+)?") && str.equals("")==false);
+    }
+    //A PARTIR DE UN STRING DEVUELVE EL ENTERO QUE LE CORRESPONDE CON 2 DECIMALES MAXIMO
+    public static int numberConvertor(String str) throws Exception{
+        if(isNumber(str)){
+            int pointindex = str.indexOf(".");
+        String subcadena = str.substring(pointindex, str.length());
+        if(subcadena.length() >= 3){
+            int finalindex = pointindex +3;
+            str = str.substring(0,finalindex);
+        }else if(subcadena.length() < 3){
+            str = str + "0";
+        }
+        str = str.replace(".", "");
+        return Integer.parseInt(str);
+        }else {
+            throw new Exception("is not a number");
+        }
+    }
+    //LISTA LOS VALORES DE VMR
+//    public static List<Object[]> ListVMR(int storeprice){
+//        
+//        
+//        
+//        
+//    }
+    
     //DEVUELVE UNA LISTA DE LAS LLAVES PARA LA INTERFAZ
     public static List<KeyDTO> ListKeys() throws NonexistentEntityException{
         List<Key> keys = EntityController.ListKeys();

@@ -27,19 +27,17 @@ import steam.jewishs.steamkeysmaven.KeyManager;
 
 public class Inventory extends javax.swing.JFrame{
     
-    DecimalFormat formatter = new DecimalFormat("##.##");
-    DefaultTableModel modelotabla;
+    DefaultTableModel modelotabla; //MODELO PARA LA TABLE DE LLAVES
     //MANEJO DE VENTANAS
     public static List<JFrame> windows = new ArrayList();
     public static JFrame getLastWindow(){
        return windows.get(windows.size()-1);
     }
-    private void initWindows(){
-        windows.add(null);
-    }
+    //ABRE UNA NUEVA VENTANA
     public void OpenWindow(JFrame window){
         windows.add(window);
     }
+    //CIERRA LA ULTIMA VENTANA ABIERTA
     public static void CloseLastWindow(){
         int lastindex = windows.size()-1;
         windows.remove(lastindex);
@@ -49,7 +47,7 @@ public class Inventory extends javax.swing.JFrame{
     public Inventory() {
         initComponents();
         initSaldo();
-        initWindows();
+        OpenWindow(null);
         ReloadTable();
         this.setLocationRelativeTo(getLastWindow());
         OpenWindow(this);
@@ -59,8 +57,7 @@ public class Inventory extends javax.swing.JFrame{
         KeyTable.getTableHeader().setResizingAllowed(false);//DESABILITA LA EDICION DE LAS COLUMNAS
         TableColumn columnaid = KeyTable.getColumn("ID");
         columnaid.setPreferredWidth(40);
-        columnaid.setMaxWidth(100);
-        
+        columnaid.setMaxWidth(100);  
     }
     //RECARGA LA LISTA DE LLAVES
     public void ReloadTable(){
@@ -68,39 +65,23 @@ public class Inventory extends javax.swing.JFrame{
         SetKeyTable();
         SetEstadistics();
     }
-    //INICIALIZA EL SALDO DE STEAM
+    //INICIALIZA EL SALDO DE STEAM CON EL VALOR GUARDADO EN BASE DE DATOS
     private void initSaldo(){
         ParameterDTO dto = KeyManager.findParameter("Saldo");
         double saldo = (double) dto.getValue();
         saldo = saldo/100;
         Balance.setText(String.valueOf(saldo));
     }
-    private boolean isNumber(String str) {
-        return (str.matches("[+-]?\\d*(\\.\\d+)?") && str.equals("")==false);
-    }
-    private int numberConvertor(String str){
-        int pointindex = str.indexOf(".");
-        String subcadena = str.substring(pointindex, str.length());
-        if(subcadena.length() >= 3){
-            int finalindex = pointindex +3;
-            str = str.substring(0,finalindex);
-        }else if(subcadena.length() < 3){
-            str = str + "0";
-        }
-        str = str.replace(".", "");
-        return Integer.parseInt(str);
-    }
+    //DEVUELVE LA ENTRADA DEL JTEXTFIELD DEL SALDO DE STEAM
     private int getBalanceInput() throws Exception{
         String saldo = Balance.getText();
-        if(isNumber(saldo)){
-            return numberConvertor(saldo);  
-        }else{
-            throw new Exception("bad enter");
-        }
-    } 
+        return KeyManager.numberConvertor(saldo);
+    }
+    //PERMITE MOSTRAR UNA ALERTA O MENSAJE EN PANTALLA
     private void MessageDialog(String scr){
         JOptionPane.showMessageDialog(this, scr);
     }
+    //ACTUALIZA EL VALOR DEL SALDO DE STEAM
     private void UpdateSaldo() throws Exception {
         int input = getBalanceInput();
         KeyManager.setValue(new ParameterDTO("Saldo", "",input));
@@ -109,22 +90,16 @@ public class Inventory extends javax.swing.JFrame{
     private void showTotal(){
         try {
             UpdateSaldo();
-            int keycant = KeyManager.KeyCounter();
-            ParameterDTO dto = KeyManager.findParameter("KeysPrice");
-            int price = dto.getValue();
-            dto = KeyManager.findParameter("Saldo");
-            int saldo = dto.getValue();
-            double total = (double) (keycant*price + saldo);
+            double total = (double) KeyManager.getTotalMoney();
             total = total/100;
             TotalTittle.setText("TOTAL   "+ " $ " + Double.toString(total));
         } catch (Exception ex) {
             if (ex.getMessage().equals("bad enter")){
                 initSaldo();
-                MessageDialog("You entered a bad input");
+                MessageDialog("You entered a bad input in balance");
                 ReloadTable();
             }
         }
-        
     }
     //MUESTRA LAS ESTADISTICAS DE LAS LLAVES (CANT TOTAL, TRADEABLES Y NO TRADEABLES, ETC)
     private void SetEstadistics(){
@@ -138,10 +113,10 @@ public class Inventory extends javax.swing.JFrame{
             showTotal();
             
         } catch (NonexistentEntityException ex) {
-            Logger.getLogger(Inventory.class.getName()).log(Level.SEVERE, null, ex);
+            MessageDialog("bad enter estadistics");
         }
     }
-    //CONFIGURA EL MODELO DE LA TABLA DE LLAVES
+    //CONFIGURA EL MODELO DE LA TABLA DE LLAVES Y LAS LISTA
     private void ListTable(){
            try {
             KeyManager.UpdateState();
@@ -154,11 +129,11 @@ public class Inventory extends javax.swing.JFrame{
             //LENADO DEL MODELO DE LA TABLA
             while(iter.hasNext()){
                dto = (KeyDTO) iter.next();
-               String type = dto.getType();
-               String date = KeyManager.SimpleFormatDate(dto.getbuydate());
-               //Date date =dto.getbuydate();
-               String state = dto.getState();
-               String days = "-";
+               if(dto.getState().equals("Tradeable") || dto.getState().equals("Untradeable")){
+                   String type = dto.getType();
+                   String date = KeyManager.SimpleFormatDate(dto.getbuydate());
+                   String state = dto.getState();
+                   String days = "-";
                if(state.equals("Untradeable")){
                    int day = KeyManager.DayDiference(Calendar.getInstance().getTime(), KeyManager.ReleaseDate(dto.getbuydate()));
                    if(day == 0){
@@ -170,13 +145,14 @@ public class Inventory extends javax.swing.JFrame{
                String release = KeyManager.SimpleFormatDate(KeyManager.ReleaseDate(dto.getbuydate()));
                Object[] row = {dto.getId(), type , date , state ,"("+ days + ")"};
                modelotabla.addRow(row);
+               }
             }
             KeyTable.setModel(modelotabla);
         } catch (NonexistentEntityException ex) {
             MessageDialog("The entity does not exist");
         }
     }
-    
+    //DEVUELVE LA LISTA DE LLAVES SELECCIONADAS 
     private List<KeyDTO> getKeySelection(){
         List<KeyDTO> keys = new ArrayList();
         int[] seleccion = KeyTable.getSelectedRows();
@@ -191,16 +167,26 @@ public class Inventory extends javax.swing.JFrame{
             dto.setId(id);
             keys.add(dto);
         }
-        
         return keys;
     }
-
-    //BORRA LA LLAVE SELECCIONADA
+    //VALIDA LA SELECCION PARA TRADEAR
+    private boolean ValidateTradeSelection(List<KeyDTO> list){
+        boolean validation = true;
+        Iterator iter = list.iterator();
+        while(iter.hasNext()){
+            KeyDTO dto = (KeyDTO) iter.next();
+            if(!dto.getState().equals("Tradeable")){
+                validation = false;
+            }
+        }
+        return validation;
+    }
+    //BORRA LAS LLAVES SELECCIONADAS
     private void DeleteKey(){ 
         List<KeyDTO> keys = getKeySelection();
-        if(keys.size() == 0){
+      if(keys.size() == 0){
             MessageDialog("Select a key first");
-        }else{
+      }else{
         int confirmation = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete selected keys?");
         if (confirmation == 0){
            Iterator iter = keys.iterator();
@@ -209,11 +195,16 @@ public class Inventory extends javax.swing.JFrame{
                 KeyManager.DeleteKey(dto);
             }
         }
-        }
-        
+      }
         ReloadTable();
     }
-    
+    //ABRE UNA VENTANA DEL TIPO INGRESADO
+    private void AddWindow(JFrame window){
+        window.setTitle("SteamKeysApp");
+        OpenWindow(window);
+        this.setVisible(false);
+        window.setVisible(true);
+    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -435,13 +426,8 @@ public class Inventory extends javax.swing.JFrame{
 
     private void NewKeyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NewKeyButtonActionPerformed
             
-            AddKey window = new AddKey();
-            window.setTitle("AddKey");
-            OpenWindow(window);
-            this.setVisible(false);
-            window.setVisible(true);
-            
-        
+            AddWindow(new AddKey());
+
               // TODO add your handling code here:
     }//GEN-LAST:event_NewKeyButtonActionPerformed
 
@@ -451,45 +437,24 @@ public class Inventory extends javax.swing.JFrame{
 
     private void ConfigButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfigButtonActionPerformed
         // TODO add your handling code here:
-      Configurations window = new Configurations();
-      window.setTitle("Configurations");
-      OpenWindow(window);
-      this.setVisible(false);
-      window.setVisible(true);
+      AddWindow(new Configurations());
       
     }//GEN-LAST:event_ConfigButtonActionPerformed
 
-    private boolean ValidateKeySelection(List<KeyDTO> list){
-        boolean validation = true;
-        List<KeyDTO> keys = list;
-        Iterator iter = keys.iterator();
-        while(iter.hasNext()){
-            KeyDTO dto = (KeyDTO) iter.next();;
-            if(!dto.getState().equals("Tradeable")){
-                validation = false;
-            }
-        }
-        return validation;
-    }
+
     
     private void TradeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TradeButtonActionPerformed
-
         List<KeyDTO> keys = getKeySelection();
         if(keys.size() == 0){
              MessageDialog("Select a valid key first");
-        }else if(ValidateKeySelection(keys)) {
+        }else if(ValidateTradeSelection(keys)) {
             int confirmacion = JOptionPane.showConfirmDialog(this, "This key/s selected will be traded, Are you sure?");
             if(confirmacion == 0){ 
-                    Trade window = new Trade();
-                    window.setTitle("TradeHelper");
-                    OpenWindow(window);
-                    this.setVisible(false);
-                    window.setKeys(keys);
-                    window.setVisible(true);}
-        }else if(!ValidateKeySelection(keys)){
+                    AddWindow(new Trade());
+            }
+        }else if(!ValidateTradeSelection(keys)){
             MessageDialog("Invalid selection of keys");
         }
-     
         ReloadTable();
         // TODO add your handling code here:
     }//GEN-LAST:event_TradeButtonActionPerformed
