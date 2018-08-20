@@ -8,6 +8,7 @@ package Interface;
 import TransporterUnits.KeyDTO;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -60,32 +61,31 @@ public class Trade extends javax.swing.JFrame {
         String input = PriceImput.getText(); 
         return KeyManager.numberConvertor(input);
     }
+    private int getSellInput(){
+        String input = SellPriceImput.getText();
+        return KeyManager.numberConvertor(input);
+    }
     private void ListVMRTable(){
+    
         try {
-            int storeprice = getPriceInput();
-            int keysellprice = KeyManager.sellPrice(KeyManager.findParameter("KeysPrice").getValue());
-            int razon;
-            razon = (int) (keysellprice/storeprice * 100);
             //MODELO
             String[] columnames = {"Store Price","VMR"}; 
             modelotabla = new DefaultTableModel(null, columnames);
             //LLENADO DE LA TABLA
-            for(int i = 5; i < 1000; i++){
-               double x = (double) i;
-               x = x/100;
-               int calculated = i * razon;
-               double c = (double) calculated;
-               c = c/10000;
-               calculated = KeyManager.numberConvertor(String.valueOf(c));
-               c = (double) calculated;
-               c = c/100;
-               Object[] row = {x,c};
-               modelotabla.addRow(row);
+            double input = (double) getPriceInput();
+            List<Object[]> VMRlist = KeyManager.ListVMR(input);
+            Iterator iter = VMRlist.iterator();
+            while(iter.hasNext()){
+                modelotabla.addRow((Object[]) iter.next());
             }
-           VmrTable.setModel(modelotabla);
+            VmrTable.setModel(modelotabla);
+            
         } catch (Exception ex) {
-            MessageDialog("Failed. Bad enter");
+            MessageDialog(ex.getMessage());
         }
+
+            
+     
     }
     /**
      * This method is called from within the constructor to initialize the form.

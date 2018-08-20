@@ -182,12 +182,24 @@ public class KeyManager {
         }
     }
     //LISTA LOS VALORES DE VMR
-//    public static List<Object[]> ListVMR(int storeprice){
-//        
-//        
-//        
-//        
-//    }
+    public static List<Object[]> ListVMR(double storeprice) throws Exception{
+        double keysellprice = (double) sellPrice(findParameter("KeysPrice").getValue());
+        int razon = (int) (keysellprice/storeprice * 100);
+        List<Object[]> VMRlist = new ArrayList();
+        for(int i = 5; i<=1001; i++){
+            double x = (double) i;
+            x = x/100;
+            int calculated = i *razon;
+            double c = (double) calculated;
+            c = c/10000;
+            calculated = numberConvertor(String.valueOf(c));
+            c = (double) calculated;
+            c = c/100;
+            Object[] row = {x,c};
+            VMRlist.add(row);
+        }
+        return VMRlist;
+    }
     
     //DEVUELVE UNA LISTA DE LAS LLAVES PARA LA INTERFAZ
     public static List<KeyDTO> ListKeys() throws NonexistentEntityException{
