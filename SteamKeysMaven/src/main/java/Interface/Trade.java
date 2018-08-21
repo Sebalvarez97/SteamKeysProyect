@@ -29,15 +29,6 @@ public class Trade extends javax.swing.JFrame {
     DefaultListModel modelolista;
     private List<Object[]> Items = new ArrayList();
     
-    public void setKeys(List<KeyDTO> keys){
-        this.keys = keys;
-        ReloadTable();
-    }
-    private void ReloadTable(){
-        ListVMRTable();
-        ListItems();
-        ShowKeys();
-    }
 
     public Trade() {
         initComponents();
@@ -45,6 +36,35 @@ public class Trade extends javax.swing.JFrame {
         this.setLocationRelativeTo(Inventory.getLastWindow()); 
         initTrade();
     }
+    //SET DE LA VARIABLE
+    public void setKeys(List<KeyDTO> keys){
+        this.keys = keys;
+        ReloadTable();
+    }
+    //RECARGA LAS TABLAS Y OTROS
+    private void ReloadTable(){
+        ListVMRTable();
+        ListItems();
+        ShowKeys();
+    }
+    //CREA UN TRADE CON LOS VALORES INGRESADOS
+    private void AddNewTrade(){
+        
+    }
+        //INICIALIZA LAS TABLAS PARA EL TRADE
+    private void initTrade(){
+        PriceImput.setText("2.50");
+        SellPriceInput.setText("0.00");
+        BalanceInput.setText("0.00");
+        ItemsTable.getTableHeader().setResizingAllowed(false);
+        VmrTable.getTableHeader().setResizingAllowed(false);
+        ReloadTable();
+    }
+    //MUESTRA UN MENSAJE DE ADVERTENCIA EN PANTALLA
+     private void MessageDialog(String scr){
+        JOptionPane.showMessageDialog(this, scr, "WARNING_MESSAGE", JOptionPane.WARNING_MESSAGE);
+    }
+
     //MUESTRA LA LISTA DE ITEMS AGREGADOS
     private void ListItems(){
         //MODELO
@@ -61,6 +81,7 @@ public class Trade extends javax.swing.JFrame {
         columnaid.setPreferredWidth(40);
         columnaid.setMaxWidth(100);
     }
+    //AGREGA UN ITEM A LA LISTA DE ITEMS
     private void AddItem(){
         try {
             String sellprice = KeyManager.numberConvertor(KeyManager.numberConvertor(SellPriceInput.getText()));
@@ -71,7 +92,6 @@ public class Trade extends javax.swing.JFrame {
                 String storeprice = String.valueOf(VmrTable.getValueAt(index, 0));
                 Object[] row ={Items.size()+1,storeprice, sellprice};
                 Items.add(row);
-                modeloitems.addRow(row);
             }else if(KeyManager.numberConvertor(sellprice) == 0){
                 throw new Exception("You did not enter a sell price");
             }
@@ -81,15 +101,19 @@ public class Trade extends javax.swing.JFrame {
         }
         ReloadTable();
     }
+    //ELIMINA UN ITEM DE LA LISTA DE ITEMS
     private void DeleteItem(){
             int[] seleccion = ItemsTable.getSelectedRows();
             if(seleccion.length != 0){
-                for(int i = 0; i <seleccion.length; i++){
-                int index = seleccion[i];
-                Items.remove(i);
+                int confirm = JOptionPane.showOptionDialog(this, "Are you sure?", "Errase Alert", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Yes", "No"}, "Yes");
+                if(confirm == 0){
+                     for(int i = 0; i <seleccion.length; i++){
+                        int index = seleccion[i];
+                        Items.remove(i);
+                }
             }
             }else{
-                 MessageDialog("Select a key first");
+                 MessageDialog("Select an item first");
             }
                
             ReloadTable();
@@ -148,18 +172,7 @@ public class Trade extends javax.swing.JFrame {
         }
         ReloadTable();
     }
-    //MUESTRA UN MENSAJE EN PANTALLA
-    private void MessageDialog(String scr){
-        JOptionPane.showMessageDialog(this, scr, "WARNING_MESSAGE", JOptionPane.WARNING_MESSAGE);
-    }
-    //INICIALIZA LAS TABLAS PARA EL TRADE
-    private void initTrade(){
-        PriceImput.setText("2.50");
-        SellPriceInput.setText("0.00");
-        ItemsTable.getTableHeader().setResizingAllowed(false);
-        VmrTable.getTableHeader().setResizingAllowed(false);
-        ReloadTable();
-    }
+ 
     //DEVUELVE EL PRECIO INGRESADO
     private int getPriceInput() throws Exception{
         String input = PriceImput.getText(); 
@@ -168,6 +181,10 @@ public class Trade extends javax.swing.JFrame {
     //DEVUELVE EL PRECIO INGRESADO
     private int getSellInput() throws Exception{
         String input = SellPriceInput.getText();
+        return KeyManager.numberConvertor(input);
+    }
+    private int getBalanceInput() throws Exception{
+        String input = BalanceInput.getText();
         return KeyManager.numberConvertor(input);
     }
     //MUESTRA LA LISTA DE VMR
@@ -203,7 +220,7 @@ public class Trade extends javax.swing.JFrame {
         VmrTable = new javax.swing.JTable();
         SellPriceInput = new javax.swing.JTextField();
         AddButton = new javax.swing.JButton();
-        BalanceImput = new javax.swing.JTextField();
+        BalanceInput = new javax.swing.JTextField();
         ItemsScroll = new javax.swing.JScrollPane();
         ItemsTable = new javax.swing.JTable();
         BackButton = new javax.swing.JButton();
@@ -256,8 +273,8 @@ public class Trade extends javax.swing.JFrame {
             }
         });
 
-        BalanceImput.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        BalanceImput.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        BalanceInput.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        BalanceInput.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
 
         ItemsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -376,7 +393,7 @@ public class Trade extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(BalanceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(BalanceInput, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(90, 90, 90)
                                 .addComponent(TradeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(BalanceTittle, javax.swing.GroupLayout.Alignment.LEADING))
@@ -417,7 +434,7 @@ public class Trade extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(TradeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(BalanceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(BalanceInput, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(33, 33, 33))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(10, 10, 10)
@@ -490,7 +507,7 @@ public class Trade extends javax.swing.JFrame {
     private javax.swing.JButton AddButton;
     private javax.swing.JButton AddKeyButton;
     private javax.swing.JButton BackButton;
-    private javax.swing.JTextField BalanceImput;
+    private javax.swing.JTextField BalanceInput;
     private javax.swing.JLabel BalanceTittle;
     private javax.swing.JButton DeleteItemButton;
     private javax.swing.JButton DeleteKeyButton;

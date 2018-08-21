@@ -13,6 +13,7 @@ import Interface.Inventory;
 import Model.Key;
 import Model.KeyState;
 import Model.KeyType;
+import Model.SteamItem;
 import Model.SteamParameters;
 import Model.Trade;
 import TransporterUnits.*;
@@ -204,6 +205,42 @@ public class KeyManager {
                         return numberConvertor(str + ".00");
                 }
          return 0;
+    }
+    //CAMBIA EL ESTADO DE LA KEY
+    private static Key ChangeState(Key k, String state){
+        KeyState ks = EntityController.find(new KeyState(state));
+        k.setKeyState(ks);
+        return k;
+    }
+    //LISTA LOS STEAMITEMS A PARTIR DE UNA MATRIZ DE PRECIOS
+    private static List<SteamItem> ListSteamItems(List<Object[]> list) throws Exception{
+        List<SteamItem> ret = new ArrayList();
+        Iterator iter = list.iterator();
+        while(iter.hasNext()){
+            Object[] listelement = (Object[]) iter.next();
+            Iterator iter2 = list.iterator();
+            int storeprice = numberConvertor(String.valueOf(listelement[1]));
+            int sellprice = numberConvertor(String.valueOf(listelement[2]));
+            int cant = 0;
+            while(iter2.hasNext()){
+                Object[] acomparar = (Object[]) iter2.next();
+                if(listelement[1] == acomparar[1] && listelement[2]== acomparar[2]){
+                    cant++;
+                    int index = list.indexOf(acomparar);
+                    list.remove(index);
+                }
+            }
+            SteamItem item = new SteamItem();
+            item.setCant(cant);
+            item.setStoreprice(storeprice);
+            item.setSellprice(sellprice);
+            ret.add(item);
+        }
+        return ret;
+    }
+    //CREA UN NUEVO TRADE EN BASE DE DATOS
+    public static void EnterTrade(List<KeyDTO> keys, List<Object[]> items, int storeprice, int balance){
+        
     }
     //DEVUELVE TRUE SI LA LLAVE SE ENCUENTRA EN LA LISTA
     public static boolean keyInTheList(KeyDTO dto, List<KeyDTO> list){
