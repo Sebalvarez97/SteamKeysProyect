@@ -16,7 +16,9 @@ import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import steam.jewishs.steamkeysmaven.KeyManager;
+import static steam.jewishs.steamkeysmaven.KeyManager.numberConvertor;
 
 
 public class Trade extends javax.swing.JFrame {
@@ -43,8 +45,7 @@ public class Trade extends javax.swing.JFrame {
         this.setLocationRelativeTo(Inventory.getLastWindow()); 
         initTrade();
     }
-
-    
+    //MUESTRA LA LISTA DE ITEMS AGREGADOS
     private void ListItems(){
         //MODELO
         String [] columnames = {"Item","StorePrice","SellPrice"};
@@ -55,8 +56,45 @@ public class Trade extends javax.swing.JFrame {
             Object[] row = (Object[]) iter.next();
             modeloitems.addRow(row);
         }
+        ItemsTable.setModel(modeloitems);
+        TableColumn columnaid = ItemsTable.getColumn("Item");
+        columnaid.setPreferredWidth(40);
+        columnaid.setMaxWidth(100);
     }
-        //MUESTRA LAS LLAVES QUE SE ESTAN TRADEANDO AL MOMENTO
+    private void AddItem(){
+        try {
+            String sellprice = KeyManager.numberConvertor(KeyManager.numberConvertor(SellPriceInput.getText()));
+            int index = VmrTable.getSelectedRow();
+            if(index == -1){
+                throw new Exception("You did not select a value");
+            }else if(KeyManager.numberConvertor(sellprice) != 0){
+                String storeprice = String.valueOf(VmrTable.getValueAt(index, 0));
+                Object[] row ={Items.size()+1,storeprice, sellprice};
+                Items.add(row);
+                modeloitems.addRow(row);
+            }else if(KeyManager.numberConvertor(sellprice) == 0){
+                throw new Exception("You did not enter a sell price");
+            }
+            ItemsTable.setModel(modeloitems);
+        } catch (Exception ex) {
+            MessageDialog(ex.getMessage());
+        }
+        ReloadTable();
+    }
+    private void DeleteItem(){
+            int[] seleccion = ItemsTable.getSelectedRows();
+            if(seleccion.length != 0){
+                for(int i = 0; i <seleccion.length; i++){
+                int index = seleccion[i];
+                Items.remove(i);
+            }
+            }else{
+                 MessageDialog("Select a key first");
+            }
+               
+            ReloadTable();
+    }
+    //MUESTRA LAS LLAVES QUE SE ESTAN TRADEANDO AL MOMENTO
     private void ShowKeys(){
         Iterator iter = keys.iterator();
         modelolista = new DefaultListModel();
@@ -67,11 +105,13 @@ public class Trade extends javax.swing.JFrame {
         }
         KeysTradingList.setModel(modelolista);
     }
+    //DEVUELVE EL ID DE LA KEY
     private long getKeyID(String str){
         int guion = str.indexOf("-");
         String id = str.substring( 0,guion);
         return Long.parseLong(id);
     }
+    //BORRA LA KEY SELECCIONADA
     private void DeleteTradingKey(){
         try {
             String key = KeysTradingList.getSelectedValue();
@@ -83,6 +123,7 @@ public class Trade extends javax.swing.JFrame {
         }
         ReloadTable();
     }
+    //AGREGA UNA LLAVE AL TRADE
     private void AddTradingKey(){
         try {
             List<KeyDTO> missing = KeyManager.getmissingKeys(keys);
@@ -107,24 +148,30 @@ public class Trade extends javax.swing.JFrame {
         }
         ReloadTable();
     }
+    //MUESTRA UN MENSAJE EN PANTALLA
     private void MessageDialog(String scr){
         JOptionPane.showMessageDialog(this, scr, "WARNING_MESSAGE", JOptionPane.WARNING_MESSAGE);
     }
+    //INICIALIZA LAS TABLAS PARA EL TRADE
     private void initTrade(){
         PriceImput.setText("2.50");
+        SellPriceInput.setText("0.00");
+        ItemsTable.getTableHeader().setResizingAllowed(false);
+        VmrTable.getTableHeader().setResizingAllowed(false);
         ReloadTable();
     }
-
+    //DEVUELVE EL PRECIO INGRESADO
     private int getPriceInput() throws Exception{
         String input = PriceImput.getText(); 
         return KeyManager.numberConvertor(input);
     }
+    //DEVUELVE EL PRECIO INGRESADO
     private int getSellInput() throws Exception{
-        String input = SellPriceImput.getText();
+        String input = SellPriceInput.getText();
         return KeyManager.numberConvertor(input);
     }
+    //MUESTRA LA LISTA DE VMR
     private void ListVMRTable(){
-    
         try {
             //MODELO
             String[] columnames = {"Store Price","VMR"}; 
@@ -137,16 +184,15 @@ public class Trade extends javax.swing.JFrame {
                 modelotabla.addRow((Object[]) iter.next());
             }
             VmrTable.setModel(modelotabla);
+            TableColumn columnaid = VmrTable.getColumn("Store Price");
+            columnaid.setPreferredWidth(80);
+            columnaid.setMaxWidth(100);
             
         } catch (Exception ex) {
             MessageDialog(ex.getMessage());
         }
     }
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -155,7 +201,7 @@ public class Trade extends javax.swing.JFrame {
         TradeTittle = new javax.swing.JLabel();
         VmrScroll = new javax.swing.JScrollPane();
         VmrTable = new javax.swing.JTable();
-        SellPriceImput = new javax.swing.JTextField();
+        SellPriceInput = new javax.swing.JTextField();
         AddButton = new javax.swing.JButton();
         BalanceImput = new javax.swing.JTextField();
         ItemsScroll = new javax.swing.JScrollPane();
@@ -195,15 +241,20 @@ public class Trade extends javax.swing.JFrame {
         VmrTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         VmrScroll.setViewportView(VmrTable);
 
-        SellPriceImput.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        SellPriceImput.addActionListener(new java.awt.event.ActionListener() {
+        SellPriceInput.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        SellPriceInput.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SellPriceImputActionPerformed(evt);
+                SellPriceInputActionPerformed(evt);
             }
         });
 
         AddButton.setText(">>>");
         AddButton.setFocusable(false);
+        AddButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddButtonActionPerformed(evt);
+            }
+        });
 
         BalanceImput.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         BalanceImput.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
@@ -305,24 +356,22 @@ public class Trade extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(DeleteKeyButton)
                             .addComponent(AddKeyButton))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(SellPriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(28, 28, 28))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(AddButton)
-                                            .addComponent(ReloadButton))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                .addComponent(ItemsScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(DeleteItemButton)))
+                                .addComponent(DeleteItemButton))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(ReloadButton)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(10, 10, 10)
+                                        .addComponent(AddButton))
+                                    .addComponent(SellPriceInput, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
+                                .addComponent(ItemsScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(22, 22, 22))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -357,9 +406,9 @@ public class Trade extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(1, 1, 1)
                                 .addComponent(ReloadButton)
-                                .addGap(205, 205, 205)
-                                .addComponent(SellPriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
+                                .addGap(217, 217, 217)
+                                .addComponent(SellPriceInput, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(AddButton)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(DeleteItemButton)
@@ -388,12 +437,12 @@ public class Trade extends javax.swing.JFrame {
 
     
     
-    private void SellPriceImputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SellPriceImputActionPerformed
+    private void SellPriceInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SellPriceInputActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_SellPriceImputActionPerformed
+    }//GEN-LAST:event_SellPriceInputActionPerformed
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
-       if(Items.isEmpty()){
+        if(!Items.isEmpty()){
 //           int confimacion = JOptionPane.showConfirmDialog(this, "confirm");
            int confirm = JOptionPane.showOptionDialog(this, "You are trading, Are you sure you wanna leave?", "Leaving TradeHelper", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Yes", "No"}, "Yes");
            if (confirm == 0){
@@ -417,7 +466,7 @@ public class Trade extends javax.swing.JFrame {
     }//GEN-LAST:event_PriceImputActionPerformed
 
     private void DeleteItemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteItemButtonActionPerformed
-        // TODO add your handling code here:
+      DeleteItem();  // TODO add your handling code here:
     }//GEN-LAST:event_DeleteItemButtonActionPerformed
 
     private void DeleteKeyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteKeyButtonActionPerformed
@@ -430,40 +479,12 @@ public class Trade extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_AddKeyButtonActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-//    public static void main(String args[]) {
-//        /* Set the Nimbus look and feel */
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-//         */
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(Trade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(Trade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(Trade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(Trade.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        //</editor-fold>
-//
-//        /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new Trade().setVisible(true);
-//            }
-//        });
-//    }
+    private void AddButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddButtonActionPerformed
+        AddItem();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_AddButtonActionPerformed
+
+  
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AddButton;
@@ -480,7 +501,7 @@ public class Trade extends javax.swing.JFrame {
     private javax.swing.JLabel PriceTittle;
     private javax.swing.JButton ReloadButton;
     private javax.swing.JScrollPane ScrollKeys;
-    private javax.swing.JTextField SellPriceImput;
+    private javax.swing.JTextField SellPriceInput;
     private javax.swing.JButton TradeButton;
     private javax.swing.JLabel TradeTittle;
     private javax.swing.JScrollPane VmrScroll;

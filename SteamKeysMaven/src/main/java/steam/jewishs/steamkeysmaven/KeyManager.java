@@ -176,22 +176,34 @@ public class KeyManager {
     public static boolean isNumber(String str) {
         return (str.matches("[+-]?\\d*(\\.\\d+)?") && str.equals("")==false);
     }
+    public static String numberConvertor(int i){
+        double x = (double) i;
+        x = x/100;
+        return String.valueOf(x);
+    }
     //A PARTIR DE UN STRING DEVUELVE EL ENTERO QUE LE CORRESPONDE CON 2 DECIMALES MAXIMO
     public static int numberConvertor(String str) throws Exception{
-        if(isNumber(str)){
             int pointindex = str.indexOf(".");
-        String subcadena = str.substring(pointindex, str.length());
-        if(subcadena.length() >= 3){
-            int finalindex = pointindex +3;
-            str = str.substring(0,finalindex);
-        }else if(subcadena.length() < 3){
-            str = str + "0";
-        }
-        str = str.replace(".", "");
-        return Integer.parseInt(str);
-        }else {
-            throw new Exception("is not a number");
-        }
+                if(pointindex != -1){
+                    if(isNumber(str)){
+                        String subcadena = str.substring(pointindex, str.length());
+                        if(subcadena.length() >= 3){
+                            int finalindex = pointindex +3;
+                            str = str.substring(0,finalindex);
+                            str = str.replace(".", "");
+                            return Integer.parseInt(str);
+                        }else if(subcadena.length() < 3){
+    //                      str = str + "0";
+                            return numberConvertor(str + "0");
+                        }
+           
+                    }else{
+                        throw new Exception("is not a number");
+                    }
+                }else{
+                        return numberConvertor(str + ".00");
+                }
+         return 0;
     }
     //DEVUELVE TRUE SI LA LLAVE SE ENCUENTRA EN LA LISTA
     public static boolean keyInTheList(KeyDTO dto, List<KeyDTO> list){

@@ -83,8 +83,12 @@ public class Inventory extends javax.swing.JFrame{
     }
     //ACTUALIZA EL VALOR DEL SALDO DE STEAM
     private void UpdateSaldo() throws Exception {
-        int input = getBalanceInput();
-        KeyManager.setValue(new ParameterDTO("Saldo", "",input));
+        try{
+            int input = getBalanceInput();
+            KeyManager.setValue(new ParameterDTO("Saldo", "",input));
+        }catch(Exception ex){
+            throw new Exception("bad enter");
+        }
     }
     //MUESTRA EL TOTAL EN PESOS
     private void showTotal(){
