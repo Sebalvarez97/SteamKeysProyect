@@ -6,8 +6,10 @@
 package Model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -37,21 +39,20 @@ public class Trade implements Serializable {
     @Column(name = "priceinstore")
     private int priceinstore;
     
-    @OneToMany
-    @JoinColumn(name = "items")
-    private List<SteamItem> items;
+    @Column(name = "ganancia")
+    private int ganancia;
     
     @Column(name = "balancestore")
     private int balancestore;
     
-    @OneToMany
-    @JoinColumn(name = "keytraded")
-    private List <Key> keytraded;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "key_id")
+    private List <Key> keytraded = new ArrayList();
 
-    public Trade(Date dateoftrade, int priceinstore, List<SteamItem> items, int balancestore, List<Key> keytraded) {
+    public Trade(Date dateoftrade, int priceinstore, int ganancia, int balancestore, List<Key> keytraded) {
         this.dateoftrade = dateoftrade;
         this.priceinstore = priceinstore;
-        this.items = items;
+        this.ganancia = ganancia;
         this.balancestore = balancestore;
         this.keytraded = keytraded;
     }
@@ -63,12 +64,12 @@ public class Trade implements Serializable {
         this.dateoftrade = dateoftrade;
     }
     
-    
-    
     public Long getId() {
         return id;
     }
-
+    public int getGanancia(){
+        return ganancia;
+    }
     public void setId(Long id) {
         this.id = id;
     }
@@ -76,13 +77,6 @@ public class Trade implements Serializable {
     public void AddKey(Key k){
         this.keytraded.add(k);
     }    
-    public void AddItem(SteamItem i){
-        this.items.add(i);
-    }
-
-    public void setItems(List<SteamItem> items) {
-        this.items = items;
-    }
 
     public void setKeytraded(List<Key> keytraded) {
         this.keytraded = keytraded;
@@ -100,8 +94,8 @@ public class Trade implements Serializable {
         return priceinstore;
     }
 
-    public List<SteamItem> getItems() {
-        return items;
+    public void setGanancia(int ganancia){
+        this.ganancia = ganancia;
     }
 
     public int getBalancestore() {

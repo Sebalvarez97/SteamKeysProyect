@@ -56,7 +56,7 @@ public class KeyManager {
         }
     }
     //DEVUELVE LA LLAVE SEGUN EL ID INGRESADO EN EL KEYDTO PATRON
-    public static KeyDTO getKey(KeyDTO patron) throws NonexistentEntityException{
+    public static KeyDTO getKeyDTO(KeyDTO patron) throws NonexistentEntityException{
         KeyDTO ret = null;
         Iterator iter = ListKeys().iterator();
         while(iter.hasNext()){
@@ -66,6 +66,12 @@ public class KeyManager {
             }
         }
         return ret;
+    }
+    private static Key getKey(KeyDTO patron) throws NonexistentEntityException{
+        Key k = new Key();
+        k.setId(patron.getId());
+        Key key = EntityController.find(k);
+        return key;
     }
 //BORRA LA KEY
     public static void DeleteKey(KeyDTO ktu){
@@ -80,7 +86,7 @@ public class KeyManager {
     //DEVUELVE SI ES TRADEABLE LA LLAVE
     private static boolean isTradeable(Key key){
         Date datenow = Calendar.getInstance().getTime();
-        datenow = ConvertDate(datenow);
+//        datenow = ConvertDate(datenow);
         Date release = ReleaseDate(key.getBuyDate());
         if(datenow.after(release)){
             return true;
@@ -105,10 +111,12 @@ public class KeyManager {
             Iterator iter = keys.iterator();
             while(iter.hasNext()){
                 key = (Key) iter.next();
-                if(isTradeable(key)){
-                    key.setKeyState(EntityController.find(new KeyState("Tradeable")));
-                    EntityController.Edit(key);
-                }               
+                if(key.getKeyState().getStateDescription().equals("Untradeable")){
+                    if(isTradeable(key)){
+                        key.setKeyState(EntityController.find(new KeyState("Tradeable")));
+                        EntityController.Edit(key);
+                    }   
+                }            
             }
         } catch (NonexistentEntityException ex) {
             Logger.getLogger(KeyManager.class.getName()).log(Level.SEVERE, null, ex);
@@ -165,9 +173,9 @@ public class KeyManager {
        return returnated;
     }
     //DEVUELVE EL VALOR DINERO TOTAL EN STEAM
-    public static int getTotalMoney(){
+    public static int getTotalMoney() throws NonexistentEntityException{
         int total = 0;
-        int keycant = KeyCounter();
+        int keycant = CantWithState(new TypeStateDTO("Tradeable")) + CantWithState(new TypeStateDTO("Untradeable"));
         int keyprice = findParameter("KeysPrice").getValue();
         int saldo = findParameter("Saldo").getValue();
         total = keycant * keyprice + saldo;
@@ -212,24 +220,16 @@ public class KeyManager {
         k.setKeyState(ks);
         return k;
     }
-    //LISTA LOS STEAMITEMS A PARTIR DE UNA MATRIZ DE PRECIOS
-    private static List<SteamItem> ListSteamItems(List<Object[]> list) throws Exception{
+    //LISTA LOS STEAMITEMS A PARTIR DE UNA MATRIZ DE PRECIOS //FALLA//NO USAR HASTA ARREGLAR
+    private static List<SteamItem> ListSteamItems(List<Object[]> list) throws Exception {
         List<SteamItem> ret = new ArrayList();
+        List<Object[]> list2 = list; 
         Iterator iter = list.iterator();
         while(iter.hasNext()){
             Object[] listelement = (Object[]) iter.next();
-            Iterator iter2 = list.iterator();
             int storeprice = numberConvertor(String.valueOf(listelement[1]));
             int sellprice = numberConvertor(String.valueOf(listelement[2]));
-            int cant = 0;
-            while(iter2.hasNext()){
-                Object[] acomparar = (Object[]) iter2.next();
-                if(listelement[1] == acomparar[1] && listelement[2]== acomparar[2]){
-                    cant++;
-                    int index = list.indexOf(acomparar);
-                    list.remove(index);
-                }
-            }
+            int cant = 1;
             SteamItem item = new SteamItem();
             item.setCant(cant);
             item.setStoreprice(storeprice);
@@ -238,9 +238,49 @@ public class KeyManager {
         }
         return ret;
     }
+    //DEVUELVE EL VALOR DE GANANCIA DE UN TRADE
+    private static int getGanancia(List<Object[]> list) throws Exception{
+        int ganancia = 0;
+        Iterator iter = list.iterator();
+        while(iter.hasNext()){
+            Object[] listelement = (Object[]) iter.next();
+            int sellprice = numberConvertor(String.valueOf(listelement[2]));
+            ganancia = ganancia + profit(sellprice);
+        }
+        return ganancia;
+    }
     //CREA UN NUEVO TRADE EN BASE DE DATOS
-    public static void EnterTrade(List<KeyDTO> keys, List<Object[]> items, int storeprice, int balance){
+    public static void EnterTrade(List<KeyDTO> keys, List<Object[]> items, int storeprice, int balance) throws Exception{
+        List<Key> listakeys = new ArrayList();
+        //SE CREA EL TRADE Y SE SETEAN LOS PARAMETROS
+        Trade trade = new Trade();
+        trade.setBalancestore(balance);
+        trade.setGanancia(getGanancia(items));
+        trade.setPriceinstore(storeprice);
+        trade.setDateoftrade(Calendar.getInstance().getTime());
+        //SE PONEN LAS LLAVES COMO TRADED
+        Iterator iter = keys.iterator();
+     
+        trade.setKeytraded(listakeys);
+        EntityController.create(trade);
+           while(iter.hasNext()){
+             KeyDTO dto = (KeyDTO) iter.next();
+             Key key = getKey(dto);
+             key = ChangeState(key, "Traded");
+             listakeys.add(key);
+             EntityController.Edit(key);
+        }
+        //SE AGREGA LA GANANCIA AL SALDO
+        SumarSaldo(getGanancia(items));
         
+    }
+    //SUMA EL VALOR AL SALDO
+    public static void SumarSaldo(int ganancia) throws Exception{
+        SteamParameters sp = EntityController.find(new SteamParameters("Saldo"));
+        int saldoant = sp.getValue();
+        int total = saldoant + ganancia;
+        sp.setValue(total);
+        EntityController.Edit(sp);
     }
     //DEVUELVE TRUE SI LA LLAVE SE ENCUENTRA EN LA LISTA
     public static boolean keyInTheList(KeyDTO dto, List<KeyDTO> list){

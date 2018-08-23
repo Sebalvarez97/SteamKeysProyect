@@ -7,6 +7,7 @@ package Interface;
 
 import Controller.exceptions.NonexistentEntityException;
 import TransporterUnits.KeyDTO;
+import TransporterUnits.ParameterDTO;
 import TransporterUnits.TypeStateDTO;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -91,12 +92,8 @@ private void ListDate(){
 }
     //DEVUELVE EL VALOR DE LA CANTIDAD DE LLAVES VALIDADO
     private int getCantValue() throws Exception{
-        String input = (String) CantSpinner.getValue();
-        if(KeyManager.isNumber(input)){
-            return Integer.parseInt(input);
-        }else{
-            throw new Exception("bad enter");
-        }
+        int input = (int) CantSpinner.getValue();
+        return input;
     } 
     private void MessageDialog(String scr){
         JOptionPane.showMessageDialog(this, scr);
@@ -107,9 +104,15 @@ private void AddNewKey(){
     String type = (String) ComboBoxTypes.getSelectedItem();
     String state = "Untradeable";
     int cantidad = getCantValue();
-    int confirmation = JOptionPane.showConfirmDialog(this, "Are you sure you want to create " + cantidad + " of "+ type + " key/s?");
-    if (confirmation == 0){
-        int i = 1;
+    int keyprice = KeyManager.findParameter("KeysPrice").getValue();
+    int total = cantidad * keyprice;
+    int saldo = KeyManager.findParameter("Saldo").getValue();
+    if(saldo-total <0){
+        throw new Exception("Not enough money");
+    }else{
+         int confirmation = JOptionPane.showConfirmDialog(this, "Are you sure you want to create " + cantidad + " of "+ type + " key/s?");
+         if (confirmation == 0){
+            int i = 1;
         while(i<=cantidad){
             KeyDTO ktu = new KeyDTO();
             ktu.setState(state);
@@ -118,12 +121,12 @@ private void AddNewKey(){
             KeyManager.EnterKey(ktu);
             i++;
         }
+         KeyManager.setValue(new ParameterDTO("Saldo", "", saldo-total));
     }
+    }
+   
   }catch(Exception e){
-      if(e.getMessage().equals("bad enter")){
-          SetAddKeyParameters();
-          MessageDialog("Fail. You entered a bad cant");
-      }
+     MessageDialog(e.getMessage());
   }
     
 }//GENERA EL CALENDARIO CON LA FECHA INGRESADA

@@ -49,7 +49,17 @@ public class Trade extends javax.swing.JFrame {
     }
     //CREA UN TRADE CON LOS VALORES INGRESADOS
     private void AddNewTrade(){
-        
+        try {
+            int confirm = JOptionPane.showOptionDialog(this, "Are you sure?", "Trade Alert", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Yes", "No"}, "Yes");
+            if(confirm == 0){
+                KeyManager.EnterTrade(keys, Items,getPriceInput() ,getBalanceInput());
+                Items.clear();
+                keys.clear();
+            }
+        } catch (Exception ex) {
+            MessageDialog(ex.getMessage());
+        }
+        initTrade();
     }
         //INICIALIZA LAS TABLAS PARA EL TRADE
     private void initTrade(){
@@ -101,7 +111,7 @@ public class Trade extends javax.swing.JFrame {
         }
         ReloadTable();
     }
-    //ELIMINA UN ITEM DE LA LISTA DE ITEMS
+    //ELIMINA UN ITEM DE LA LISTA DE ITEMS //ERROR
     private void DeleteItem(){
             int[] seleccion = ItemsTable.getSelectedRows();
             if(seleccion.length != 0){
@@ -109,7 +119,8 @@ public class Trade extends javax.swing.JFrame {
                 if(confirm == 0){
                      for(int i = 0; i <seleccion.length; i++){
                         int index = seleccion[i];
-                        Items.remove(i);
+                         System.out.println(index);
+                         Items.remove(index);
                 }
             }
             }else{
@@ -164,7 +175,7 @@ public class Trade extends javax.swing.JFrame {
             if(confirmacion != null){
                 KeyDTO patron = new KeyDTO();
                 patron.setId(getKeyID(confirmacion));
-                KeyDTO key = KeyManager.getKey(patron);
+                KeyDTO key = KeyManager.getKeyDTO(patron);
                 keys.add(key);
             }
         } catch (NonexistentEntityException ex) {
@@ -301,6 +312,11 @@ public class Trade extends javax.swing.JFrame {
         TradeButton.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         TradeButton.setText("Trade");
         TradeButton.setFocusable(false);
+        TradeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TradeButtonActionPerformed(evt);
+            }
+        });
 
         BalanceTittle.setText("Balance");
         BalanceTittle.setToolTipText("");
@@ -470,7 +486,14 @@ public class Trade extends javax.swing.JFrame {
                 inventory.setVisible(true);
                 dispose();
            }
-       }
+       }else{
+            Inventory.CloseLastWindow();
+                Inventory inventory = (Inventory) Inventory.getLastWindow();
+                inventory.setLocationRelativeTo(this);
+                inventory.ReloadTable();
+                inventory.setVisible(true);
+                dispose();
+        }
         // TODO add your handling code here:
     }//GEN-LAST:event_BackButtonActionPerformed
 
@@ -500,6 +523,10 @@ public class Trade extends javax.swing.JFrame {
         AddItem();
         // TODO add your handling code here:
     }//GEN-LAST:event_AddButtonActionPerformed
+
+    private void TradeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TradeButtonActionPerformed
+      AddNewTrade();  // TODO add your handling code here:
+    }//GEN-LAST:event_TradeButtonActionPerformed
 
   
 
