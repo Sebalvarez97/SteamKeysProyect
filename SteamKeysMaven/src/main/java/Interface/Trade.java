@@ -66,6 +66,7 @@ public class Trade extends javax.swing.JFrame {
         PriceImput.setText("2.50");
         SellPriceInput.setText("0.00");
         BalanceInput.setText("0.00");
+        ItemsTable.setSelectionMode(0);
         ItemsTable.getTableHeader().setResizingAllowed(false);
         VmrTable.getTableHeader().setResizingAllowed(false);
         ReloadTable();
@@ -113,16 +114,12 @@ public class Trade extends javax.swing.JFrame {
     }
     //ELIMINA UN ITEM DE LA LISTA DE ITEMS //ERROR// 
     private void DeleteItem(){
-            int[] seleccion = ItemsTable.getSelectedRows();
-            if(seleccion.length != 0){
+            int index = ItemsTable.getSelectedRow();
+            if(index != 0){
                 int confirm = JOptionPane.showOptionDialog(this, "Are you sure?", "Errase Alert", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Yes", "No"}, "Yes");
                 if(confirm == 0){
-                     for(int i = 0; i <seleccion.length; i++){
-                        int index = seleccion[i];
-                         System.out.println(index);
-                         Items.remove(index);
-                }
-            }
+                    Items.remove(index);
+                }   
             }else{
                  MessageDialog("Select an item first");
             }
@@ -154,7 +151,7 @@ public class Trade extends javax.swing.JFrame {
             long id = getKeyID(key);
             keys.remove(index);
         } catch (Exception ex) {
-            MessageDialog(ex.getMessage());
+            MessageDialog("Error");
         }
         ReloadTable();
     }
@@ -298,6 +295,7 @@ public class Trade extends javax.swing.JFrame {
 
             }
         ));
+        ItemsTable.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         ItemsTable.setFocusable(false);
         ItemsScroll.setViewportView(ItemsTable);
 
