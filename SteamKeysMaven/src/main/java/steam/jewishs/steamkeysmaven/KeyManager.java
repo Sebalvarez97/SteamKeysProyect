@@ -10,25 +10,13 @@ import Controller.exceptions.NonexistentEntityException;
 import Interface.AddKey;
 import Interface.Configurations;
 import Interface.Inventory;
-import Model.Key;
-import Model.KeyState;
-import Model.KeyType;
-import Model.SteamItem;
-import Model.SteamParameters;
-import Model.Trade;
+import Model.*;
 import TransporterUnits.*;
 import java.awt.Window;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAccessor;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -67,6 +55,7 @@ public class KeyManager {
         }
         return ret;
     }
+    //DEVUELVE LA KEY A PARTIR DE UN KEYDTO PATRON
     private static Key getKey(KeyDTO patron) throws NonexistentEntityException{
         Key k = new Key();
         k.setId(patron.getId());
@@ -104,8 +93,7 @@ public class KeyManager {
         return cal.getTime();
     }
     //ACTUALIZA EL ESTADO DE LAS LLAVES DEL INVENTARIO 
-    public static void UpdateState(){
-        try {
+    public static void UpdateState() throws Exception{
             List<Key> keys = EntityController.ListKeys();
             Key key;
             Iterator iter = keys.iterator();
@@ -118,11 +106,7 @@ public class KeyManager {
                     }   
                 }            
             }
-        } catch (NonexistentEntityException ex) {
-            Logger.getLogger(KeyManager.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-            Logger.getLogger(KeyManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
     }
     //DEVUELVE LA DIFERENCIA EN DIAS
     public static int DayDiference(Date date1, Date date2){
@@ -276,11 +260,14 @@ public class KeyManager {
     }
     //SUMA EL VALOR AL SALDO
     public static void SumarSaldo(int ganancia) throws Exception{
-        SteamParameters sp = EntityController.find(new SteamParameters("Saldo"));
-        int saldoant = sp.getValue();
+        ParameterDTO dto = findParameter("Saldo");
+        int saldoant = dto.getValue();
+        System.out.println(saldoant);
+        System.out.println(ganancia);
         int total = saldoant + ganancia;
-        sp.setValue(total);
-        EntityController.Edit(sp);
+        System.out.println(total);
+        dto.setValue(total);
+        setValue(dto);
     }
     //DEVUELVE TRUE SI LA LLAVE SE ENCUENTRA EN LA LISTA
     public static boolean keyInTheList(KeyDTO dto, List<KeyDTO> list){
@@ -354,14 +341,13 @@ public class KeyManager {
         }
         return dtos;
     }
-    public static void setValue(ParameterDTO dto){
+    //SETEA EL VALOR DEL PARAMETRO INGRESADO(ES UN PATRON NO HACE FALTA AGREGAR LA DESCRIPCION)
+    public static void setValue(ParameterDTO dto) throws Exception{
         SteamParameters sp = EntityController.find(new SteamParameters(dto.getName()));
         sp.setValue(dto.getValue());
-        try {
+        
             EntityController.Edit(sp);
-        } catch (Exception ex) {
-            Logger.getLogger(KeyManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
     }
     
     //MODIFICAR VALOR DE LA KEY
@@ -476,7 +462,6 @@ public class KeyManager {
 
   
   public static void main(String[] args){
-     
 
       
       InitInventory();

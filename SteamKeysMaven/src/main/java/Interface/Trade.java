@@ -111,7 +111,7 @@ public class Trade extends javax.swing.JFrame {
         }
         ReloadTable();
     }
-    //ELIMINA UN ITEM DE LA LISTA DE ITEMS //ERROR
+    //ELIMINA UN ITEM DE LA LISTA DE ITEMS //ERROR// 
     private void DeleteItem(){
             int[] seleccion = ItemsTable.getSelectedRows();
             if(seleccion.length != 0){

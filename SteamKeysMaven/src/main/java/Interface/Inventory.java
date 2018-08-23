@@ -154,6 +154,8 @@ public class Inventory extends javax.swing.JFrame{
             KeyTable.setModel(modelotabla);
         } catch (NonexistentEntityException ex) {
             MessageDialog("The entity does not exist");
+        } catch (Exception ex) {
+            MessageDialog(ex.getMessage());
         }
     }
     //DEVUELVE LA LISTA DE LLAVES SELECCIONADAS 
