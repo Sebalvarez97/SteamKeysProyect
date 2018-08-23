@@ -482,6 +482,7 @@ public class Trade extends javax.swing.JFrame {
                 Inventory.CloseLastWindow();
                 Inventory inventory = (Inventory) Inventory.getLastWindow();
                 inventory.setLocationRelativeTo(this);
+                inventory.initSaldo();
                 inventory.ReloadTable();
                 inventory.setVisible(true);
                 dispose();
@@ -490,6 +491,7 @@ public class Trade extends javax.swing.JFrame {
             Inventory.CloseLastWindow();
                 Inventory inventory = (Inventory) Inventory.getLastWindow();
                 inventory.setLocationRelativeTo(this);
+                inventory.initSaldo();
                 inventory.ReloadTable();
                 inventory.setVisible(true);
                 dispose();

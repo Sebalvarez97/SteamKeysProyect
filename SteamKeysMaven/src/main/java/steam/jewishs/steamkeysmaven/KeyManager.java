@@ -237,9 +237,10 @@ public class KeyManager {
     public static void EnterTrade(List<KeyDTO> keys, List<Object[]> items, int storeprice, int balance) throws Exception{
         List<Key> listakeys = new ArrayList();
         //SE CREA EL TRADE Y SE SETEAN LOS PARAMETROS
+        int ganancia = getGanancia(items);
         Trade trade = new Trade();
         trade.setBalancestore(balance);
-        trade.setGanancia(getGanancia(items));
+        trade.setGanancia(ganancia);
         trade.setPriceinstore(storeprice);
         trade.setDateoftrade(Calendar.getInstance().getTime());
         //SE PONEN LAS LLAVES COMO TRADED
@@ -255,19 +256,14 @@ public class KeyManager {
              EntityController.Edit(key);
         }
         //SE AGREGA LA GANANCIA AL SALDO
-        SumarSaldo(getGanancia(items));
+        SumarSaldo(ganancia);
         
     }
     //SUMA EL VALOR AL SALDO
     public static void SumarSaldo(int ganancia) throws Exception{
-        ParameterDTO dto = findParameter("Saldo");
-        int saldoant = dto.getValue();
-        System.out.println(saldoant);
-        System.out.println(ganancia);
-        int total = saldoant + ganancia;
-        System.out.println(total);
-        dto.setValue(total);
-        setValue(dto);
+        int saldo = findParameter("Saldo").getValue();
+        saldo = saldo+ ganancia;
+        setValue(new ParameterDTO("Saldo","",saldo));
     }
     //DEVUELVE TRUE SI LA LLAVE SE ENCUENTRA EN LA LISTA
     public static boolean keyInTheList(KeyDTO dto, List<KeyDTO> list){
@@ -351,13 +347,13 @@ public class KeyManager {
     }
     
     //MODIFICAR VALOR DE LA KEY
-    private static void setKeyPrice(int price){
+    private static void setKeyPrice(int price) throws Exception{
         SteamParameters sp = EntityController.find(new SteamParameters("KeysPrice"));
         sp.setValue(price);
         try {
             EntityController.Edit(sp);
         } catch (Exception ex) {
-            System.out.println("THE PARAMETER DOES NOT EXIST");
+            throw new Exception("THE PARAMETER DOES NOT EXIST");
         }
     }
     
@@ -463,15 +459,7 @@ public class KeyManager {
   
   public static void main(String[] args){
       
-      SteamParameters sp = new SteamParameters();
-      for(int i = 1956; i<1972;i++){
-          sp.setId((long) i );
-          try {
-              EntityController.destroy(sp);
-          } catch (NonexistentEntityException ex) {
-              Logger.getLogger(KeyManager.class.getName()).log(Level.SEVERE, null, ex);
-          }
-      }
+
       
       InitInventory();
       

@@ -66,7 +66,7 @@ public class Inventory extends javax.swing.JFrame{
         SetEstadistics();
     }
     //INICIALIZA EL SALDO DE STEAM CON EL VALOR GUARDADO EN BASE DE DATOS
-    private void initSaldo(){
+    public void initSaldo(){
         ParameterDTO dto = KeyManager.findParameter("Saldo");
         double saldo = (double) dto.getValue();
         saldo = saldo/100;
