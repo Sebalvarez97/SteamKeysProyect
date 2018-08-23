@@ -462,7 +462,16 @@ public class KeyManager {
 
   
   public static void main(String[] args){
-
+      
+      SteamParameters sp = new SteamParameters();
+      for(int i = 1956; i<1972;i++){
+          sp.setId((long) i );
+          try {
+              EntityController.destroy(sp);
+          } catch (NonexistentEntityException ex) {
+              Logger.getLogger(KeyManager.class.getName()).log(Level.SEVERE, null, ex);
+          }
+      }
       
       InitInventory();
       
