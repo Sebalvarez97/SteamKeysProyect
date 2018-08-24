@@ -148,10 +148,15 @@ public class Trade extends javax.swing.JFrame {
         try {
             String key = KeysTradingList.getSelectedValue();
             int index = KeysTradingList.getSelectedIndex();
-            long id = getKeyID(key);
-            keys.remove(index);
+            if(key != null){
+                 long id = getKeyID(key);
+                 keys.remove(index);
+            }else{
+                throw new Exception("select a key first");
+            }
+           
         } catch (Exception ex) {
-            MessageDialog("Error");
+            MessageDialog(ex.getMessage());
         }
         ReloadTable();
     }

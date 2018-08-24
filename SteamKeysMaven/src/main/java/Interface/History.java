@@ -29,6 +29,8 @@ DefaultTableModel modelotrades = new DefaultTableModel();
     }
     public void initHistory(){
         ReloadHistory();
+    }
+    private void SetHistory(){
         TradeHistoryTable.getTableHeader().setResizingAllowed(false);
         TableColumn columnaid = TradeHistoryTable.getColumn("TradeID");
         columnaid.setPreferredWidth(50);
@@ -36,6 +38,7 @@ DefaultTableModel modelotrades = new DefaultTableModel();
     }
     public void ReloadHistory(){
         ListHistory();
+        SetHistory();
     }
     
     private void MessageDialog(String scr){
