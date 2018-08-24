@@ -43,6 +43,11 @@ public class KeyManager {
             //se enviaran al ExceptionManager
         }
     }
+    private static void EnterState(String name){
+        KeyState ks = new KeyState();
+        ks.setStateDescription(name);
+        EntityController.create(ks);
+    }
     //DEVUELVE LA LLAVE SEGUN EL ID INGRESADO EN EL KEYDTO PATRON
     public static KeyDTO getKeyDTO(KeyDTO patron) throws NonexistentEntityException{
         KeyDTO ret = null;
@@ -259,6 +264,13 @@ public class KeyManager {
         SumarSaldo(ganancia);
         
     }
+    public static void SellKey(KeyDTO key, int sellprice) throws NonexistentEntityException, Exception{
+        Key k = KeyManager.getKey(key);
+        k = KeyManager.ChangeState(k, "Sold");
+        EntityController.Edit(k);
+        int ganancia = KeyManager.profit(sellprice);
+        SumarSaldo(ganancia);
+    }
     //SUMA EL VALOR AL SALDO
     public static void SumarSaldo(int ganancia) throws Exception{
         int saldo = findParameter("Saldo").getValue();
@@ -458,9 +470,6 @@ public class KeyManager {
 
   
   public static void main(String[] args){
-      
-
-      
       InitInventory();
       
       System.out.println("FIN");

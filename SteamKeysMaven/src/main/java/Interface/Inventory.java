@@ -215,6 +215,28 @@ public class Inventory extends javax.swing.JFrame{
         window.setVisible(true);
     }
     
+    private void SellKey(){
+        List<KeyDTO> keys = getKeySelection();
+        if(keys.size() == 0){
+            MessageDialog("Select a key first");
+        }else{
+            try {
+                int sellprice = KeyManager.numberConvertor(String.valueOf(JOptionPane.showInputDialog("Ingrese el precio de venta")));
+                int confirm = JOptionPane.showConfirmDialog(this, "You are selling this " + keys.size()+ " keys. Are you sure?");
+                if(confirm == 0){
+                    Iterator iter = keys.iterator();
+                    while(iter.hasNext()){
+                        KeyDTO key = (KeyDTO) iter.next();
+                        KeyManager.SellKey(key, sellprice);
+                    }
+                }
+            } catch (Exception ex) {
+                MessageDialog(ex.getMessage());
+            }
+        }
+        ReloadTable();
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -315,6 +337,11 @@ public class Inventory extends javax.swing.JFrame{
 
         SellButton.setText("Sell");
         SellButton.setFocusable(false);
+        SellButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SellButtonActionPerformed(evt);
+            }
+        });
 
         Balance.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         Balance.setDebugGraphicsOptions(javax.swing.DebugGraphics.NONE_OPTION);
@@ -469,6 +496,10 @@ public class Inventory extends javax.swing.JFrame{
         ReloadTable();
         // TODO add your handling code here:
     }//GEN-LAST:event_TradeButtonActionPerformed
+
+    private void SellButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SellButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_SellButtonActionPerformed
 
    
 
