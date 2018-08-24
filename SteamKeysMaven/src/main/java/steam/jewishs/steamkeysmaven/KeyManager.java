@@ -43,6 +43,7 @@ public class KeyManager {
             //se enviaran al ExceptionManager
         }
     }
+    //CREA UN ESTADO CON EL STRING INGRESADO
     private static void EnterState(String name){
         KeyState ks = new KeyState();
         ks.setStateDescription(name);
@@ -174,6 +175,7 @@ public class KeyManager {
     public static boolean isNumber(String str) {
         return (str.matches("[+-]?\\d*(\\.\\d+)?") && str.equals("")==false);
     }
+    //A PARTIR DE UN ENTERO DEVUELVE EL STRING CORRESPONDIENTE AL VALOR PARA MOSTRAR
     public static String numberConvertor(int i){
         double x = (double) i;
         x = x/100;
@@ -264,6 +266,7 @@ public class KeyManager {
         SumarSaldo(ganancia);
         
     }
+    //PERMITE VENDER UNA KEY
     public static void SellKey(KeyDTO key, int sellprice) throws NonexistentEntityException, Exception{
         Key k = KeyManager.getKey(key);
         k = KeyManager.ChangeState(k, "Sold");

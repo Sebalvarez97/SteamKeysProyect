@@ -498,7 +498,7 @@ public class Inventory extends javax.swing.JFrame{
     }//GEN-LAST:event_TradeButtonActionPerformed
 
     private void SellButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SellButtonActionPerformed
-        // TODO add your handling code here:
+       SellKey(); // TODO add your handling code here:
     }//GEN-LAST:event_SellButtonActionPerformed
 
    
