@@ -136,6 +136,9 @@ public interface EntityController {
         return paramController.findSteamParameters(sp.getName());
     }
     public static Trade find(Trade t){
+        return tradeController.findTrade(t.getId());
+    }
+    public static Trade findWithDate(Trade t){
         return tradeController.findTrade(t.getDateoftrade());
     }
     

@@ -12,6 +12,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -48,6 +49,17 @@ public class Trade implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "key_id")
     private List <Key> keytraded = new ArrayList();
+    
+    @Column(name = "cantkey")
+    private int cantkey;
+
+    public void setCantkey(int cantkey) {
+        this.cantkey = cantkey;
+    }
+
+    public int getCantkey() {
+        return cantkey;
+    }
 
     public Trade(Date dateoftrade, int priceinstore, int ganancia, int balancestore, List<Key> keytraded) {
         this.dateoftrade = dateoftrade;
@@ -62,6 +74,9 @@ public class Trade implements Serializable {
 
     public Trade(Date dateoftrade) {
         this.dateoftrade = dateoftrade;
+    }
+    public Trade(long id){
+        this.id = id;
     }
     
     public Long getId() {

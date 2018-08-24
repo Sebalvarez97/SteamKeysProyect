@@ -214,7 +214,7 @@ public class Inventory extends javax.swing.JFrame{
         this.setVisible(false);
         window.setVisible(true);
     }
-    
+    //VENDE UNA LLAVE O LLAVES
     private void SellKey(){
         List<KeyDTO> keys = getKeySelection();
         if(keys.size() == 0){
@@ -258,6 +258,7 @@ public class Inventory extends javax.swing.JFrame{
         TradeButton = new javax.swing.JButton();
         SellButton = new javax.swing.JButton();
         Balance = new javax.swing.JFormattedTextField();
+        HistoryButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setName("InventoryFrame"); // NOI18N
@@ -347,6 +348,14 @@ public class Inventory extends javax.swing.JFrame{
         Balance.setDebugGraphicsOptions(javax.swing.DebugGraphics.NONE_OPTION);
         Balance.setName("Balance"); // NOI18N
 
+        HistoryButton.setText("History");
+        HistoryButton.setFocusable(false);
+        HistoryButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                HistoryButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout InventoryPanelLayout = new javax.swing.GroupLayout(InventoryPanel);
         InventoryPanel.setLayout(InventoryPanelLayout);
         InventoryPanelLayout.setHorizontalGroup(
@@ -356,7 +365,9 @@ public class Inventory extends javax.swing.JFrame{
                     .addGroup(InventoryPanelLayout.createSequentialGroup()
                         .addGap(21, 21, 21)
                         .addComponent(ConfigButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(179, 179, 179)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(HistoryButton)
+                        .addGap(96, 96, 96)
                         .addComponent(InitialMessage))
                     .addGroup(InventoryPanelLayout.createSequentialGroup()
                         .addGap(48, 48, 48)
@@ -411,7 +422,9 @@ public class Inventory extends javax.swing.JFrame{
                             .addGroup(InventoryPanelLayout.createSequentialGroup()
                                 .addGap(24, 24, 24)
                                 .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(ConfigButton)
+                                    .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(ConfigButton)
+                                        .addComponent(HistoryButton))
                                     .addComponent(InitialMessage))))
                         .addGap(33, 33, 33))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, InventoryPanelLayout.createSequentialGroup()
@@ -421,13 +434,13 @@ public class Inventory extends javax.swing.JFrame{
                     .addComponent(CantTittle)
                     .addComponent(TradTittle, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(UntradTittle))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(KeyTableScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
                 .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(BalanceTittle)
                     .addComponent(Balance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
                 .addComponent(TotalTittle)
                 .addGap(20, 20, 20)
                 .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -501,6 +514,11 @@ public class Inventory extends javax.swing.JFrame{
        SellKey(); // TODO add your handling code here:
     }//GEN-LAST:event_SellButtonActionPerformed
 
+    private void HistoryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HistoryButtonActionPerformed
+     AddWindow(new History());
+       // TODO add your handling code here:
+    }//GEN-LAST:event_HistoryButtonActionPerformed
+
    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -509,6 +527,7 @@ public class Inventory extends javax.swing.JFrame{
     private javax.swing.JLabel CantTittle;
     private javax.swing.JButton ConfigButton;
     private javax.swing.JButton DeleteButton;
+    private javax.swing.JButton HistoryButton;
     private javax.swing.JLabel InitialMessage;
     private javax.swing.JPanel InventoryPanel;
     private javax.swing.JLabel InventoryTittle;

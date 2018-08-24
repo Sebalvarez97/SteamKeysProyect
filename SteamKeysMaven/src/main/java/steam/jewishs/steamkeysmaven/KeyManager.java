@@ -250,9 +250,9 @@ public class KeyManager {
         trade.setGanancia(ganancia);
         trade.setPriceinstore(storeprice);
         trade.setDateoftrade(Calendar.getInstance().getTime());
+        trade.setCantkey(keys.size());
         //SE PONEN LAS LLAVES COMO TRADED
         Iterator iter = keys.iterator();
-     
         trade.setKeytraded(listakeys);
         EntityController.create(trade);
            while(iter.hasNext()){
@@ -351,6 +351,31 @@ public class KeyManager {
             dtos.add(dto);
         }
         return dtos;
+    }
+    //DEVUELVE UNA LISTA PARA MOSTRAR LOS TRADE
+    public static List<Object[]> getTradeList() throws Exception{
+        List<Object[]> ret = new ArrayList();
+        List<Trade> trades = EntityController.ListTrades();
+        Iterator iter = trades.iterator();
+        while(iter.hasNext()){
+            Trade trade = (Trade) iter.next();
+            int keyprice = KeyManager.findParameter("KeysPrice").getValue();
+            int profit = trade.getGanancia();
+            int total = profit-keyprice;
+            if(total<0){
+                throw new Exception("badtrade");
+            }else{
+                double cantkey = (double) trade.getCantkey();
+                double t = (double) total;
+                double profitxkey = t/cantkey;
+                profitxkey = profitxkey/100;
+                String pk = String.valueOf(profitxkey);
+                Object[] listelement = {trade.getId(),SimpleFormatDate(trade.getDateoftrade()), trade.getCantkey(),pk , numberConvertor(trade.getBalancestore()), numberConvertor(trade.getPriceinstore())};
+                ret.add(listelement);
+            }
+            
+        }
+        return ret;
     }
     //SETEA EL VALOR DEL PARAMETRO INGRESADO(ES UN PATRON NO HACE FALTA AGREGAR LA DESCRIPCION)
     public static void setValue(ParameterDTO dto) throws Exception{
@@ -473,6 +498,8 @@ public class KeyManager {
 
   
   public static void main(String[] args){
+      
+
       InitInventory();
       
       System.out.println("FIN");

@@ -25,6 +25,7 @@
       <property name="javax.persistence.jdbc.password" value="gestion18"/>
       <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialects"/>
       -->
+      <property name="hibernate.enable_lazy_load_no_trans" value="true" />
       <!-- Using h2 database-->
       <property name="javax.persistence.jdbc.url" value="jdbc:h2:file:D:\Sebastian\Programacion\SteamKeysProyect\DATABASE\data"/>
       <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>

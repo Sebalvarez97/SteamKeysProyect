@@ -325,6 +325,7 @@ private void AddNewKey(){
           Inventory.CloseLastWindow();
           Inventory inventory = (Inventory) Inventory.getLastWindow();
           inventory.setLocationRelativeTo(this);
+          inventory.initSaldo();
           inventory.ReloadTable();
           inventory.setVisible(true);
           dispose();
