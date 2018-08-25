@@ -9,21 +9,13 @@ import Controller.exceptions.NonexistentEntityException;
 import TransporterUnits.KeyDTO;
 import TransporterUnits.ParameterDTO;
 import TransporterUnits.TypeStateDTO;
-import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
-import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import steam.jewishs.steamkeysmaven.KeyManager;
@@ -32,7 +24,7 @@ import steam.jewishs.steamkeysmaven.KeyManager;
  *
  * @author eltet
  */
-public class AddKey extends javax.swing.JFrame {
+public class AddKey extends Interface{
 
     DefaultComboBoxModel modelocombobox;
     
@@ -47,15 +39,7 @@ public class AddKey extends javax.swing.JFrame {
         SetAddKeyParameters();
         this.setLocationRelativeTo(Inventory.getLastWindow());
     }
-        //INICIA EL ICONO
-      private void initICon() {
-        try {
-            Image img = ImageIO.read(new File("D:\\Sebastian\\Programacion\\SteamKeysProyect\\Imagenes\\icono.jpg"));
-            this.setIconImage(img);
-        } catch (IOException ex) {
-            MessageDialog(ex.getMessage());
-        }
-    }
+
 //ESTABLECE LOS PARAMETROS PARA LA CREACION DE LLAVES
 private void SetAddKeyParameters(){
     
@@ -67,7 +51,7 @@ private void SetAddKeyParameters(){
 private void ListTypes(){
         modelocombobox = new DefaultComboBoxModel();
         try {
-            List<TypeStateDTO> types = KeyManager.ListTypes();
+            List<TypeStateDTO> types = KeyManager.AlphabeticOrder(KeyManager.ListTypes());
             Iterator iter = types.iterator();
             String type = new String();
             TypeStateDTO dto;
@@ -109,9 +93,7 @@ private void ListDate(){
         int input = (int) CantSpinner.getValue();
         return input;
     } 
-    private void MessageDialog(String scr){
-        JOptionPane.showMessageDialog(this, scr);
-    }
+
 //GENERA LA LLAVE NUEVA
 private void AddNewKey(){
   try{  
@@ -335,17 +317,7 @@ private void AddNewKey(){
     }// </editor-fold>//GEN-END:initComponents
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
-            // TODO add your handling code here:
-          Inventory.CloseLastWindow();
-          Inventory inventory = (Inventory) Inventory.getLastWindow();
-          inventory.setLocationRelativeTo(this);
-          inventory.initSaldo();
-          inventory.ReloadTable();
-          inventory.setVisible(true);
-          dispose();
-          
-            
-            
+  BackToInventory();
             
     }//GEN-LAST:event_BackButtonActionPerformed
 

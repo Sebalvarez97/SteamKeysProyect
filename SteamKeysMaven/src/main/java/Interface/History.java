@@ -5,15 +5,8 @@
  */
 package Interface;
 
-import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import steam.jewishs.steamkeysmaven.KeyManager;
@@ -22,7 +15,7 @@ import steam.jewishs.steamkeysmaven.KeyManager;
  *
  * @author eltet
  */
-public class History extends javax.swing.JFrame {
+public class History extends Interface {
 
 DefaultTableModel modelotrades = new DefaultTableModel();
     public History() {
@@ -32,17 +25,9 @@ DefaultTableModel modelotrades = new DefaultTableModel();
         this.setLocationRelativeTo(Inventory.getLastWindow());
         initHistory();
     }
-        //INICIA EL ICONO
-      private void initICon() {
-        try {
-            Image img = ImageIO.read(new File("D:\\Sebastian\\Programacion\\SteamKeysProyect\\Imagenes\\icono.jpg"));
-            this.setIconImage(img);
-        } catch (IOException ex) {
-            MessageDialog(ex.getMessage());
-        }
-    }
+
     public void initHistory(){
-        ReloadHistory();
+        Reload();
     }
     private void SetHistory(){
         TradeHistoryTable.getTableHeader().setResizingAllowed(false);
@@ -50,14 +35,12 @@ DefaultTableModel modelotrades = new DefaultTableModel();
         columnaid.setPreferredWidth(50);
         columnaid.setMaxWidth(100);
     }
-    public void ReloadHistory(){
+    public void Reload(){
         ListHistory();
         SetHistory();
     }
     
-    private void MessageDialog(String scr){
-        JOptionPane.showMessageDialog(this, scr, "WARNING_MESSAGE", JOptionPane.WARNING_MESSAGE);
-    }
+
     private void ListHistory(){
         try {
             List<Object[]> trades = KeyManager.getTradeList();
@@ -152,17 +135,11 @@ DefaultTableModel modelotrades = new DefaultTableModel();
     }// </editor-fold>//GEN-END:initComponents
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
-          Inventory.CloseLastWindow();
-          Inventory inventory = (Inventory) Inventory.getLastWindow();
-          inventory.setLocationRelativeTo(this);
-          inventory.initSaldo();
-          inventory.ReloadTable();  
-          inventory.setVisible(true);
-          dispose(); // TODO add your handling code here:
+          BackToInventory();// TODO add your handling code here:
     }//GEN-LAST:event_BackButtonActionPerformed
 
     private void ReloadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReloadButtonActionPerformed
-        ReloadHistory();// TODO add your handling code here:
+        Reload();// TODO add your handling code here:
     }//GEN-LAST:event_ReloadButtonActionPerformed
 
 

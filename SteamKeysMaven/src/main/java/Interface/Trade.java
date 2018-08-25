@@ -7,25 +7,17 @@ package Interface;
 
 import Controller.exceptions.NonexistentEntityException;
 import TransporterUnits.KeyDTO;
-import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import steam.jewishs.steamkeysmaven.KeyManager;
-import static steam.jewishs.steamkeysmaven.KeyManager.numberConvertor;
 
 
-public class Trade extends javax.swing.JFrame {
+public class Trade extends Interface {
     
     private List<KeyDTO> keys = new ArrayList();
     DefaultTableModel modelotabla;
@@ -41,22 +33,14 @@ public class Trade extends javax.swing.JFrame {
         this.setLocationRelativeTo(Inventory.getLastWindow()); 
         initTrade();
     }
-        //INICIA EL ICONO
-      private void initICon() {
-        try {
-            Image img = ImageIO.read(new File("D:\\Sebastian\\Programacion\\SteamKeysProyect\\Imagenes\\icono.jpg"));
-            this.setIconImage(img);
-        } catch (IOException ex) {
-            MessageDialog(ex.getMessage());
-        }
-    }
+
     //SET DE LA VARIABLE
     public void setKeys(List<KeyDTO> keys){
         this.keys = keys;
-        ReloadTable();
+        Reload();
     }
     //RECARGA LAS TABLAS Y OTROS
-    private void ReloadTable(){
+    protected void Reload(){
         ListVMRTable();
         ListItems();
         ShowKeys();
@@ -83,13 +67,8 @@ public class Trade extends javax.swing.JFrame {
         ItemsTable.setSelectionMode(0);
         ItemsTable.getTableHeader().setResizingAllowed(false);
         VmrTable.getTableHeader().setResizingAllowed(false);
-        ReloadTable();
+        Reload();
     }
-    //MUESTRA UN MENSAJE DE ADVERTENCIA EN PANTALLA
-     private void MessageDialog(String scr){
-        JOptionPane.showMessageDialog(this, scr, "WARNING_MESSAGE", JOptionPane.WARNING_MESSAGE);
-    }
-
     //MUESTRA LA LISTA DE ITEMS AGREGADOS
     private void ListItems(){
         //MODELO
@@ -124,7 +103,7 @@ public class Trade extends javax.swing.JFrame {
         } catch (Exception ex) {
             MessageDialog(ex.getMessage());
         }
-        ReloadTable();
+        Reload();
     }
     //ELIMINA UN ITEM DE LA LISTA DE ITEMS //ERROR// 
     private void DeleteItem(){
@@ -138,7 +117,7 @@ public class Trade extends javax.swing.JFrame {
                  MessageDialog("Select an item first");
             }
                
-            ReloadTable();
+            Reload();
     }
     //MUESTRA LAS LLAVES QUE SE ESTAN TRADEANDO AL MOMENTO
     private void ShowKeys(){
@@ -172,7 +151,7 @@ public class Trade extends javax.swing.JFrame {
         } catch (Exception ex) {
             MessageDialog(ex.getMessage());
         }
-        ReloadTable();
+        Reload();
     }
     //AGREGA UNA LLAVE AL TRADE
     private void AddTradingKey(){
@@ -197,7 +176,7 @@ public class Trade extends javax.swing.JFrame {
         } catch (NonexistentEntityException ex) {
             MessageDialog(ex.getMessage());
         }
-        ReloadTable();
+        Reload();
     }
  
     //DEVUELVE EL PRECIO INGRESADO
@@ -495,29 +474,17 @@ public class Trade extends javax.swing.JFrame {
         if(!Items.isEmpty()){
 //           int confimacion = JOptionPane.showConfirmDialog(this, "confirm");
            int confirm = JOptionPane.showOptionDialog(this, "You are trading, Are you sure you wanna leave?", "Leaving TradeHelper", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Yes", "No"}, "Yes");
-           if (confirm == 0){
-                Inventory.CloseLastWindow();
-                Inventory inventory = (Inventory) Inventory.getLastWindow();
-                inventory.setLocationRelativeTo(this);
-                inventory.initSaldo();
-                inventory.ReloadTable();
-                inventory.setVisible(true);
-                dispose();
-           }
-       }else{
-            Inventory.CloseLastWindow();
-                Inventory inventory = (Inventory) Inventory.getLastWindow();
-                inventory.setLocationRelativeTo(this);
-                inventory.initSaldo();
-                inventory.ReloadTable();
-                inventory.setVisible(true);
-                dispose();
+                    if (confirm == 0){
+                        BackToInventory();
+                    }
+           }else{
+            BackToInventory();
         }
         // TODO add your handling code here:
     }//GEN-LAST:event_BackButtonActionPerformed
 
     private void ReloadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReloadButtonActionPerformed
-     ReloadTable();   // TODO add your handling code here:
+     Reload();   // TODO add your handling code here:
     }//GEN-LAST:event_ReloadButtonActionPerformed
 
     private void PriceImputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PriceImputActionPerformed

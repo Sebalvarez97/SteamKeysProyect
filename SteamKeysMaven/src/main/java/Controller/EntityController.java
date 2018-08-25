@@ -93,18 +93,10 @@ public interface EntityController {
         }
     }
     public static boolean findIfExist(KeyState k){
-        if(find(k) == null){
-            return false;
-        }else {
-            return true;
-        }
+        return stateController.findIfExists(k.getStateDescription());
     }
     public static boolean findIfExist(KeyType k){
-        if(find(k) == null){
-            return false;
-        }else {
-            return true;
-        }
+        return typeController.findIfExists(k.getTypeDescription());
     }
     public static boolean findIfExist(SteamParameters sp){
         if(find(sp) == null){

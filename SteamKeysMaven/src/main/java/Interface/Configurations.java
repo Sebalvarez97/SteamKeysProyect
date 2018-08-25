@@ -6,12 +6,6 @@
 package Interface;
 
 import TransporterUnits.ParameterDTO;
-import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import steam.jewishs.steamkeysmaven.KeyManager;
 
@@ -19,7 +13,7 @@ import steam.jewishs.steamkeysmaven.KeyManager;
  *
  * @author eltet
  */
-public class Configurations extends javax.swing.JFrame {
+public class Configurations extends Interface {
 
     /**
      * Creates new form Configurations
@@ -31,25 +25,12 @@ public class Configurations extends javax.swing.JFrame {
         this.setSize(Inventory.getLastWindow().getSize());
         this.setLocationRelativeTo(Inventory.getLastWindow()); 
     }
-    //INICIA EL ICONO
-      private void initICon() {
-        try {
-            Image img = ImageIO.read(new File("D:\\Sebastian\\Programacion\\SteamKeysProyect\\Imagenes\\icono.jpg"));
-            this.setIconImage(img);
-        } catch (IOException ex) {
-            MessageDialog(ex.getMessage());
-        }
-    }
 
     private int getKeyFieldInput() throws Exception{
         String input = KeyField.getText();
         return KeyManager.numberConvertor(input);
     }
-    //PERMITE MOSTRAR UNA ALERTA O MENSAJE EN PANTALLA
-    private void MessageDialog(String scr){
-        JOptionPane.showMessageDialog(this, scr, "WARNING_MESSAGE", JOptionPane.WARNING_MESSAGE);
-    }
-    
+
     private void ShowConfiguration(){
         ParameterDTO dto = KeyManager.findParameter("KeysPrice");
         double keyprice = (double) dto.getValue();
@@ -148,13 +129,7 @@ public class Configurations extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
-          Inventory.CloseLastWindow();
-          Inventory inventory = (Inventory) Inventory.getLastWindow();
-          inventory.setLocationRelativeTo(this);
-          inventory.initSaldo();
-          inventory.ReloadTable();  
-          inventory.setVisible(true);
-          dispose();
+          BackToInventory();
            // TODO add your handling code here:
     }//GEN-LAST:event_BackButtonActionPerformed
 

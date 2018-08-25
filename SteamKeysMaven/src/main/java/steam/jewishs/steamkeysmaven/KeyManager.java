@@ -43,6 +43,15 @@ public class KeyManager {
             //se enviaran al ExceptionManager
         }
     }
+    private static TypeStateDTO getStateType(String str){
+        TypeStateDTO ret = new TypeStateDTO();
+        if(EntityController.findIfExist(new KeyState(str))){
+            ret.setDescription(str);
+        }else if(EntityController.findIfExist(new KeyType(str))){
+            ret.setDescription(str);
+        }
+        return ret;
+    } 
     //CREA UN ESTADO CON EL STRING INGRESADO
     private static void EnterState(String name){
         KeyState ks = new KeyState();
@@ -265,6 +274,54 @@ public class KeyManager {
         //SE AGREGA LA GANANCIA AL SALDO
         SumarSaldo(ganancia);
         
+    }
+        //VALIDA LA SELECCION PARA TRADEAR
+    public static boolean ValidateTradeSelection(List<KeyDTO> list){
+        boolean validation = true;
+        Iterator iter = list.iterator();
+        while(iter.hasNext()){
+            KeyDTO dto = (KeyDTO) iter.next();
+            if(!dto.getState().equals("Tradeable")){
+                validation = false;
+            }
+        }
+        return validation;
+    }
+    //ORDENA ALFABETICAMENTE UNA LISTA DE TYPESTATESDTO
+    public static List<TypeStateDTO> AlphabeticOrder(List<TypeStateDTO> lista){
+       List<String> list = ListStatesTypesString(lista);
+       Collections.sort(list);
+       return ListStateTypesDTO(list);
+    }
+    //DEVUELVE UNA LISTA DE TYPESTATESDTO A PARTIR DE UNA LISTA DE STRINGS
+    public static List<TypeStateDTO> ListStateTypesDTO(List<String> list){
+//        List<TypeStateDTO> ret = new ArrayList();
+//        Iterator iter = list.iterator();
+//        while(iter.hasNext()){
+//            TypeStateDTO dto = KeyManager.getStateType((String) iter.next());
+//            if(dto != null){
+//                    ret.add(dto);
+//                }
+//        }
+        List<TypeStateDTO> ret = new ArrayList();
+        for(String it : list){
+            TypeStateDTO dto = KeyManager.getStateType(it);
+                if(dto != null){
+                    ret.add(dto);
+                }
+            }
+        return ret;
+    }
+    //DEVUELVE UNA LISTA DE STRING A PARTIR DE UNA LISTA DE TYPESTATEDTO
+    public static List<String> ListStatesTypesString(List<TypeStateDTO> list){
+        List<String> ret = new ArrayList();
+        Iterator iter = list.iterator();
+        while(iter.hasNext()){
+            TypeStateDTO dto = (TypeStateDTO) iter.next();
+            String st = dto.getDescription();
+            ret.add(st);
+        }
+        return ret;
     }
     //PERMITE VENDER UNA KEY
     public static void SellKey(KeyDTO key, int sellprice) throws NonexistentEntityException, Exception{
