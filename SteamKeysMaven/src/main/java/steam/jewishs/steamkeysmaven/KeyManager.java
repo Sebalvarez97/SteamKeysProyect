@@ -361,7 +361,8 @@ public class KeyManager {
             Trade trade = (Trade) iter.next();
             int keyprice = KeyManager.findParameter("KeysPrice").getValue();
             int profit = trade.getGanancia();
-            int total = profit-keyprice;
+            int cant = trade.getCantkey();
+            int total = profit-(keyprice*cant);
             if(total<0){
                 throw new Exception("badtrade");
             }else{
@@ -370,7 +371,7 @@ public class KeyManager {
                 double profitxkey = t/cantkey;
                 profitxkey = profitxkey/100;
                 String pk = String.valueOf(profitxkey);
-                Object[] listelement = {trade.getId(),SimpleFormatDate(trade.getDateoftrade()), trade.getCantkey(),pk , numberConvertor(trade.getBalancestore()), numberConvertor(trade.getPriceinstore())};
+                Object[] listelement = {trade.getId(),SimpleFormatDate(trade.getDateoftrade()), trade.getCantkey(),numberConvertor(numberConvertor(pk)) , numberConvertor(trade.getBalancestore()), numberConvertor(trade.getPriceinstore())};
                 ret.add(listelement);
             }
             
