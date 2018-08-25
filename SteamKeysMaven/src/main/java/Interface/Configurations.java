@@ -6,8 +6,12 @@
 package Interface;
 
 import TransporterUnits.ParameterDTO;
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import steam.jewishs.steamkeysmaven.KeyManager;
 
@@ -22,11 +26,20 @@ public class Configurations extends javax.swing.JFrame {
      */
     public Configurations() {
         initComponents();
+        initICon();
         ShowConfiguration();
         this.setSize(Inventory.getLastWindow().getSize());
         this.setLocationRelativeTo(Inventory.getLastWindow()); 
     }
-
+    //INICIA EL ICONO
+      private void initICon() {
+        try {
+            Image img = ImageIO.read(new File("D:\\Sebastian\\Programacion\\SteamKeysProyect\\Imagenes\\icono.jpg"));
+            this.setIconImage(img);
+        } catch (IOException ex) {
+            MessageDialog(ex.getMessage());
+        }
+    }
 
     private int getKeyFieldInput() throws Exception{
         String input = KeyField.getText();

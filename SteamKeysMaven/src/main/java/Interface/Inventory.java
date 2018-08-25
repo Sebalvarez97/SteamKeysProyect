@@ -5,6 +5,9 @@ import Controller.exceptions.NonexistentEntityException;
 import TransporterUnits.KeyDTO;
 import TransporterUnits.ParameterDTO;
 import TransporterUnits.TypeStateDTO;
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,7 +19,9 @@ import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -46,11 +51,21 @@ public class Inventory extends javax.swing.JFrame{
     //CONSTRUCTOR
     public Inventory() {
         initComponents();
+        initICon();
         initSaldo();
         OpenWindow(null);
         ReloadTable();
         this.setLocationRelativeTo(getLastWindow());
         OpenWindow(this);
+    }
+    //INICIA EL ICONO
+      private void initICon() {
+        try {
+            Image img = ImageIO.read(new File("D:\\Sebastian\\Programacion\\SteamKeysProyect\\Imagenes\\icono.jpg"));
+            this.setIconImage(img);
+        } catch (IOException ex) {
+            MessageDialog(ex.getMessage());
+        }
     }
     //CONFIGURACION DE LA TABLA
     private void SetKeyTable(){
@@ -108,9 +123,9 @@ public class Inventory extends javax.swing.JFrame{
     //MUESTRA LAS ESTADISTICAS DE LAS LLAVES (CANT TOTAL, TRADEABLES Y NO TRADEABLES, ETC)
     private void SetEstadistics(){
         try {
-            int cantidad = KeyManager.KeyCounter();
             int tradeables = KeyManager.CantWithState(new TypeStateDTO("Tradeable"));
             int untradeables = KeyManager.CantWithState(new TypeStateDTO("Untradeable"));
+            int cantidad = tradeables + untradeables;
             CantTittle.setText("Cant.Keys: "+Integer.toString(cantidad));
             TradTittle.setText("Tradeables: "+Integer.toString(tradeables));
             UntradTittle.setText("Untradeables: "+Integer.toString(untradeables));
@@ -541,4 +556,6 @@ public class Inventory extends javax.swing.JFrame{
     private javax.swing.JButton TradeButton;
     private javax.swing.JLabel UntradTittle;
     // End of variables declaration//GEN-END:variables
+
+  
 }

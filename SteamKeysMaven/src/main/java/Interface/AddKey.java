@@ -9,6 +9,9 @@ import Controller.exceptions.NonexistentEntityException;
 import TransporterUnits.KeyDTO;
 import TransporterUnits.ParameterDTO;
 import TransporterUnits.TypeStateDTO;
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -20,6 +23,7 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import steam.jewishs.steamkeysmaven.KeyManager;
@@ -39,8 +43,18 @@ public class AddKey extends javax.swing.JFrame {
 //CONSTRUCTOR DE LA VENTANA
     public AddKey() {
         initComponents();
+        initICon();
         SetAddKeyParameters();
         this.setLocationRelativeTo(Inventory.getLastWindow());
+    }
+        //INICIA EL ICONO
+      private void initICon() {
+        try {
+            Image img = ImageIO.read(new File("D:\\Sebastian\\Programacion\\SteamKeysProyect\\Imagenes\\icono.jpg"));
+            this.setIconImage(img);
+        } catch (IOException ex) {
+            MessageDialog(ex.getMessage());
+        }
     }
 //ESTABLECE LOS PARAMETROS PARA LA CREACION DE LLAVES
 private void SetAddKeyParameters(){

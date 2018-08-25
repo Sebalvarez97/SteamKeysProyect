@@ -5,10 +5,14 @@
  */
 package Interface;
 
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -23,9 +27,19 @@ public class History extends javax.swing.JFrame {
 DefaultTableModel modelotrades = new DefaultTableModel();
     public History() {
         initComponents();
+        initICon();
         this.setSize(Inventory.getLastWindow().getSize());
         this.setLocationRelativeTo(Inventory.getLastWindow());
         initHistory();
+    }
+        //INICIA EL ICONO
+      private void initICon() {
+        try {
+            Image img = ImageIO.read(new File("D:\\Sebastian\\Programacion\\SteamKeysProyect\\Imagenes\\icono.jpg"));
+            this.setIconImage(img);
+        } catch (IOException ex) {
+            MessageDialog(ex.getMessage());
+        }
     }
     public void initHistory(){
         ReloadHistory();

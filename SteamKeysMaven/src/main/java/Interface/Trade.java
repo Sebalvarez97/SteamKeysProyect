@@ -7,12 +7,16 @@ package Interface;
 
 import Controller.exceptions.NonexistentEntityException;
 import TransporterUnits.KeyDTO;
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -32,9 +36,19 @@ public class Trade extends javax.swing.JFrame {
 
     public Trade() {
         initComponents();
+        initICon();
         this.setSize(Inventory.getLastWindow().getSize());
         this.setLocationRelativeTo(Inventory.getLastWindow()); 
         initTrade();
+    }
+        //INICIA EL ICONO
+      private void initICon() {
+        try {
+            Image img = ImageIO.read(new File("D:\\Sebastian\\Programacion\\SteamKeysProyect\\Imagenes\\icono.jpg"));
+            this.setIconImage(img);
+        } catch (IOException ex) {
+            MessageDialog(ex.getMessage());
+        }
     }
     //SET DE LA VARIABLE
     public void setKeys(List<KeyDTO> keys){
