@@ -75,7 +75,7 @@ public class Inventory extends Interface{
     private void UpdateSaldo() throws Exception {
         try{
             int input = getBalanceInput();
-            KeyManager.setValue(new ParameterDTO("Saldo", "",input));
+            KeyManager.UpdateSaldo(input);
         }catch(Exception ex){
             throw new Exception("bad enter");
         }

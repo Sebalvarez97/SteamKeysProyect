@@ -121,7 +121,7 @@ private void AddNewKey(){
             KeyManager.EnterKey(ktu);
             i++;
         }
-         KeyManager.setValue(new ParameterDTO("Saldo", "", saldo-total));
+         KeyManager.UpdateSaldo(saldo-total);
     }
     }
    

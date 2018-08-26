@@ -436,12 +436,19 @@ public class KeyManager {
         return ret;
     }
     //SETEA EL VALOR DEL PARAMETRO INGRESADO(ES UN PATRON NO HACE FALTA AGREGAR LA DESCRIPCION)
-    public static void setValue(ParameterDTO dto) throws Exception{
+    private static void setValue(ParameterDTO dto) throws Exception{
         SteamParameters sp = EntityController.find(new SteamParameters(dto.getName()));
         sp.setValue(dto.getValue());
         
             EntityController.Edit(sp);
-
+    }
+    //CAMBIA EL VALOR DEL SALDO
+    public static void UpdateSaldo(int saldo) throws Exception{
+        setValue(new ParameterDTO("Saldo", "", saldo));
+    }
+    //CAMBIA EL PRECIO DE LAS KEY 
+    public static void UpdateKeyPrice(int price) throws Exception{
+        setValue(new ParameterDTO("KeysPrice","", price));
     }
     
     //MODIFICAR VALOR DE LA KEY

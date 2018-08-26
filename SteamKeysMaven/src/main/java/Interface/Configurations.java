@@ -40,11 +40,9 @@ public class Configurations extends Interface {
     private void ChangeKeyValue(){
         try {
             int value = getKeyFieldInput();
-            ParameterDTO pd = KeyManager.findParameter("KeysPrice");
             int confirmation = JOptionPane.showConfirmDialog(null, "Are you sure you want to change it?");
             if(confirmation == 0){
-                pd.setValue(value);
-                KeyManager.setValue(pd);
+                KeyManager.UpdateKeyPrice(value);
             }else{
                 ShowConfiguration();
             }
