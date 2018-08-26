@@ -11,6 +11,7 @@ import TransporterUnits.ParameterDTO;
 import TransporterUnits.TypeStateDTO;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -84,6 +85,9 @@ private void ListDate(){
     for(int i = yearnow; i> yearnow-10; i--){
         modeloano.addElement(i);
     }
+    modelodia.setSelectedItem(daynow);
+    modelomes.setSelectedItem(monthnow+1);
+    modeloano.setSelectedItem(yearnow);
     DayComboBox.setModel(modelodia);
     MonthComboBox.setModel(modelomes);
     YearComboBox.setModel(modeloano);

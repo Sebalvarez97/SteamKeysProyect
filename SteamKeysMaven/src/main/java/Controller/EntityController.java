@@ -119,10 +119,15 @@ public interface EntityController {
         return keysController.findKey(k.getId());
     }
     public static KeyState find(KeyState ks){
-        return stateController.findKeyState(ks.getStateDescription());
+        if(findIfExist(ks)){
+            return stateController.findKeyState(ks.getStateDescription());
+        }else return null;
+        
     }
     public static KeyType find(KeyType kt){
-        return typeController.findKeyType(kt.getTypeDescription());
+        if(findIfExist(kt)){
+            return typeController.findKeyType(kt.getTypeDescription());
+        }else return null;
     }
     public static SteamParameters find(SteamParameters sp){
         return paramController.findSteamParameters(sp.getName());
