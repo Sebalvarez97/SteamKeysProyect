@@ -104,9 +104,9 @@ private void AddNewKey(){
     String type = (String) ComboBoxTypes.getSelectedItem();
     String state = "Untradeable";
     int cantidad = getCantValue();
-    int keyprice = KeyManager.findParameter("KeysPrice").getValue();
+    int keyprice = KeyManager.getKeyPrice();
     int total = cantidad * keyprice;
-    int saldo = KeyManager.findParameter("Saldo").getValue();
+    int saldo = KeyManager.getBalanceMoney();
     if(saldo-total <0){
         throw new Exception("Not enough money");
     }else{

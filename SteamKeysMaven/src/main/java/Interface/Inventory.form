@@ -28,12 +28,20 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="InventoryPanel" alignment="0" max="32767" attributes="0"/>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="InventoryPanel" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+          </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="InventoryPanel" min="-2" max="-2" attributes="0"/>
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace max="32767" attributes="0"/>
+              <Component id="InventoryPanel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+          </Group>
       </Group>
     </DimensionLayout>
   </Layout>
@@ -45,114 +53,47 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
+                          <Component id="InventoryTittle" min="-2" pref="101" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
                           <Component id="ConfigButton" min="-2" pref="32" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="HistoryButton" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="96" max="-2" attributes="0"/>
-                          <Component id="InitialMessage" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="48" max="-2" attributes="0"/>
-                          <Component id="InventoryTittle" min="-2" pref="101" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
+                  <Component id="InitialMessage" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="180" max="-2" attributes="0"/>
                   <Component id="ReloadButton" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="83" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
               </Group>
-              <Group type="102" attributes="0">
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Group type="102" attributes="0">
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          <Component id="SellButton" min="-2" pref="71" max="-2" attributes="0"/>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="TradeButton" min="-2" pref="75" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
-                          <Component id="NewKeyButton" min="-2" pref="86" max="-2" attributes="0"/>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="DeleteButton" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="TotalTittle" min="-2" max="-2" attributes="0"/>
-                              <Group type="102" attributes="0">
-                                  <Component id="BalanceTittle" min="-2" pref="49" max="-2" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="103" groupAlignment="1" attributes="0">
-                                          <Component id="KeyTableScroll" alignment="1" min="-2" pref="532" max="-2" attributes="0"/>
-                                          <Group type="102" attributes="0">
-                                              <Component id="CantTittle" min="-2" max="-2" attributes="0"/>
-                                              <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
-                                              <Component id="TradTittle" min="-2" max="-2" attributes="0"/>
-                                              <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
-                                              <Component id="UntradTittle" min="-2" max="-2" attributes="0"/>
-                                              <EmptySpace min="-2" pref="196" max="-2" attributes="0"/>
-                                          </Group>
-                                      </Group>
-                                      <Component id="Balance" alignment="0" min="-2" pref="61" max="-2" attributes="0"/>
-                                  </Group>
-                              </Group>
-                          </Group>
-                      </Group>
-                  </Group>
-                  <EmptySpace pref="92" max="32767" attributes="0"/>
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+                  <Component id="KeyPanel" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="28" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="-2" pref="56" max="-2" attributes="0"/>
-                                  <Component id="ReloadButton" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="103" groupAlignment="3" attributes="0">
-                                          <Component id="ConfigButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          <Component id="HistoryButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Component id="InitialMessage" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                              </Group>
-                          </Group>
-                          <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="1" attributes="0">
-                          <Component id="InventoryTittle" min="-2" pref="21" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="CantTittle" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="TradTittle" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
-                      <Component id="UntradTittle" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
                   <EmptySpace max="32767" attributes="0"/>
-                  <Component id="KeyTableScroll" min="-2" pref="230" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="BalanceTittle" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="Balance" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="ConfigButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="HistoryButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <Component id="InitialMessage" min="-2" max="-2" attributes="0"/>
+                      <Component id="ReloadButton" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
+                  <EmptySpace type="separate" max="32767" attributes="0"/>
+                  <Component id="InventoryTittle" min="-2" pref="21" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="TotalTittle" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="26" max="32767" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="DeleteButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="NewKeyButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="TradeButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="SellButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace pref="39" max="32767" attributes="0"/>
+                  <Component id="KeyPanel" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="25" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -174,47 +115,242 @@
             <Property name="text" type="java.lang.String" value="Inventory"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="DeleteButton">
+        <Component class="javax.swing.JButton" name="ConfigButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Delete Key"/>
+            <Property name="text" type="java.lang.String" value="..."/>
             <Property name="focusable" type="boolean" value="false"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="DeleteButtonActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ConfigButtonActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="NewKeyButton">
+        <Component class="javax.swing.JButton" name="HistoryButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Add Key"/>
+            <Property name="text" type="java.lang.String" value="History"/>
             <Property name="focusable" type="boolean" value="false"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="NewKeyButtonActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="HistoryButtonActionPerformed"/>
           </Events>
         </Component>
-        <Container class="javax.swing.JScrollPane" name="KeyTableScroll">
-          <AuxValues>
-            <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
-          </AuxValues>
+        <Container class="javax.swing.JPanel" name="KeyPanel">
 
-          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="TotalTittle" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Component id="BalanceTittle" min="-2" max="-2" attributes="0"/>
+                                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                                              <Component id="Balance" min="-2" pref="49" max="-2" attributes="0"/>
+                                          </Group>
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <EmptySpace min="-2" pref="161" max="-2" attributes="0"/>
+                                              <Component id="SellButton" min="-2" pref="61" max="-2" attributes="0"/>
+                                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                                              <Component id="TradeButton" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                      </Group>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                      <Component id="KeyTableScroll" min="-2" pref="379" max="-2" attributes="0"/>
+                                      <EmptySpace pref="16" max="32767" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="ChartPanel" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="NewKeyButton" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                      <Component id="DeleteButton" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="69" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="CantTittle" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="49" max="-2" attributes="0"/>
+                                      <Component id="UntradTittle" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="48" max="-2" attributes="0"/>
+                                      <Component id="TradTittle" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                          </Group>
+                      </Group>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="ChartPanel" max="32767" attributes="0"/>
+                          <Component id="KeyTableScroll" pref="260" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="BalanceTittle" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="Balance" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="separate" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="TotalTittle" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="CantTittle" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="UntradTittle" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="TradTittle" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace pref="27" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="TradeButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="DeleteButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="SellButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="NewKeyButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
           <SubComponents>
-            <Component class="javax.swing.JTable" name="KeyTable">
+            <Component class="javax.swing.JButton" name="TradeButton">
               <Properties>
-                <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                  <Table columnCount="0" rowCount="0"/>
-                </Property>
-                <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
-                  <TableColumnModel selectionModel="1"/>
-                </Property>
+                <Property name="text" type="java.lang.String" value="Trade"/>
                 <Property name="focusable" type="boolean" value="false"/>
-                <Property name="requestFocusEnabled" type="boolean" value="false"/>
-                <Property name="selectionModel" type="javax.swing.ListSelectionModel" editor="org.netbeans.modules.form.editors2.JTableSelectionModelEditor">
-                  <JTableSelectionModel selectionMode="2"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="TradeButtonActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JFormattedTextField" name="Balance">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="debugGraphicsOptions" type="int" value="-1"/>
+                <Property name="name" type="java.lang.String" value="Balance" noResource="true"/>
+              </Properties>
+              <AccessibilityProperties>
+                <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Balance"/>
+              </AccessibilityProperties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="TotalTittle">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Comic Sans MS" size="14" style="1"/>
                 </Property>
-                <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
-                  <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
+                <Property name="text" type="java.lang.String" value="Total"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="SellButton">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Sell"/>
+                <Property name="focusable" type="boolean" value="false"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="SellButtonActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="NewKeyButton">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Add Key"/>
+                <Property name="focusable" type="boolean" value="false"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="NewKeyButtonActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="DeleteButton">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Delete Key"/>
+                <Property name="focusable" type="boolean" value="false"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="DeleteButtonActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="BalanceTittle">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Comic Sans MS" size="14" style="0"/>
                 </Property>
+                <Property name="text" type="java.lang.String" value="Balance"/>
+              </Properties>
+            </Component>
+            <Container class="javax.swing.JPanel" name="ChartPanel">
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <Component id="ChartLabel" min="-2" pref="370" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="ChartLabel" alignment="0" max="32767" attributes="0"/>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="ChartLabel">
+                </Component>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JScrollPane" name="KeyTableScroll">
+              <AuxValues>
+                <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+              </AuxValues>
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+              <SubComponents>
+                <Component class="javax.swing.JTable" name="KeyTable">
+                  <Properties>
+                    <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+                      <Table columnCount="0" rowCount="0"/>
+                    </Property>
+                    <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
+                      <TableColumnModel selectionModel="1"/>
+                    </Property>
+                    <Property name="focusable" type="boolean" value="false"/>
+                    <Property name="requestFocusEnabled" type="boolean" value="false"/>
+                    <Property name="selectionModel" type="javax.swing.ListSelectionModel" editor="org.netbeans.modules.form.editors2.JTableSelectionModelEditor">
+                      <JTableSelectionModel selectionMode="2"/>
+                    </Property>
+                    <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
+                      <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
+                    </Property>
+                  </Properties>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Component class="javax.swing.JLabel" name="CantTittle">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Cant. Keys:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="UntradTittle">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Untradeables:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="TradTittle">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Tradeables:"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -226,83 +362,6 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ReloadButtonActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JLabel" name="CantTittle">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Cant. Keys:"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JLabel" name="TradTittle">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Tradeables:"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JLabel" name="UntradTittle">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Untradeables:"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JLabel" name="BalanceTittle">
-          <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Comic Sans MS" size="14" style="0"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="Balance"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JLabel" name="TotalTittle">
-          <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Comic Sans MS" size="14" style="1"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="Total"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="ConfigButton">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="..."/>
-            <Property name="focusable" type="boolean" value="false"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ConfigButtonActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="TradeButton">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Trade"/>
-            <Property name="focusable" type="boolean" value="false"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="TradeButtonActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="SellButton">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Sell"/>
-            <Property name="focusable" type="boolean" value="false"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="SellButtonActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JFormattedTextField" name="Balance">
-          <Properties>
-            <Property name="horizontalAlignment" type="int" value="4"/>
-            <Property name="debugGraphicsOptions" type="int" value="-1"/>
-            <Property name="name" type="java.lang.String" value="Balance" noResource="true"/>
-          </Properties>
-          <AccessibilityProperties>
-            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Balance"/>
-          </AccessibilityProperties>
-        </Component>
-        <Component class="javax.swing.JButton" name="HistoryButton">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="History"/>
-            <Property name="focusable" type="boolean" value="false"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="HistoryButtonActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

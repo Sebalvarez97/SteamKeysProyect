@@ -180,6 +180,22 @@ public class KeyManager {
         total = keycant * keyprice + saldo;
         return total;
     }
+    //DEVUELVE EL VALOR EN DINERO DE LAS LLAVES TOTALES
+    public static int getKeysMoney() throws NonexistentEntityException{
+        int total = 0;
+        int keycant = CantWithState(new TypeStateDTO("Tradeable")) + CantWithState(new TypeStateDTO("Untradeable"));
+        int keyprice = findParameter("KeysPrice").getValue();
+        total = keycant * keyprice;
+        return total;
+    }
+    //DEVUELVE EL VALOR DEL SALDO
+    public static int getBalanceMoney(){
+        return findParameter("Saldo").getValue();
+    }
+    //DEVUELVE EL VALOR DE LAS LLAVES
+    public static int getKeyPrice(){
+        return findParameter("KeysPrice").getValue();
+    }
     //DEVUELVE TRUE SI LA CADENA INGRESADA ES UN NUMERO, SINO DEVUELVE FALSE
     public static boolean isNumber(String str) {
         return (str.matches("[+-]?\\d*(\\.\\d+)?") && str.equals("")==false);
@@ -463,7 +479,7 @@ public class KeyManager {
     }
     
     //BUSCA EL PARAMETRO INDICADO
-    public static ParameterDTO findParameter(String name){
+    private static ParameterDTO findParameter(String name){
         SteamParameters sp = EntityController.find(new SteamParameters(name));
         ParameterDTO p = new ParameterDTO();
         p.setDescription(sp.getDescription());

@@ -31,11 +31,9 @@ public class Configurations extends Interface {
         return KeyManager.numberConvertor(input);
     }
 
-    private void ShowConfiguration(){
-        ParameterDTO dto = KeyManager.findParameter("KeysPrice");
-        double keyprice = (double) dto.getValue();
-        keyprice = keyprice/100;
-        KeyField.setText(String.valueOf(keyprice));
+    private void ShowConfiguration(){     
+        int keyprice = KeyManager.getKeyPrice();
+        KeyField.setText(KeyManager.numberConvertor(keyprice));
     }
     private void ChangeKeyValue(){
         try {

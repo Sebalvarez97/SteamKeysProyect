@@ -15,6 +15,15 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import steam.jewishs.steamkeysmaven.KeyManager;
 
+import java.awt.image.BufferedImage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
+
 
 public class Inventory extends Interface{
     
@@ -44,7 +53,27 @@ public class Inventory extends Interface{
         this.setLocationRelativeTo(getLastWindow());
         OpenWindow(this);
     }
-
+    private void LoadChart(){
+        try {
+            JFreeChart barra = null;
+            DefaultCategoryDataset datos;
+            datos = new DefaultCategoryDataset();
+            int total = KeyManager.getTotalMoney();
+            int valorenkeys = KeyManager.getKeysMoney();
+            int saldo = KeyManager.getBalanceMoney();
+            datos.setValue(Double.parseDouble(KeyManager.numberConvertor(total)), "Total", "");
+            datos.setValue(Double.parseDouble(KeyManager.numberConvertor(valorenkeys)), "KeysValue", "");       
+            datos.setValue(Double.parseDouble(KeyManager.numberConvertor(saldo)), "Balance", "");
+            barra = ChartFactory.createBarChart("Money Chart", "","$",datos,PlotOrientation.VERTICAL,true,true,true);
+            BufferedImage graficoBarra=barra.createBufferedImage(ChartPanel.getWidth(), ChartPanel.getHeight());
+            
+            ChartLabel.setSize(ChartPanel.getSize());
+            ChartLabel.setIcon(new ImageIcon(graficoBarra));
+            ChartPanel.updateUI();
+        } catch (NonexistentEntityException ex) {
+            MessageDialog(ex.getMessage());
+        }
+    }
     //CONFIGURACION DE LA TABLA
     private void SetKeyTable(){
         KeyTable.getTableHeader().setResizingAllowed(false);//DESABILITA LA EDICION DE LAS COLUMNAS
@@ -57,13 +86,12 @@ public class Inventory extends Interface{
         ListTable();
         SetKeyTable();
         SetEstadistics();
+        LoadChart();
     }
     //INICIALIZA EL SALDO DE STEAM CON EL VALOR GUARDADO EN BASE DE DATOS
     public void initSaldo(){
-        ParameterDTO dto = KeyManager.findParameter("Saldo");
-        double saldo = (double) dto.getValue();
-        saldo = saldo/100;
-        Balance.setText(String.valueOf(saldo));
+        int saldo = KeyManager.getBalanceMoney();
+        Balance.setText(KeyManager.numberConvertor(saldo));
     }
     //DEVUELVE LA ENTRADA DEL JTEXTFIELD DEL SALDO DE STEAM
     private int getBalanceInput() throws Exception{
@@ -223,21 +251,24 @@ public class Inventory extends Interface{
         InventoryPanel = new javax.swing.JPanel();
         InitialMessage = new javax.swing.JLabel();
         InventoryTittle = new javax.swing.JLabel();
-        DeleteButton = new javax.swing.JButton();
+        ConfigButton = new javax.swing.JButton();
+        HistoryButton = new javax.swing.JButton();
+        KeyPanel = new javax.swing.JPanel();
+        TradeButton = new javax.swing.JButton();
+        Balance = new javax.swing.JFormattedTextField();
+        TotalTittle = new javax.swing.JLabel();
+        SellButton = new javax.swing.JButton();
         NewKeyButton = new javax.swing.JButton();
+        DeleteButton = new javax.swing.JButton();
+        BalanceTittle = new javax.swing.JLabel();
+        ChartPanel = new javax.swing.JPanel();
+        ChartLabel = new javax.swing.JLabel();
         KeyTableScroll = new javax.swing.JScrollPane();
         KeyTable = new javax.swing.JTable();
-        ReloadButton = new javax.swing.JButton();
         CantTittle = new javax.swing.JLabel();
-        TradTittle = new javax.swing.JLabel();
         UntradTittle = new javax.swing.JLabel();
-        BalanceTittle = new javax.swing.JLabel();
-        TotalTittle = new javax.swing.JLabel();
-        ConfigButton = new javax.swing.JButton();
-        TradeButton = new javax.swing.JButton();
-        SellButton = new javax.swing.JButton();
-        Balance = new javax.swing.JFormattedTextField();
-        HistoryButton = new javax.swing.JButton();
+        TradTittle = new javax.swing.JLabel();
+        ReloadButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setName("InventoryFrame"); // NOI18N
@@ -249,11 +280,42 @@ public class Inventory extends Interface{
         InventoryTittle.setFont(new java.awt.Font("Comic Sans MS", 3, 18)); // NOI18N
         InventoryTittle.setText("Inventory");
 
-        DeleteButton.setText("Delete Key");
-        DeleteButton.setFocusable(false);
-        DeleteButton.addActionListener(new java.awt.event.ActionListener() {
+        ConfigButton.setText("...");
+        ConfigButton.setFocusable(false);
+        ConfigButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DeleteButtonActionPerformed(evt);
+                ConfigButtonActionPerformed(evt);
+            }
+        });
+
+        HistoryButton.setText("History");
+        HistoryButton.setFocusable(false);
+        HistoryButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                HistoryButtonActionPerformed(evt);
+            }
+        });
+
+        TradeButton.setText("Trade");
+        TradeButton.setFocusable(false);
+        TradeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TradeButtonActionPerformed(evt);
+            }
+        });
+
+        Balance.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        Balance.setDebugGraphicsOptions(javax.swing.DebugGraphics.NONE_OPTION);
+        Balance.setName("Balance"); // NOI18N
+
+        TotalTittle.setFont(new java.awt.Font("Comic Sans MS", 1, 14)); // NOI18N
+        TotalTittle.setText("Total");
+
+        SellButton.setText("Sell");
+        SellButton.setFocusable(false);
+        SellButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SellButtonActionPerformed(evt);
             }
         });
 
@@ -264,6 +326,30 @@ public class Inventory extends Interface{
                 NewKeyButtonActionPerformed(evt);
             }
         });
+
+        DeleteButton.setText("Delete Key");
+        DeleteButton.setFocusable(false);
+        DeleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DeleteButtonActionPerformed(evt);
+            }
+        });
+
+        BalanceTittle.setFont(new java.awt.Font("Comic Sans MS", 0, 14)); // NOI18N
+        BalanceTittle.setText("Balance");
+
+        javax.swing.GroupLayout ChartPanelLayout = new javax.swing.GroupLayout(ChartPanel);
+        ChartPanel.setLayout(ChartPanelLayout);
+        ChartPanelLayout.setHorizontalGroup(
+            ChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ChartPanelLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(ChartLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        ChartPanelLayout.setVerticalGroup(
+            ChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(ChartLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
 
         KeyTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -279,59 +365,90 @@ public class Inventory extends Interface{
         KeyTableScroll.setViewportView(KeyTable);
         KeyTable.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
+        CantTittle.setText("Cant. Keys:");
+
+        UntradTittle.setText("Untradeables:");
+
+        TradTittle.setText("Tradeables:");
+
+        javax.swing.GroupLayout KeyPanelLayout = new javax.swing.GroupLayout(KeyPanel);
+        KeyPanel.setLayout(KeyPanelLayout);
+        KeyPanelLayout.setHorizontalGroup(
+            KeyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(KeyPanelLayout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addGroup(KeyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(KeyPanelLayout.createSequentialGroup()
+                        .addComponent(TotalTittle)
+                        .addContainerGap())
+                    .addGroup(KeyPanelLayout.createSequentialGroup()
+                        .addGroup(KeyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(KeyPanelLayout.createSequentialGroup()
+                                .addGroup(KeyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(KeyPanelLayout.createSequentialGroup()
+                                        .addComponent(BalanceTittle)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(Balance, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(KeyPanelLayout.createSequentialGroup()
+                                        .addGap(161, 161, 161)
+                                        .addComponent(SellButton, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(TradeButton)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, KeyPanelLayout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(KeyTableScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 379, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)))
+                        .addGroup(KeyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, KeyPanelLayout.createSequentialGroup()
+                                .addComponent(ChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap())
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, KeyPanelLayout.createSequentialGroup()
+                                .addComponent(NewKeyButton)
+                                .addGap(18, 18, 18)
+                                .addComponent(DeleteButton)
+                                .addGap(69, 69, 69))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, KeyPanelLayout.createSequentialGroup()
+                                .addComponent(CantTittle)
+                                .addGap(49, 49, 49)
+                                .addComponent(UntradTittle)
+                                .addGap(48, 48, 48)
+                                .addComponent(TradTittle)
+                                .addGap(20, 20, 20))))))
+        );
+        KeyPanelLayout.setVerticalGroup(
+            KeyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(KeyPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(KeyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(ChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(KeyTableScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(KeyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(BalanceTittle)
+                    .addComponent(Balance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, Short.MAX_VALUE)
+                .addGroup(KeyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(TotalTittle)
+                    .addComponent(CantTittle)
+                    .addComponent(UntradTittle)
+                    .addComponent(TradTittle, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addGroup(KeyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(TradeButton)
+                    .addComponent(DeleteButton)
+                    .addComponent(SellButton)
+                    .addComponent(NewKeyButton))
+                .addGap(25, 25, 25))
+        );
+
+        Balance.getAccessibleContext().setAccessibleName("Balance");
+
         ReloadButton.setText("Reload");
         ReloadButton.setFocusable(false);
         ReloadButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ReloadButtonActionPerformed(evt);
-            }
-        });
-
-        CantTittle.setText("Cant. Keys:");
-
-        TradTittle.setText("Tradeables:");
-
-        UntradTittle.setText("Untradeables:");
-
-        BalanceTittle.setFont(new java.awt.Font("Comic Sans MS", 0, 14)); // NOI18N
-        BalanceTittle.setText("Balance");
-
-        TotalTittle.setFont(new java.awt.Font("Comic Sans MS", 1, 14)); // NOI18N
-        TotalTittle.setText("Total");
-
-        ConfigButton.setText("...");
-        ConfigButton.setFocusable(false);
-        ConfigButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ConfigButtonActionPerformed(evt);
-            }
-        });
-
-        TradeButton.setText("Trade");
-        TradeButton.setFocusable(false);
-        TradeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TradeButtonActionPerformed(evt);
-            }
-        });
-
-        SellButton.setText("Sell");
-        SellButton.setFocusable(false);
-        SellButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SellButtonActionPerformed(evt);
-            }
-        });
-
-        Balance.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        Balance.setDebugGraphicsOptions(javax.swing.DebugGraphics.NONE_OPTION);
-        Balance.setName("Balance"); // NOI18N
-
-        HistoryButton.setText("History");
-        HistoryButton.setFocusable(false);
-        HistoryButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                HistoryButtonActionPerformed(evt);
             }
         });
 
@@ -342,101 +459,55 @@ public class Inventory extends Interface{
             .addGroup(InventoryPanelLayout.createSequentialGroup()
                 .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(InventoryPanelLayout.createSequentialGroup()
+                        .addGap(51, 51, 51)
+                        .addComponent(InventoryTittle, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(InventoryPanelLayout.createSequentialGroup()
                         .addGap(21, 21, 21)
                         .addComponent(ConfigButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(HistoryButton)
-                        .addGap(96, 96, 96)
-                        .addComponent(InitialMessage))
-                    .addGroup(InventoryPanelLayout.createSequentialGroup()
-                        .addGap(48, 48, 48)
-                        .addComponent(InventoryTittle, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(HistoryButton)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(InitialMessage)
+                .addGap(180, 180, 180)
                 .addComponent(ReloadButton)
-                .addGap(83, 83, 83))
+                .addGap(36, 36, 36))
             .addGroup(InventoryPanelLayout.createSequentialGroup()
-                .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(InventoryPanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(SellButton, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(TradeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(40, 40, 40)
-                        .addComponent(NewKeyButton, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(DeleteButton))
-                    .addGroup(InventoryPanelLayout.createSequentialGroup()
-                        .addGap(51, 51, 51)
-                        .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(TotalTittle)
-                            .addGroup(InventoryPanelLayout.createSequentialGroup()
-                                .addComponent(BalanceTittle, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(KeyTableScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 532, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGroup(InventoryPanelLayout.createSequentialGroup()
-                                            .addComponent(CantTittle)
-                                            .addGap(45, 45, 45)
-                                            .addComponent(TradTittle)
-                                            .addGap(43, 43, 43)
-                                            .addComponent(UntradTittle)
-                                            .addGap(196, 196, 196)))
-                                    .addComponent(Balance, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addContainerGap(92, Short.MAX_VALUE))
+                .addGap(21, 21, 21)
+                .addComponent(KeyPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         InventoryPanelLayout.setVerticalGroup(
             InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(InventoryPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(InventoryPanelLayout.createSequentialGroup()
-                        .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(InventoryPanelLayout.createSequentialGroup()
-                                .addGap(56, 56, 56)
-                                .addComponent(ReloadButton))
-                            .addGroup(InventoryPanelLayout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(ConfigButton)
-                                        .addComponent(HistoryButton))
-                                    .addComponent(InitialMessage))))
-                        .addGap(33, 33, 33))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, InventoryPanelLayout.createSequentialGroup()
-                        .addComponent(InventoryTittle, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(15, 15, 15)))
-                .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(CantTittle)
-                    .addComponent(TradTittle, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(UntradTittle))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(KeyTableScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
-                .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(BalanceTittle)
-                    .addComponent(Balance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(ConfigButton)
+                        .addComponent(HistoryButton))
+                    .addComponent(InitialMessage)
+                    .addComponent(ReloadButton))
+                .addGap(18, 18, Short.MAX_VALUE)
+                .addComponent(InventoryTittle, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(TotalTittle)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                .addGroup(InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(DeleteButton)
-                    .addComponent(NewKeyButton)
-                    .addComponent(TradeButton)
-                    .addComponent(SellButton))
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addComponent(KeyPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(25, Short.MAX_VALUE))
         );
-
-        Balance.getAccessibleContext().setAccessibleName("Balance");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(InventoryPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(InventoryPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(InventoryPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(InventoryPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         getAccessibleContext().setAccessibleName("MenuWindow");
@@ -500,12 +571,15 @@ public class Inventory extends Interface{
     private javax.swing.JFormattedTextField Balance;
     private javax.swing.JLabel BalanceTittle;
     private javax.swing.JLabel CantTittle;
+    private javax.swing.JLabel ChartLabel;
+    private javax.swing.JPanel ChartPanel;
     private javax.swing.JButton ConfigButton;
     private javax.swing.JButton DeleteButton;
     private javax.swing.JButton HistoryButton;
     private javax.swing.JLabel InitialMessage;
     private javax.swing.JPanel InventoryPanel;
     private javax.swing.JLabel InventoryTittle;
+    private javax.swing.JPanel KeyPanel;
     private javax.swing.JTable KeyTable;
     private javax.swing.JScrollPane KeyTableScroll;
     private javax.swing.JButton NewKeyButton;

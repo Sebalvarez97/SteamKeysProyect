@@ -28,13 +28,20 @@
         <version>4.3.1.Final</version>
     </dependency>
     
-    <!--Using mysql database-->
+        <!-- https://mvnrepository.com/artifact/org.jfree/jfreechart -->
+    <dependency>
+        <groupId>org.jfree</groupId>
+        <artifactId>jfreechart</artifactId>
+        <version>1.5.0</version>
+    </dependency>
+
+    <!--Using mysql database
   
     <dependency>
         <groupId>mysql</groupId>
         <artifactId>mysql-connector-java</artifactId>
         <version>8.0.11</version>
-    </dependency>
+    </dependency>-->
    
     
     <!--Using h2 database-->
