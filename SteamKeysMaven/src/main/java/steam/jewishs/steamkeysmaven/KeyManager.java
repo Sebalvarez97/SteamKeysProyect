@@ -461,12 +461,15 @@ public class KeyManager {
     //CAMBIA EL VALOR DEL SALDO
     public static void UpdateSaldo(int saldo) throws Exception{
         setValue(new ParameterDTO("Saldo", "", saldo));
+        UpdateHistory();
     }
     //CAMBIA EL PRECIO DE LAS KEY 
     public static void UpdateKeyPrice(int price) throws Exception{
         setValue(new ParameterDTO("KeysPrice","", price));
     }
-    
+    public static void UpdateHistory(){
+        
+    }
     //MODIFICAR VALOR DE LA KEY
     private static void setKeyPrice(int price) throws Exception{
         SteamParameters sp = EntityController.find(new SteamParameters("KeysPrice"));

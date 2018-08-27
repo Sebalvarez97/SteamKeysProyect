@@ -24,7 +24,7 @@ public interface EntityController {
     static KeyJpaController keysController = new KeyJpaController(emf);
     static KeyTypeJpaController typeController = new KeyTypeJpaController(emf);
     static KeyStateJpaController stateController = new KeyStateJpaController(emf);
-    
+    static HistoryJpaController historyController = new HistoryJpaController(emf);
     
     //CUENTA LAS LLAVES EN LA BASE DE DATOS ***MAL HECHO ARREGLAR****
     public static int KeyCant(){
@@ -62,6 +62,9 @@ public interface EntityController {
     public static void create(Trade t){
         tradeController.create(t);
     }
+    public static void create(History h){
+        historyController.create(h);
+    }
     
    //DESTRUYE LAS ENTIDADES POR TIPO DE ENTIDAD 
     public static void destroy(Key key) throws NonexistentEntityException{
@@ -81,6 +84,9 @@ public interface EntityController {
     }
     public static void destroy(Trade t) throws NonexistentEntityException{
         tradeController.destroy(t.getId());
+    }
+    public static void destroy(History h){
+        historyController.destroy(h.getId());
     }
     
     
@@ -135,8 +141,14 @@ public interface EntityController {
     public static Trade find(Trade t){
         return tradeController.findTrade(t.getId());
     }
+    public static History find(History h){
+        return historyController.findHistory(h.getId());
+    }
     public static Trade findWithDate(Trade t){
         return tradeController.findTrade(t.getDateoftrade());
+    }
+    public static History findWithDate(History h){
+        return historyController.findHistory(h.getDate());
     }
     
     
@@ -156,6 +168,9 @@ public interface EntityController {
     public static List<Trade> ListTrades(){
             return tradeController.findTradeEntities();
     }
+    public static List<History> ListHistory(){
+            return historyController.findHistoryEntities();
+    }
     //EDITA LA ENTIDAD
     public static void Edit(Key key) throws Exception{
         keysController.edit(key);
@@ -171,5 +186,8 @@ public interface EntityController {
     }
     public static void Edit(Trade t) throws Exception{
         tradeController.edit(t);
+    }
+    public static void Edit(History h) throws Exception{
+        historyController.edit(h);
     }
 }
