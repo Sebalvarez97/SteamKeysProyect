@@ -78,33 +78,39 @@ public class KeyManager {
         return key;
     }
 //BORRA LA KEY
-    public static void DeleteKey(KeyDTO ktu){
+    public static void DeleteKey(KeyDTO ktu) throws NonexistentEntityException{
         Key key = new Key();
         key.setId(ktu.getId());
         try {
             EntityController.destroy(key);
         } catch (NonexistentEntityException ex) {
            //se enviaran al ExceptionManager
-        }  
+        }
+        UpdateHistory();
     }
     //DEVUELVE SI ES TRADEABLE LA LLAVE
     private static boolean isTradeable(Key key){
+        return HavePassed(key.getBuyDate(), 8);      
+    }
+    //DEVUELVE TRUE SI HAN PASADO LA CANTIDAD DE DIAS INDICADOS DESDE LA FECHA INDICADA
+    private static boolean HavePassed(Date date, int days){
         Date datenow = Calendar.getInstance().getTime();
-//        datenow = ConvertDate(datenow);
-        Date release = ReleaseDate(key.getBuyDate());
-        if(datenow.after(release)){
+        if(datenow.after(SumResDate(date, days))){
             return true;
         }else{
             return false;
         }
-        
-    }//FECHA DE LIBERACION
+    }
+    //FECHA DE LIBERACION
     public static Date ReleaseDate(Date date){
+        return SumResDate(date, 8);
+    }
+    //SUMA O RESTA LOS DIAS INGRESADOS A LA FECHA INGRESADA
+    private static Date SumResDate(Date date, int value){
         Calendar cal = Calendar.getInstance();
         cal.clear();
         cal.setTime(date);
-        cal.add(Calendar.DAY_OF_MONTH, 8);
-        
+        cal.add(Calendar.DAY_OF_MONTH, value );
         return cal.getTime();
     }
     //ACTUALIZA EL ESTADO DE LAS LLAVES DEL INVENTARIO 
@@ -466,9 +472,24 @@ public class KeyManager {
     //CAMBIA EL PRECIO DE LAS KEY 
     public static void UpdateKeyPrice(int price) throws Exception{
         setValue(new ParameterDTO("KeysPrice","", price));
+        UpdateHistory();
     }
-    public static void UpdateHistory(){
-        
+    private static void UpdateHistory() throws NonexistentEntityException{
+        DeleteUnUsedHistory();
+        History h = new History();
+        h.setDate(Calendar.getInstance().getTime());
+        h.setTotalmoney(KeyManager.getTotalMoney());
+        EntityController.create(h);
+    }
+    private static void DeleteUnUsedHistory() throws NonexistentEntityException{
+        List<History> hist = EntityController.ListHistory();
+        if(!hist.isEmpty()){
+            for(History h : hist){
+                if(HavePassed(h.getDate(),8)){
+                    EntityController.destroy(h);
+                }
+            }
+        }
     }
     //MODIFICAR VALOR DE LA KEY
     private static void setKeyPrice(int price) throws Exception{

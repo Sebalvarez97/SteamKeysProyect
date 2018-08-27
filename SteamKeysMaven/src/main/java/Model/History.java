@@ -41,6 +41,10 @@ public class History implements Serializable {
         return serialVersionUID;
     }
 
+    public History() {
+        
+    }
+
     public Date getDate() {
         return date;
     }

@@ -98,44 +98,27 @@ public class Inventory extends Interface{
         String saldo = Balance.getText();
         return KeyManager.numberConvertor(saldo);
     }
- 
     //ACTUALIZA EL VALOR DEL SALDO DE STEAM
     private void UpdateSaldo() throws Exception {
-        try{
             int input = getBalanceInput();
             KeyManager.UpdateSaldo(input);
-        }catch(Exception ex){
-            throw new Exception("bad enter");
-        }
     }
-    //MUESTRA EL TOTAL EN PESOS
-    private void showTotal(){
-        try {
-            UpdateSaldo();
-            double total = (double) KeyManager.getTotalMoney();
-            total = total/100;
-            TotalTittle.setText("TOTAL   "+ " $ " + Double.toString(total));
-        } catch (Exception ex) {
-            if (ex.getMessage().equals("bad enter")){
-                initSaldo();
-                MessageDialog("You entered a bad input in balance");
-                Reload();
-            }
-        }
-    }
+
     //MUESTRA LAS ESTADISTICAS DE LAS LLAVES (CANT TOTAL, TRADEABLES Y NO TRADEABLES, ETC)
     private void SetEstadistics(){
         try {
+            UpdateSaldo();
             int tradeables = KeyManager.CantWithState(new TypeStateDTO("Tradeable"));
             int untradeables = KeyManager.CantWithState(new TypeStateDTO("Untradeable"));
             int cantidad = tradeables + untradeables;
+            int totalmoney = KeyManager.getTotalMoney();
             CantTittle.setText("Cant.Keys: "+Integer.toString(cantidad));
             TradTittle.setText("Tradeables: "+Integer.toString(tradeables));
             UntradTittle.setText("Untradeables: "+Integer.toString(untradeables));
-            showTotal();
+            TotalTittle.setText("TOTAL   "+ "$ "+KeyManager.numberConvertor(totalmoney));
             
-        } catch (NonexistentEntityException ex) {
-            MessageDialog("bad enter estadistics");
+        } catch (Exception ex) {
+            MessageDialog(ex.getMessage());
         }
     }
     //CONFIGURA EL MODELO DE LA TABLA DE LLAVES Y LAS LISTA
@@ -207,8 +190,12 @@ public class Inventory extends Interface{
         if (confirmation == 0){
            Iterator iter = keys.iterator();
            while(iter.hasNext()){
-                KeyDTO dto = (KeyDTO) iter.next();
-                KeyManager.DeleteKey(dto);
+               try {
+                   KeyDTO dto = (KeyDTO) iter.next();
+                   KeyManager.DeleteKey(dto);
+               } catch (NonexistentEntityException ex) {
+                   MessageDialog(ex.getMessage());
+               }
             }
         }
       }

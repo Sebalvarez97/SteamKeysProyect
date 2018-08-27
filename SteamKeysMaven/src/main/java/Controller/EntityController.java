@@ -85,7 +85,7 @@ public interface EntityController {
     public static void destroy(Trade t) throws NonexistentEntityException{
         tradeController.destroy(t.getId());
     }
-    public static void destroy(History h){
+    public static void destroy(History h) throws NonexistentEntityException{
         historyController.destroy(h.getId());
     }
     
