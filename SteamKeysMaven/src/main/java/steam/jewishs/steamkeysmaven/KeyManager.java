@@ -110,7 +110,7 @@ public class KeyManager {
         Calendar cal = Calendar.getInstance();
         cal.clear();
         cal.setTime(date);
-        cal.add(Calendar.DAY_OF_MONTH, value );
+        cal.add(Calendar.DAY_OF_MONTH, value);
         return cal.getTime();
     }
     //ACTUALIZA EL ESTADO DE LAS LLAVES DEL INVENTARIO 
@@ -501,7 +501,12 @@ public class KeyManager {
             throw new Exception("THE PARAMETER DOES NOT EXIST");
         }
     }
-    
+    private static int getDay(Date date){
+        Calendar cal = Calendar.getInstance();
+        cal.clear();
+        cal.setTime(date);
+        return cal.get(Calendar.DAY_OF_MONTH);
+    } 
     //BUSCA EL PARAMETRO INDICADO
     private static ParameterDTO findParameter(String name){
         SteamParameters sp = EntityController.find(new SteamParameters(name));
@@ -510,6 +515,17 @@ public class KeyManager {
         p.setName(sp.getName());
         p.setValue(sp.getValue());
         return p;
+    }
+    public static List<Integer[]> ListHistory(){
+        List<Integer[]> ret = new ArrayList();
+        List<History> list = EntityController.ListHistory();
+        if(!list.isEmpty()){
+            list.forEach((h) -> {
+                Integer[] ob = {getDay(h.getDate()),h.getTotalmoney()};
+                ret.add(ob);
+            });
+        }
+        return ret;
     }
     //DEVUELVE UNA LISTA DE LOS TIPOS DE LLAVE EXISTENTES
     public static List<TypeStateDTO> ListTypes() throws NonexistentEntityException{
