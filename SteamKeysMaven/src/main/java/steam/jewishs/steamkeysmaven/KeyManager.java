@@ -475,8 +475,7 @@ public class KeyManager {
         UpdateHistory();
     }
     private static void UpdateHistory() throws NonexistentEntityException{
-        DeleteUnUsedHistory();
-        
+        DeleteUnUsedHistory();  
         //COMPARAR CON EL ULTIMO VALOR
             History h = new History();
             h.setDate(Calendar.getInstance().getTime());
