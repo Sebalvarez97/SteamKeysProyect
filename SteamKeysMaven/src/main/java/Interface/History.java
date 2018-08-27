@@ -26,12 +26,18 @@ import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartFrame;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.labels.StandardXYItemLabelGenerator;
 import org.jfree.chart.labels.XYItemLabelGenerator;
+import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.xy.DefaultHighLowDataset;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -65,8 +71,11 @@ DefaultTableModel modelotrades = new DefaultTableModel();
     
     private void LoadChart(){
     try {
-        this.ChartLabel.setIcon( new XYLineChart( this.ChartPanel.getSize() ) );
-        this.ChartLabel.setText("");
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+        ChartLabel.setSize(ChartPanel.getSize());
+        ChartLabel.setIcon( new XYLineChart( ChartPanel.getSize() ) );
+        ChartPanel.updateUI();
     } catch (Exception ex) {
         MessageDialog(ex.getMessage());
     }
@@ -90,19 +99,17 @@ DefaultTableModel modelotrades = new DefaultTableModel();
         }
         
     }
-    public class XYLineChart extends ImageIcon{
-
-    /** Constructor de clase 
- * @param d Dimension
- */
+public class XYLineChart extends ImageIcon{
+    
+    double maxy = 0;
+            
     public XYLineChart( Dimension d ) throws Exception{
-
         //se declara el grafico XY Lineal
         XYDataset xydataset = xyDataset();
         JFreeChart jfreechart = ChartFactory.createXYLineChart(
         "Money Chart" , "Time", "Total Money",  
         xydataset, PlotOrientation.VERTICAL,  true, true, false);               
-
+    
         //personalización del grafico
         XYPlot xyplot = (XYPlot) jfreechart.getPlot();
         xyplot.setBackgroundPaint( Color.white );
@@ -117,8 +124,18 @@ DefaultTableModel modelotrades = new DefaultTableModel();
         xylineandshaperenderer.setDefaultItemLabelsVisible(true);
         xylineandshaperenderer.setDefaultLinesVisible(true);
         xylineandshaperenderer.setDefaultItemLabelsVisible(true);                
+        
+        xyplot.setNoDataMessage("NO DATA");
+        //SET RANGE OF AXIS
+        NumberAxis domain = (NumberAxis) xyplot.getDomainAxis();
+        domain.setRange(0.00, 10.00);
+        domain.setTickUnit(new NumberTickUnit(1.0));
+        domain.setVerticalTickLabels(true);
+        NumberAxis range = (NumberAxis) xyplot.getRangeAxis();
+        System.out.println(maxy);
+        range.setRange(0.0, maxy+300);
+        range.setTickUnit(new NumberTickUnit(100.00));
         //fin de personalización
-
         //se crea la imagen y se asigna a la clase ImageIcon
         BufferedImage bufferedImage  = jfreechart.createBufferedImage( d.width, d.height);
         this.setImage(bufferedImage);
@@ -131,31 +148,22 @@ DefaultTableModel modelotrades = new DefaultTableModel();
 //        XYSeries sEgresos = new XYSeries("Egresos");        
         //serie #1
         List<Integer[]> list = KeyManager.ListHistory();
+        int i = 0;
         for(Integer[] ob : list){
             int x = ob[0];
             String y = KeyManager.numberConvertor(ob[1]);
-            sIngresos.add(x, Double.parseDouble(y));
+            double j = Double.parseDouble(y);
+            if(j>maxy){
+                maxy = j;
+            }
+            sIngresos.add(i,j);
+            i++;
         }
-//        sIngresos.add( 1, 340);
-//        sIngresos.add( 2, 210);
-//        sIngresos.add( 3, 410);
-//        sIngresos.add( 4, 200);
-//        sIngresos.add( 5, 525);
-//        sIngresos.add( 6, 492);
-//        sIngresos.add( 7, 390);
-        //serie #2
-//        sEgresos.add( 1, 90);
-//        sEgresos.add( 2, 434);
-//        sEgresos.add( 3, 741);
-//        sEgresos.add( 4, 91);
-//        sEgresos.add( 5, 412);
-//        sEgresos.add( 6, 361);
-//        sEgresos.add( 7, 271);
-
         XYSeriesCollection xyseriescollection =  new XYSeriesCollection();
         xyseriescollection.addSeries( sIngresos );        
 //        xyseriescollection.addSeries( sEgresos );        
-
+        
+        
         return xyseriescollection;
     }
 }
@@ -210,14 +218,14 @@ DefaultTableModel modelotrades = new DefaultTableModel();
         ChartPanel.setLayout(ChartPanelLayout);
         ChartPanelLayout.setHorizontalGroup(
             ChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ChartPanelLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ChartPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(ChartLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         ChartPanelLayout.setVerticalGroup(
             ChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ChartPanelLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ChartPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(ChartLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
                 .addContainerGap())

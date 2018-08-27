@@ -150,7 +150,10 @@ public interface EntityController {
     public static History findWithDate(History h){
         return historyController.findHistory(h.getDate());
     }
-    
+    public static History getLast(History h){
+        List<History> list = historyController.findHistoryEntities();
+        return list.get(list.lastIndexOf(new History()));
+    }
     
     //OBTIENE LA LISTA DE ENTIDADES
     public static List<Key> ListKeys(){

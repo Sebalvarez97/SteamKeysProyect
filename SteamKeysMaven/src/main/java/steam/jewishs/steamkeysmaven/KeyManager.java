@@ -476,18 +476,24 @@ public class KeyManager {
     }
     private static void UpdateHistory() throws NonexistentEntityException{
         DeleteUnUsedHistory();
-        History h = new History();
-        h.setDate(Calendar.getInstance().getTime());
-        h.setTotalmoney(KeyManager.getTotalMoney());
-        EntityController.create(h);
+        
+        //COMPARAR CON EL ULTIMO VALOR
+            History h = new History();
+            h.setDate(Calendar.getInstance().getTime());
+            h.setTotalmoney(KeyManager.getTotalMoney());
+            EntityController.create(h);
+       
+        
     }
     private static void DeleteUnUsedHistory() throws NonexistentEntityException{
         List<History> hist = EntityController.ListHistory();
+        int lastmoney = 0;
         if(!hist.isEmpty()){
             for(History h : hist){
-                if(HavePassed(h.getDate(),8)){
+                if(HavePassed(h.getDate(),8) || (h.getTotalmoney() == lastmoney)){
                     EntityController.destroy(h);
                 }
+                lastmoney = h.getTotalmoney();
             }
         }
     }
