@@ -31,7 +31,18 @@ public class History implements Serializable {
     
     @Column(name = "date")
     private Date date;
+    
+    @Column(name = "type")
+    private String type;
 
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
+    
     public History(Date date, int totalmoney) {
         this.date = date;
         this.totalmoney = totalmoney;

@@ -102,6 +102,7 @@ DefaultTableModel modelotrades = new DefaultTableModel();
 public class XYLineChart extends ImageIcon{
     
     double maxy = 0;
+    double miny = 0;
             
     public XYLineChart( Dimension d ) throws Exception{
         //se declara el grafico XY Lineal
@@ -128,12 +129,11 @@ public class XYLineChart extends ImageIcon{
         xyplot.setNoDataMessage("NO DATA");
         //SET RANGE OF AXIS
         NumberAxis domain = (NumberAxis) xyplot.getDomainAxis();
-        domain.setRange(0.00, 10.00);
+        domain.setRange(0.0, 10.00);
         domain.setTickUnit(new NumberTickUnit(1.0));
         domain.setVerticalTickLabels(true);
-        NumberAxis range = (NumberAxis) xyplot.getRangeAxis();
-        System.out.println(maxy);
-        range.setRange(maxy-300, maxy+200);
+        NumberAxis range = (NumberAxis) xyplot.getRangeAxis();;
+        range.setRange(miny-100, maxy+200);
         range.setTickUnit(new NumberTickUnit(100.00));
         //fin de personalización
         //se crea la imagen y se asigna a la clase ImageIcon
@@ -145,23 +145,58 @@ public class XYLineChart extends ImageIcon{
     {
         //se declaran las series y se llenan los datos
         XYSeries sIngresos = new XYSeries("Ingresos");
-//        XYSeries sEgresos = new XYSeries("Egresos");        
+        XYSeries keyMoney = new XYSeries("Money in keys");
+        XYSeries balanceMoney = new XYSeries("Balance");
         //serie #1
-        List<Integer[]> list = KeyManager.ListHistory();
+        List<Integer[]> list = KeyManager.ListHByType("Total");
         int i = 0;
+        for(Integer[] ob : list){
+            int x = ob[0];
+            String y = KeyManager.numberConvertor(ob[1]);
+            double j = Double.parseDouble(y);
+            if(i == 0){
+                miny = j;
+            }
+            if(j>maxy){
+                maxy = j;
+            }else if(j<miny){
+                miny = j;
+            }
+            sIngresos.add(i,j);
+            i++;
+        }
+        list = KeyManager.ListHByType("KeyValue");
+        i = 0;
         for(Integer[] ob : list){
             int x = ob[0];
             String y = KeyManager.numberConvertor(ob[1]);
             double j = Double.parseDouble(y);
             if(j>maxy){
                 maxy = j;
+            }else if(j<miny){
+                miny = j;
             }
-            sIngresos.add(i,j);
+            keyMoney.add(i,j);
             i++;
         }
+//        list = KeyManager.ListHByType("Balance");
+//        i = 0;
+//        for(Integer[] ob : list){
+//            int x = ob[0];
+//            String y = KeyManager.numberConvertor(ob[1]);
+//            double j = Double.parseDouble(y);
+//            if(j>maxy){
+//                maxy = j;
+//            }else if(j<miny){
+//                miny = j;
+//            }
+//            balanceMoney.add(i,j);
+//            i++;
+//        }
         XYSeriesCollection xyseriescollection =  new XYSeriesCollection();
         xyseriescollection.addSeries( sIngresos );        
-//        xyseriescollection.addSeries( sEgresos );        
+        xyseriescollection.addSeries( keyMoney ); 
+//        xyseriescollection.addSeries(balanceMoney);
         
         
         return xyseriescollection;

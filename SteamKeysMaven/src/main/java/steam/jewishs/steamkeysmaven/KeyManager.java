@@ -480,12 +480,22 @@ public class KeyManager {
             History h = new History();
             h.setDate(Calendar.getInstance().getTime());
             h.setTotalmoney(KeyManager.getTotalMoney());
+            h.setType("Total");
             EntityController.create(h);
-       
-        
+            h = new History();
+            h.setDate(Calendar.getInstance().getTime());
+            h.setTotalmoney(KeyManager.getKeysMoney());
+            h.setType("KeyValue");
+            EntityController.create(h);
+            h = new History();
+            h.setDate(Calendar.getInstance().getTime());
+            h.setTotalmoney(KeyManager.getBalanceMoney());
+            h.setType("Balance");
+            EntityController.create(h);
     }
+    //BORRA LOS HISTORY REDUNDANTES
     private static void DeleteUnUsedHistory() throws NonexistentEntityException{
-        List<History> hist = EntityController.ListHistory();
+        List<History> hist = ListHistoryByType("Total");
         int lastmoney = 0;
         if(!hist.isEmpty()){
             for(History h : hist){
@@ -495,6 +505,37 @@ public class KeyManager {
                 lastmoney = h.getTotalmoney();
             }
         }
+        lastmoney = 0;
+        hist = ListHistoryByType("KeyValue");
+        if(!hist.isEmpty()){
+            for(History h : hist){
+                if(HavePassed(h.getDate(),8) || (h.getTotalmoney() == lastmoney)){
+                    EntityController.destroy(h);
+                }
+                lastmoney = h.getTotalmoney();
+            }
+        }
+        lastmoney = 0;
+        hist = ListHistoryByType("Balance");
+        if(!hist.isEmpty()){
+            for(History h : hist){
+                if(HavePassed(h.getDate(),8) || (h.getTotalmoney() == lastmoney)){
+                    EntityController.destroy(h);
+                }
+                lastmoney = h.getTotalmoney();
+            }
+        }
+    }
+    //LISTA EL HISTORY SEGUN EL TIPO
+    private static List<History> ListHistoryByType(String type){
+        List<History> ret = new ArrayList();
+        List<History> hist = EntityController.ListHistory();
+        for(History h: hist){
+            if(h.getType().equals(type)){
+                ret.add(h);
+            }
+        }
+        return ret;
     }
     //MODIFICAR VALOR DE LA KEY
     private static void setKeyPrice(int price) throws Exception{
@@ -524,6 +565,17 @@ public class KeyManager {
     public static List<Integer[]> ListHistory(){
         List<Integer[]> ret = new ArrayList();
         List<History> list = EntityController.ListHistory();
+        if(!list.isEmpty()){
+            list.forEach((h) -> {
+                Integer[] ob = {getDay(h.getDate()),h.getTotalmoney()};
+                ret.add(ob);
+            });
+        }
+        return ret;
+    }
+    public static List<Integer[]> ListHByType(String type){
+        List<Integer[]> ret = new ArrayList();
+        List<History> list = KeyManager.ListHistoryByType(type);
         if(!list.isEmpty()){
             list.forEach((h) -> {
                 Integer[] ob = {getDay(h.getDate()),h.getTotalmoney()};

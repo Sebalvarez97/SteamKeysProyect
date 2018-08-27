@@ -113,7 +113,6 @@ public class HistoryJpaController implements Serializable {
             em.close();
         }
     }
-
     public History findHistory(Long id) {
         EntityManager em = getEntityManager();
         try {

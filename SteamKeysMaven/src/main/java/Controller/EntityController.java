@@ -7,6 +7,8 @@ package Controller;
 
 import Controller.exceptions.NonexistentEntityException;
 import Model.*;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -152,7 +154,9 @@ public interface EntityController {
     }
     public static History getLast(History h){
         List<History> list = historyController.findHistoryEntities();
-        return list.get(list.lastIndexOf(new History()));
+        Comparator<History> comparador = Collections.reverseOrder();
+        Collections.sort(list, comparador);
+        return list.get(0);
     }
     
     //OBTIENE LA LISTA DE ENTIDADES
