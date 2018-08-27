@@ -133,7 +133,7 @@ public class XYLineChart extends ImageIcon{
         domain.setVerticalTickLabels(true);
         NumberAxis range = (NumberAxis) xyplot.getRangeAxis();
         System.out.println(maxy);
-        range.setRange(0.0, maxy+300);
+        range.setRange(maxy-300, maxy+200);
         range.setTickUnit(new NumberTickUnit(100.00));
         //fin de personalización
         //se crea la imagen y se asigna a la clase ImageIcon
@@ -180,6 +180,7 @@ public class XYLineChart extends ImageIcon{
         ChartLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         TradeHistoryTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
