@@ -27,7 +27,7 @@ public class Trade extends Interface {
     DefaultListModel modelolista;
     private List<Object[]> Items = new ArrayList();
     
-
+    //CONSTRUCTOR
     public Trade() {
         initComponents();
         initICon();
@@ -62,7 +62,7 @@ public class Trade extends Interface {
         }
         initTrade();
     }
-        //INICIALIZA LAS TABLAS PARA EL TRADE
+    //INICIALIZA LAS TABLAS PARA EL TRADE
     private void initTrade(){
         try {
             PriceImput.setText("2.50");
@@ -196,6 +196,7 @@ public class Trade extends Interface {
         }
         Reload();
     }
+    //ACTUALIZA EL BALANCE DE SALDO EN LA PAGINA
     private void UpdateBalance(int value) throws Exception{
         int last = getBalanceInput();
         int nuevo = last + value;

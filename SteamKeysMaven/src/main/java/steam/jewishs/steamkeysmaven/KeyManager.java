@@ -43,6 +43,7 @@ public class KeyManager {
             //se enviaran al ExceptionManager
         }
     }
+    //DEVUELVE UN TYPESTATEDTO A PARTIR DE UN STRING DE ESTADO O TIPO
     private static TypeStateDTO getStateType(String str){
         TypeStateDTO ret = new TypeStateDTO();
         if(EntityController.findIfExist(new KeyState(str))){
@@ -77,7 +78,7 @@ public class KeyManager {
         Key key = EntityController.find(k);
         return key;
     }
-//BORRA LA KEY
+    //BORRA LA KEY
     public static void DeleteKey(KeyDTO ktu) throws NonexistentEntityException{
         Key key = new Key();
         key.setId(ktu.getId());
@@ -163,7 +164,7 @@ public class KeyManager {
         }
         return cantidad;
     }
-//DEVUELVE LA FECHA CONVERTIDA AL HORARIO DE STEAM 
+    //DEVUELVE LA FECHA CONVERTIDA AL HORARIO DE STEAM 
     public static Date ConvertDate(Date date){
         
         ZonedDateTime inicial = ZonedDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
@@ -476,6 +477,7 @@ public class KeyManager {
         setValue(new ParameterDTO("KeysPrice","", price));
         UpdateHistory();
     }
+    //GUARDA UN ESTADO DE HISTORIAL CON LAS 3 VARIABLES IMPORTAANTES
     private static void SaveHistory() throws NonexistentEntityException{
             History h = new History();
             h.setDate(Calendar.getInstance().getTime());
@@ -495,6 +497,7 @@ public class KeyManager {
             h.setType("Balance");
             EntityController.create(h);
     }
+    //ACTUALIZA EL HISTORIAL SI FUERA NECESARIO
     private static void UpdateHistory() throws NonexistentEntityException{
         DeleteUnUsedHistory();  
         List<History> last = EntityController.getLast(new History());
@@ -553,9 +556,16 @@ public class KeyManager {
             throw new Exception("THE PARAMETER DOES NOT EXIST");
         }
     }
-    private static int getDay(Date date){
+    //PERMITE OBTENER UN VALOR NUMERO REPRESENTATIVO DEL DIA Y HORA (EJEMPLO DIA 28, HORA 17, SERIA 287500)
+    private static int getDayTimeValue(Date date){
         ZonedDateTime fecha = ZonedDateTime.ofInstant(date.toInstant(),ZoneId.systemDefault());
-        return fecha.getDayOfMonth();
+        double razon = 1.0/24.00;
+        double razonmin = 1.0/60.00;
+        double day = fecha.getDayOfMonth()*10000;
+        double hour = fecha.getHour()* razon * 10000;
+        double min = fecha.getMinute()*razonmin*100;
+        double total = day + hour + min;
+        return (int) total;
     } 
     //BUSCA EL PARAMETRO INDICADO
     private static ParameterDTO findParameter(String name){
@@ -566,23 +576,25 @@ public class KeyManager {
         p.setValue(sp.getValue());
         return p;
     }
+    //LISTA LOS HISTORES PARA EL USO EN LA INTERFAZ
     public static List<Integer[]> ListHistory(){
         List<Integer[]> ret = new ArrayList();
         List<History> list = EntityController.ListHistory();
         if(!list.isEmpty()){
             list.forEach((h) -> {
-                Integer[] ob = {getDay(h.getDate()),h.getTotalmoney()};
+                Integer[] ob = {getDayTimeValue(h.getDate()),h.getTotalmoney()};
                 ret.add(ob);
             });
         }
         return ret;
     }
+    //LISTA LOS HISTORIES PARA USO EN LA INTERFAZ PERO POR TIPO
     public static List<Integer[]> ListHByType(String type){
         List<Integer[]> ret = new ArrayList();
         List<History> list = KeyManager.ListHistoryByType(type);
         if(!list.isEmpty()){
             list.forEach((h) -> {
-                Integer[] ob = {KeyManager.getDay(h.getDate()),h.getTotalmoney()};
+                Integer[] ob = {getDayTimeValue(h.getDate()),h.getTotalmoney()};
                 ret.add(ob);
             });
         }
@@ -625,7 +637,7 @@ public class KeyManager {
             EntityController.destroy(key);
         } 
     }
-  //DEVUELVE EL VALOR DE BENEFICIO A PARTIR DE UN VALOR DE VENTA
+    //DEVUELVE EL VALOR DE BENEFICIO A PARTIR DE UN VALOR DE VENTA
     public static int profit(int valor) throws Exception {     //buscar el valor de ganancia de un item a partir del valor de venta
         int buscar = valor;          //pasa el valor a int con dos decimales
         int cantidad = 1000000;                     //cantidad de digitos del array (de 0.01 a (cantidad/100)-1)

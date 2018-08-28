@@ -28,7 +28,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 public class Inventory extends Interface{
     
     DefaultTableModel modelotabla; //MODELO PARA LA TABLE DE LLAVES   
-//MANEJO DE VENTANAS
+    //MANEJO DE VENTANAS
     public static List<JFrame> windows = new ArrayList();
     public static JFrame getLastWindow(){
        return windows.get(windows.size()-1);
@@ -53,6 +53,7 @@ public class Inventory extends Interface{
         this.setLocationRelativeTo(getLastWindow());
         OpenWindow(this);
     }
+    //CARGA EL CHART
     private void LoadChart(){
         try {
             JFreeChart barra = null;

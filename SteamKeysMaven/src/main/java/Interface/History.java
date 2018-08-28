@@ -47,6 +47,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 public class History extends Interface {
 
 DefaultTableModel modelotrades = new DefaultTableModel();
+    //CONSTRUCTOR
     public History() {
         initComponents();
         initICon();
@@ -54,22 +55,24 @@ DefaultTableModel modelotrades = new DefaultTableModel();
         this.setLocationRelativeTo(Inventory.getLastWindow());
         initHistory();
     }
-
+    //INICIA LA PANTALLA
     public void initHistory(){
         Reload();
     }
+    //SETEA LOS PARAMETROS DE LA PANTALLA
     private void SetHistory(){
         TradeHistoryTable.getTableHeader().setResizingAllowed(false);
         TableColumn columnaid = TradeHistoryTable.getColumn("TradeID");
         columnaid.setPreferredWidth(50);
         columnaid.setMaxWidth(100);
     }
+    //CLASE PADRE, RECARGA LA PAGINA
     public void Reload(){
         ListHistory();
         SetHistory();
         LoadChart();
     }
-    
+    //CARGA EL CHART
     private void LoadChart(){
     try {
         ChartPanel.setSize(676,249);
@@ -80,7 +83,7 @@ DefaultTableModel modelotrades = new DefaultTableModel();
         MessageDialog(ex.getMessage());
     }
     }
-    
+    //MUESTRA LA LISTA DE TRADES
     private void ListHistory(){
         try {
             List<Object[]> trades = KeyManager.getTradeList();
@@ -99,6 +102,7 @@ DefaultTableModel modelotrades = new DefaultTableModel();
         }
         
     }
+    //CLASE NECESARIA PARA EL CHART
 public class XYLineChart extends ImageIcon{
     
     double maxy = 0;
@@ -110,7 +114,7 @@ public class XYLineChart extends ImageIcon{
         //se declara el grafico XY Lineal
         XYDataset xydataset = xyDataset();
         JFreeChart jfreechart = ChartFactory.createXYLineChart(
-        "Money Chart" , "Time", "Total Money",  
+        "Money Chart" , "Day", "Total Money",  
         xydataset, PlotOrientation.VERTICAL,  true, true, false);               
     
         //personalización del grafico
@@ -124,14 +128,13 @@ public class XYLineChart extends ImageIcon{
         //--> muestra los valores de cada punto XY
         XYItemLabelGenerator xy = new StandardXYItemLabelGenerator();
         xylineandshaperenderer.setDefaultItemLabelGenerator(xy);
-        xylineandshaperenderer.setDefaultItemLabelsVisible(true);
-        xylineandshaperenderer.setDefaultLinesVisible(true);
-        xylineandshaperenderer.setDefaultItemLabelsVisible(true);                
+        xylineandshaperenderer.setDefaultItemLabelsVisible(false);
+        xylineandshaperenderer.setDefaultLinesVisible(true);             
         
         xyplot.setNoDataMessage("NO DATA");
         //SET RANGE OF AXIS
         NumberAxis domain = (NumberAxis) xyplot.getDomainAxis();
-        domain.setRange(minx,maxx+2);
+        domain.setRange(minx-1,maxx+1);
         domain.setTickUnit(new NumberTickUnit(1));
         domain.setVerticalTickLabels(true);
         NumberAxis range = (NumberAxis) xyplot.getRangeAxis();;
@@ -148,34 +151,20 @@ public class XYLineChart extends ImageIcon{
         //se declaran las series y se llenan los datos
         XYSeries sIngresos = new XYSeries("Ingresos");
         XYSeries keyMoney = new XYSeries("Money in keys");
-        XYSeries balanceMoney = new XYSeries("Balance");
         //serie #1
         List<Integer[]> list = KeyManager.ListHByType("Total");
         
         double fecha = list.get(0)[0];
         double hvalue = list.get(0)[1];
-        double f = fecha;
-        
+        fecha = fecha/10000;
         miny = hvalue/100;
         minx = fecha;
-        int cant = 1;
         
         for(Integer[] ob : list){
             hvalue = ob[1];
             hvalue = hvalue/100;
-            if(fecha != ob[0]){
-                fecha = ob[0];
-                f = fecha;
-                cant = 1;
-            }else{
-                for(Integer[] element : list){
-                if(fecha == element[0]){
-                    cant++;
-                }   
-                    double razon = 100/cant;
-                    razon = razon/10000 + 1;
-                    f = f* razon;
-            }}
+            fecha = ob[0];
+            fecha = fecha/10000;
             if(fecha>maxx){
                 maxx = fecha;
             }else if(fecha<minx){
@@ -186,28 +175,39 @@ public class XYLineChart extends ImageIcon{
             }else if(hvalue<miny){
                 miny = hvalue;
             }
-            sIngresos.add(f,hvalue); 
+            sIngresos.add(fecha,hvalue); 
         }
-//        list = KeyManager.ListHByType("KeyValue");
-//        i = 0.09;
-//        for(Integer[] ob : list){
-//            int x = ob[0];
-//            String y = KeyManager.numberConvertor(ob[1]);
-//            double j = Double.parseDouble(y);
-//            if(j>maxy){
-//                maxy = j;
-//            }else if(j<miny){
-//                miny = j;
-//            }
-//            keyMoney.add(i,j);
-//            i++;
-//        }
+        //serie #2
+        list = KeyManager.ListHByType("KeyValue");
+        
+        fecha = list.get(0)[0];
+        hvalue = list.get(0)[1];
+        fecha = fecha/10000;
+        miny = hvalue/100;
+        minx = fecha;
+        
+        for(Integer[] ob : list){
+            hvalue = ob[1];
+            hvalue = hvalue/100;
+            fecha = ob[0];
+            fecha = fecha/10000;
+            if(fecha>maxx){
+                maxx = fecha;
+            }else if(fecha<minx){
+                minx = fecha;
+            }
+            if(hvalue>maxy){
+                maxy = hvalue;
+            }else if(hvalue<miny){
+                miny = hvalue;
+            }
+            keyMoney.add(fecha,hvalue); 
+        }
+
         XYSeriesCollection xyseriescollection =  new XYSeriesCollection();
         xyseriescollection.addSeries( sIngresos );        
-//        xyseriescollection.addSeries( keyMoney ); 
-//        xyseriescollection.addSeries(balanceMoney);
+        xyseriescollection.addSeries( keyMoney ); 
         return xyseriescollection;
-    
 }
 }
     
@@ -221,6 +221,7 @@ public class XYLineChart extends ImageIcon{
         ReloadButton = new javax.swing.JButton();
         ChartPanel = new javax.swing.JPanel();
         ChartLabel = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setFocusable(false);
@@ -265,7 +266,7 @@ public class XYLineChart extends ImageIcon{
             ChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ChartPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(ChartLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(ChartLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 656, Short.MAX_VALUE)
                 .addContainerGap())
         );
         ChartPanelLayout.setVerticalGroup(
@@ -275,6 +276,9 @@ public class XYLineChart extends ImageIcon{
                 .addComponent(ChartLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
                 .addContainerGap())
         );
+
+        jLabel1.setFont(new java.awt.Font("Comic Sans MS", 1, 14)); // NOI18N
+        jLabel1.setText("Trades");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -288,9 +292,13 @@ public class XYLineChart extends ImageIcon{
                 .addGap(48, 48, 48))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(ChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(TradeHistoryScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(ChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(TradeHistoryScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 647, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(21, 21, 21)))
                 .addGap(94, 94, 94))
         );
         layout.setVerticalGroup(
@@ -301,7 +309,9 @@ public class XYLineChart extends ImageIcon{
                     .addComponent(BackButton)
                     .addComponent(ReloadButton))
                 .addGap(18, 18, 18)
-                .addComponent(TradeHistoryScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(TradeHistoryScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(ChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(100, Short.MAX_VALUE))
@@ -328,5 +338,6 @@ public class XYLineChart extends ImageIcon{
     private javax.swing.JButton ReloadButton;
     private javax.swing.JScrollPane TradeHistoryScroll;
     private javax.swing.JTable TradeHistoryTable;
+    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }

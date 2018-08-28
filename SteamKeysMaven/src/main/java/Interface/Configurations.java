@@ -15,9 +15,7 @@ import steam.jewishs.steamkeysmaven.KeyManager;
  */
 public class Configurations extends Interface {
 
-    /**
-     * Creates new form Configurations
-     */
+    //CONSTRUCTOR
     public Configurations() {
         initComponents();
         initICon();
@@ -25,16 +23,17 @@ public class Configurations extends Interface {
         this.setSize(Inventory.getLastWindow().getSize());
         this.setLocationRelativeTo(Inventory.getLastWindow()); 
     }
-
+    //DEVUELVE EL VALOR INGRESADO EN EL CAMPO DE LA LLAVE
     private int getKeyFieldInput() throws Exception{
         String input = KeyField.getText();
         return KeyManager.numberConvertor(input);
     }
-
+    //MUESTRA LA CONFIGURACION
     private void ShowConfiguration(){     
         int keyprice = KeyManager.getKeyPrice();
         KeyField.setText(KeyManager.numberConvertor(keyprice));
     }
+    //CAMBIA EL VALOR DE LA KEY
     private void ChangeKeyValue(){
         try {
             int value = getKeyFieldInput();
@@ -49,7 +48,6 @@ public class Configurations extends Interface {
             MessageDialog("You entered a bad input");
         }
     }
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
