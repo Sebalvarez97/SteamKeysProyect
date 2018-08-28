@@ -374,12 +374,14 @@ public class KeyManager {
     //DEVUELVE LAS LLAVES RESTANTES QUE TIENEN EL MISMO ESTADO QUE LA INGRESADA
     public static List<KeyDTO> getmissingKeys(List<KeyDTO> list) throws NonexistentEntityException{
         List<KeyDTO> ret = new ArrayList();
-        KeyDTO firstinlist = list.get(0);
-        Iterator iter = ListWithStateKeys(new KeyDTO("",firstinlist.getState())).iterator();
-        while(iter.hasNext()){
-            KeyDTO listelement = (KeyDTO) iter.next();
-            if(!keyInTheList(listelement, list)){
-                ret.add(listelement);
+        if(!list.isEmpty()){
+            KeyDTO firstinlist = list.get(0);
+            Iterator iter = ListWithStateKeys(new KeyDTO("",firstinlist.getState())).iterator();
+            while(iter.hasNext()){
+                KeyDTO listelement = (KeyDTO) iter.next();
+                if(!keyInTheList(listelement, list)){
+                    ret.add(listelement);
+                }   
             }
         }
         return ret;
@@ -499,40 +501,34 @@ public class KeyManager {
         if(last.isEmpty()){
             SaveHistory();
         }
-        else if(last.get(0).getTotalmoney() != KeyManager.getTotalMoney() || last.get(1).getTotalmoney() != KeyManager.getKeyPrice() || last.get(2).getTotalmoney() != KeyManager.getBalanceMoney()){
+        else if(last.get(0).getTotalmoney() != KeyManager.getTotalMoney()){
             SaveHistory();
         }
     }
     //BORRA LOS HISTORY REDUNDANTES
     private static void DeleteUnUsedHistory() throws NonexistentEntityException{
         List<History> hist = ListHistoryByType("Total");
-        int lastmoney = 0;
         if(!hist.isEmpty()){
             for(History h : hist){
-                if(HavePassed(h.getDate(),8) || (h.getTotalmoney() == lastmoney)){
+                if(HavePassed(h.getDate(),8)){
                     EntityController.destroy(h);
                 }
-                lastmoney = h.getTotalmoney();
             }
         }
-        lastmoney = 0;
         hist = ListHistoryByType("KeyValue");
         if(!hist.isEmpty()){
             for(History h : hist){
-                if(HavePassed(h.getDate(),8) || (h.getTotalmoney() == lastmoney)){
+                if(HavePassed(h.getDate(),8)){
                     EntityController.destroy(h);
                 }
-                lastmoney = h.getTotalmoney();
             }
         }
-        lastmoney = 0;
         hist = ListHistoryByType("Balance");
         if(!hist.isEmpty()){
             for(History h : hist){
-                if(HavePassed(h.getDate(),8) || (h.getTotalmoney() == lastmoney)){
+                if(HavePassed(h.getDate(),8)){
                     EntityController.destroy(h);
                 }
-                lastmoney = h.getTotalmoney();
             }
         }
     }
@@ -687,8 +683,7 @@ public class KeyManager {
   
   public static void main(String[] args){
       
-     
-      
+
       InitInventory();
       
       System.out.println("FIN");

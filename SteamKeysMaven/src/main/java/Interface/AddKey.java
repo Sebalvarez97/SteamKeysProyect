@@ -38,6 +38,7 @@ public class AddKey extends Interface{
         initComponents();
         initICon();
         SetAddKeyParameters();
+        this.setSize(Inventory.getLastWindow().getSize());
         this.setLocationRelativeTo(Inventory.getLastWindow());
     }
 

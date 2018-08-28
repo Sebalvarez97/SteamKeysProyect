@@ -10,6 +10,8 @@ import TransporterUnits.KeyDTO;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -53,6 +55,7 @@ public class Trade extends Interface {
                 KeyManager.EnterTrade(keys, Items,getPriceInput() ,getBalanceInput());
                 Items.clear();
                 keys.clear();
+                MessageDialog("Trade Succesfully");
             }
         } catch (Exception ex) {
             MessageDialog(ex.getMessage());
@@ -61,13 +64,17 @@ public class Trade extends Interface {
     }
         //INICIALIZA LAS TABLAS PARA EL TRADE
     private void initTrade(){
-        PriceImput.setText("2.50");
-        SellPriceInput.setText("0.00");
-        BalanceInput.setText("0.00");
-        ItemsTable.setSelectionMode(0);
-        ItemsTable.getTableHeader().setResizingAllowed(false);
-        VmrTable.getTableHeader().setResizingAllowed(false);
-        Reload();
+        try {
+            PriceImput.setText("2.50");
+            SellPriceInput.setText("0.00");
+            BalanceInput.setText(KeyManager.numberConvertor(getPriceInput()*keys.size()));
+            ItemsTable.setSelectionMode(0);
+            ItemsTable.getTableHeader().setResizingAllowed(false);
+            VmrTable.getTableHeader().setResizingAllowed(false);
+            Reload();
+        } catch (Exception ex) {
+           MessageDialog(ex.getMessage());
+        }
     }
     //MUESTRA LA LISTA DE ITEMS AGREGADOS
     private void ListItems(){
@@ -95,6 +102,7 @@ public class Trade extends Interface {
             }else if(KeyManager.numberConvertor(sellprice) != 0){
                 String storeprice = String.valueOf(VmrTable.getValueAt(index, 0));
                 Object[] row ={Items.size()+1,storeprice, sellprice};
+                UpdateBalance(KeyManager.numberConvertor(storeprice));
                 Items.add(row);
             }else if(KeyManager.numberConvertor(sellprice) == 0){
                 throw new Exception("You did not enter a sell price");
@@ -111,12 +119,18 @@ public class Trade extends Interface {
             if(index != 0){
                 int confirm = JOptionPane.showOptionDialog(this, "Are you sure?", "Errase Alert", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Yes", "No"}, "Yes");
                 if(confirm == 0){
-                    Items.remove(index);
-                }   
+                    try {
+                        Object[] ob = Items.get(index);
+                        String storeprice = (String) ob[1];
+                        UpdateBalance(-KeyManager.numberConvertor(storeprice));  
+                        Items.remove(index);
+                    } catch (Exception ex) {
+                        MessageDialog("Error in entry");
+                    }
+                } 
             }else{
                  MessageDialog("Select an item first");
             }
-               
             Reload();
     }
     //MUESTRA LAS LLAVES QUE SE ESTAN TRADEANDO AL MOMENTO
@@ -157,6 +171,9 @@ public class Trade extends Interface {
     private void AddTradingKey(){
         try {
             List<KeyDTO> missing = KeyManager.getmissingKeys(keys);
+            if(missing.isEmpty()){
+                missing = KeyManager.ListWithStateKeys(new KeyDTO("","Tradeable"));
+            }
             String[] panel = new String[missing.size()];
             Iterator iter = missing.iterator();
             int i = 0;
@@ -173,12 +190,17 @@ public class Trade extends Interface {
                 KeyDTO key = KeyManager.getKeyDTO(patron);
                 keys.add(key);
             }
+            
         } catch (NonexistentEntityException ex) {
             MessageDialog(ex.getMessage());
         }
         Reload();
     }
- 
+    private void UpdateBalance(int value) throws Exception{
+        int last = getBalanceInput();
+        int nuevo = last + value;
+        BalanceInput.setText(KeyManager.numberConvertor(nuevo));
+    }
     //DEVUELVE EL PRECIO INGRESADO
     private int getPriceInput() throws Exception{
         String input = PriceImput.getText(); 
