@@ -7,6 +7,7 @@ package Controller;
 
 import Controller.exceptions.NonexistentEntityException;
 import Model.*;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -43,6 +44,9 @@ public interface EntityController {
     }
     public static int TradeCant(){
         return tradeController.getTradeCount();
+    }
+    public static int HistoryCant(){
+        return historyController.getHistoryCount();
     }
     
        //CREA UNA ENTIDAD EN BASE DE DATOS SEGUN TIPO 
@@ -152,11 +156,12 @@ public interface EntityController {
     public static History findWithDate(History h){
         return historyController.findHistory(h.getDate());
     }
-    public static History getLast(History h){
-        List<History> list = historyController.findHistoryEntities();
-        Comparator<History> comparador = Collections.reverseOrder();
-        Collections.sort(list, comparador);
-        return list.get(0);
+    public static List<History> getLast(History h){
+        List<History> list = new ArrayList();
+        if(!EntityController.ListHistory().isEmpty()){
+            list = historyController.findHistoryEntities(3, HistoryCant()-3);
+        }
+        return list;
     }
     
     //OBTIENE LA LISTA DE ENTIDADES

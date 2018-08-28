@@ -71,10 +71,9 @@ DefaultTableModel modelotrades = new DefaultTableModel();
     
     private void LoadChart(){
     try {
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-
-        ChartLabel.setSize(ChartPanel.getSize());
-        ChartLabel.setIcon( new XYLineChart( ChartPanel.getSize() ) );
+        ChartPanel.setSize(676,249);
+        XYLineChart chart = new XYLineChart(ChartPanel.getSize());
+        ChartLabel.setIcon(new ImageIcon(chart.getImage()));
         ChartPanel.updateUI();
     } catch (Exception ex) {
         MessageDialog(ex.getMessage());
@@ -137,7 +136,7 @@ public class XYLineChart extends ImageIcon{
         range.setTickUnit(new NumberTickUnit(100.00));
         //fin de personalización
         //se crea la imagen y se asigna a la clase ImageIcon
-        BufferedImage bufferedImage  = jfreechart.createBufferedImage( d.width, d.height);
+        BufferedImage bufferedImage  = jfreechart.createBufferedImage( d.width , d.height);
         this.setImage(bufferedImage);
     }
 
@@ -149,12 +148,12 @@ public class XYLineChart extends ImageIcon{
         XYSeries balanceMoney = new XYSeries("Balance");
         //serie #1
         List<Integer[]> list = KeyManager.ListHByType("Total");
-        int i = 0;
+        double i = 0.09;
         for(Integer[] ob : list){
             int x = ob[0];
             String y = KeyManager.numberConvertor(ob[1]);
             double j = Double.parseDouble(y);
-            if(i == 0){
+            if(i == 0.09){
                 miny = j;
             }
             if(j>maxy){
@@ -166,7 +165,7 @@ public class XYLineChart extends ImageIcon{
             i++;
         }
         list = KeyManager.ListHByType("KeyValue");
-        i = 0;
+        i = 0.09;
         for(Integer[] ob : list){
             int x = ob[0];
             String y = KeyManager.numberConvertor(ob[1]);
@@ -179,26 +178,10 @@ public class XYLineChart extends ImageIcon{
             keyMoney.add(i,j);
             i++;
         }
-//        list = KeyManager.ListHByType("Balance");
-//        i = 0;
-//        for(Integer[] ob : list){
-//            int x = ob[0];
-//            String y = KeyManager.numberConvertor(ob[1]);
-//            double j = Double.parseDouble(y);
-//            if(j>maxy){
-//                maxy = j;
-//            }else if(j<miny){
-//                miny = j;
-//            }
-//            balanceMoney.add(i,j);
-//            i++;
-//        }
         XYSeriesCollection xyseriescollection =  new XYSeriesCollection();
         xyseriescollection.addSeries( sIngresos );        
         xyseriescollection.addSeries( keyMoney ); 
 //        xyseriescollection.addSeries(balanceMoney);
-        
-        
         return xyseriescollection;
     }
 }
@@ -215,6 +198,7 @@ public class XYLineChart extends ImageIcon{
         ChartLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setFocusable(false);
         setResizable(false);
 
         TradeHistoryTable.setModel(new javax.swing.table.DefaultTableModel(

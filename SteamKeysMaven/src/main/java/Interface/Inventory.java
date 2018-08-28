@@ -63,7 +63,8 @@ public class Inventory extends Interface{
             int saldo = KeyManager.getBalanceMoney();
             datos.setValue(Double.parseDouble(KeyManager.numberConvertor(total)), "Total", "");
             datos.setValue(Double.parseDouble(KeyManager.numberConvertor(valorenkeys)), "KeysValue", "");       
-            datos.setValue(Double.parseDouble(KeyManager.numberConvertor(saldo)), "Balance", "");
+//            datos.setValue(Double.parseDouble(KeyManager.numberConvertor(saldo)), "Balance", "");
+            
             barra = ChartFactory.createBarChart("Money Chart", "","$",datos,PlotOrientation.VERTICAL,true,true,true);
             BufferedImage graficoBarra=barra.createBufferedImage(ChartPanel.getWidth(), ChartPanel.getHeight());
             

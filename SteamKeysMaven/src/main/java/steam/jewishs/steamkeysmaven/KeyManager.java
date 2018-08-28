@@ -474,24 +474,34 @@ public class KeyManager {
         setValue(new ParameterDTO("KeysPrice","", price));
         UpdateHistory();
     }
-    private static void UpdateHistory() throws NonexistentEntityException{
-        DeleteUnUsedHistory();  
-        //COMPARAR CON EL ULTIMO VALOR
+    private static void SaveHistory() throws NonexistentEntityException{
             History h = new History();
             h.setDate(Calendar.getInstance().getTime());
             h.setTotalmoney(KeyManager.getTotalMoney());
             h.setType("Total");
             EntityController.create(h);
+        
             h = new History();
             h.setDate(Calendar.getInstance().getTime());
             h.setTotalmoney(KeyManager.getKeysMoney());
             h.setType("KeyValue");
             EntityController.create(h);
+        
             h = new History();
             h.setDate(Calendar.getInstance().getTime());
             h.setTotalmoney(KeyManager.getBalanceMoney());
             h.setType("Balance");
             EntityController.create(h);
+    }
+    private static void UpdateHistory() throws NonexistentEntityException{
+        DeleteUnUsedHistory();  
+        List<History> last = EntityController.getLast(new History());
+        if(last.isEmpty()){
+            SaveHistory();
+        }
+        else if(last.get(0).getTotalmoney() != KeyManager.getTotalMoney() || last.get(1).getTotalmoney() != KeyManager.getKeyPrice() || last.get(2).getTotalmoney() != KeyManager.getBalanceMoney()){
+            SaveHistory();
+        }
     }
     //BORRA LOS HISTORY REDUNDANTES
     private static void DeleteUnUsedHistory() throws NonexistentEntityException{
@@ -677,7 +687,8 @@ public class KeyManager {
   
   public static void main(String[] args){
       
-
+     
+      
       InitInventory();
       
       System.out.println("FIN");
