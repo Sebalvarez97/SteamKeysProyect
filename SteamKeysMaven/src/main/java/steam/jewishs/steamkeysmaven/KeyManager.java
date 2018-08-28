@@ -167,7 +167,7 @@ public class KeyManager {
     public static Date ConvertDate(Date date){
         
         ZonedDateTime inicial = ZonedDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
-       ZonedDateTime finaldate = inicial.withZoneSameInstant(ZoneId.of("GMT+1")); //TRABAJAR CON LA HORA DE GMT
+        ZonedDateTime finaldate = inicial.withZoneSameInstant(ZoneId.of("GMT+1")); //TRABAJAR CON LA HORA DE GMT
         //ZonedDateTime finaldate = inicial.withZoneSameInstant(ZoneId.systemDefault());
         Calendar cal = Calendar.getInstance();
         cal.clear();
@@ -554,10 +554,8 @@ public class KeyManager {
         }
     }
     private static int getDay(Date date){
-        Calendar cal = Calendar.getInstance();
-        cal.clear();
-        cal.setTime(date);
-        return cal.get(Calendar.DAY_OF_MONTH);
+        ZonedDateTime fecha = ZonedDateTime.ofInstant(date.toInstant(),ZoneId.systemDefault());
+        return fecha.getDayOfMonth();
     } 
     //BUSCA EL PARAMETRO INDICADO
     private static ParameterDTO findParameter(String name){
@@ -584,7 +582,7 @@ public class KeyManager {
         List<History> list = KeyManager.ListHistoryByType(type);
         if(!list.isEmpty()){
             list.forEach((h) -> {
-                Integer[] ob = {getDay(h.getDate()),h.getTotalmoney()};
+                Integer[] ob = {KeyManager.getDay(h.getDate()),h.getTotalmoney()};
                 ret.add(ob);
             });
         }
@@ -683,7 +681,7 @@ public class KeyManager {
   
   public static void main(String[] args){
       
-
+      
       InitInventory();
       
       System.out.println("FIN");

@@ -24,6 +24,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
+import java.util.Date;
 import javax.swing.ImageIcon;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
@@ -102,6 +103,8 @@ public class XYLineChart extends ImageIcon{
     
     double maxy = 0;
     double miny = 0;
+    double maxx = 0;
+    double minx = 0;
             
     public XYLineChart( Dimension d ) throws Exception{
         //se declara el grafico XY Lineal
@@ -128,12 +131,12 @@ public class XYLineChart extends ImageIcon{
         xyplot.setNoDataMessage("NO DATA");
         //SET RANGE OF AXIS
         NumberAxis domain = (NumberAxis) xyplot.getDomainAxis();
-        domain.setRange(0.0, 10.00);
-        domain.setTickUnit(new NumberTickUnit(1.0));
+        domain.setRange(minx,maxx+2);
+        domain.setTickUnit(new NumberTickUnit(1));
         domain.setVerticalTickLabels(true);
         NumberAxis range = (NumberAxis) xyplot.getRangeAxis();;
-        range.setRange(miny-100, maxy+200);
-        range.setTickUnit(new NumberTickUnit(100.00));
+        range.setRange(miny-100, maxy+100);
+        range.setTickUnit(new NumberTickUnit(50.00));
         //fin de personalización
         //se crea la imagen y se asigna a la clase ImageIcon
         BufferedImage bufferedImage  = jfreechart.createBufferedImage( d.width , d.height);
@@ -148,42 +151,64 @@ public class XYLineChart extends ImageIcon{
         XYSeries balanceMoney = new XYSeries("Balance");
         //serie #1
         List<Integer[]> list = KeyManager.ListHByType("Total");
-        double i = 0.09;
+        
+        double fecha = list.get(0)[0];
+        double hvalue = list.get(0)[1];
+        double f = fecha;
+        
+        miny = hvalue/100;
+        minx = fecha;
+        int cant = 1;
+        
         for(Integer[] ob : list){
-            int x = ob[0];
-            String y = KeyManager.numberConvertor(ob[1]);
-            double j = Double.parseDouble(y);
-            if(i == 0.09){
-                miny = j;
+            hvalue = ob[1];
+            hvalue = hvalue/100;
+            if(fecha != ob[0]){
+                fecha = ob[0];
+                f = fecha;
+                cant = 1;
+            }else{
+                for(Integer[] element : list){
+                if(fecha == element[0]){
+                    cant++;
+                }   
+                    double razon = 100/cant;
+                    razon = razon/10000 + 1;
+                    f = f* razon;
+            }}
+            if(fecha>maxx){
+                maxx = fecha;
+            }else if(fecha<minx){
+                minx = fecha;
             }
-            if(j>maxy){
-                maxy = j;
-            }else if(j<miny){
-                miny = j;
+            if(hvalue>maxy){
+                maxy = hvalue;
+            }else if(hvalue<miny){
+                miny = hvalue;
             }
-            sIngresos.add(i,j);
-            i++;
+            sIngresos.add(f,hvalue); 
         }
-        list = KeyManager.ListHByType("KeyValue");
-        i = 0.09;
-        for(Integer[] ob : list){
-            int x = ob[0];
-            String y = KeyManager.numberConvertor(ob[1]);
-            double j = Double.parseDouble(y);
-            if(j>maxy){
-                maxy = j;
-            }else if(j<miny){
-                miny = j;
-            }
-            keyMoney.add(i,j);
-            i++;
-        }
+//        list = KeyManager.ListHByType("KeyValue");
+//        i = 0.09;
+//        for(Integer[] ob : list){
+//            int x = ob[0];
+//            String y = KeyManager.numberConvertor(ob[1]);
+//            double j = Double.parseDouble(y);
+//            if(j>maxy){
+//                maxy = j;
+//            }else if(j<miny){
+//                miny = j;
+//            }
+//            keyMoney.add(i,j);
+//            i++;
+//        }
         XYSeriesCollection xyseriescollection =  new XYSeriesCollection();
         xyseriescollection.addSeries( sIngresos );        
-        xyseriescollection.addSeries( keyMoney ); 
+//        xyseriescollection.addSeries( keyMoney ); 
 //        xyseriescollection.addSeries(balanceMoney);
         return xyseriescollection;
-    }
+    
+}
 }
     
     @SuppressWarnings("unchecked")
