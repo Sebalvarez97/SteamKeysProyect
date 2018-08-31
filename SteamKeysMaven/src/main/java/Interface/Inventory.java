@@ -146,11 +146,11 @@ public class Inventory extends Interface{
                    if(day == 0){
                        days = " < 24hs";
                    }else{
-                    days = String.valueOf(day);
+                    days = String.valueOf(day+1);
                    }
                }
-               String release = KeyManager.SimpleFormatDate(KeyManager.ReleaseDate(dto.getbuydate()));
-               Object[] row = {dto.getId(), type , date , state ,"("+ days + ")"};
+               int release = KeyManager.getDay(KeyManager.ReleaseDate(dto.getbuydate()));
+               Object[] row = {dto.getId(), type , date , state ,"("+ days + ")  "+release};
                modelotabla.addRow(row);
                }
             }
@@ -310,7 +310,7 @@ public class Inventory extends Interface{
             }
         });
 
-        NewKeyButton.setText("Add Key");
+        NewKeyButton.setText("Buy Key");
         NewKeyButton.setFocusable(false);
         NewKeyButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

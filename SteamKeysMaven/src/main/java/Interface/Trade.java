@@ -52,7 +52,7 @@ public class Trade extends Interface {
         try {
             int confirm = JOptionPane.showOptionDialog(this, "Are you sure?", "Trade Alert", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Yes", "No"}, "Yes");
             if(confirm == 0){
-                KeyManager.EnterTrade(keys, Items,getPriceInput() ,getBalanceInput());
+                KeyManager.EnterTrade(keys, Items,KeyManager.getKeyPrice() ,getBalanceInput());
                 Items.clear();
                 keys.clear();
                 MessageDialog("Trade Succesfully");

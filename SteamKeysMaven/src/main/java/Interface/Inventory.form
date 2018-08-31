@@ -265,7 +265,7 @@
             </Component>
             <Component class="javax.swing.JButton" name="NewKeyButton">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Add Key"/>
+                <Property name="text" type="java.lang.String" value="Buy Key"/>
                 <Property name="focusable" type="boolean" value="false"/>
               </Properties>
               <Events>

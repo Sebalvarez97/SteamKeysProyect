@@ -440,12 +440,12 @@ public class KeyManager {
         Iterator iter = trades.iterator();
         while(iter.hasNext()){
             Trade trade = (Trade) iter.next();
-            int keyprice = KeyManager.findParameter("KeysPrice").getValue();
+            int keyprice = trade.getPriceinstore();
             int profit = trade.getGanancia();
             int cant = trade.getCantkey();
             int total = profit-(keyprice*cant);
             if(total<0){
-                throw new Exception("badtrade");
+                throw new Exception("getTradeListError");
             }else{
                 double cantkey = (double) trade.getCantkey();
                 double t = (double) total;
@@ -486,7 +486,7 @@ public class KeyManager {
         
             h = new History();
             h.setDate(Calendar.getInstance().getTime());
-            h.setTotalmoney(KeyManager.getKeysMoney());
+            h.setTotalmoney(KeyManager.getKeyPrice());
             h.setType("KeyValue");
             EntityController.create(h);
         
@@ -510,14 +510,6 @@ public class KeyManager {
     //BORRA LOS HISTORY REDUNDANTES
     private static void DeleteUnUsedHistory() throws NonexistentEntityException{
         List<History> hist = ListHistoryByType("Total");
-        if(!hist.isEmpty()){
-            for(History h : hist){
-                if(HavePassed(h.getDate(),8)){
-                    EntityController.destroy(h);
-                }
-            }
-        }
-        hist = ListHistoryByType("KeyValue");
         if(!hist.isEmpty()){
             for(History h : hist){
                 if(HavePassed(h.getDate(),8)){
@@ -565,7 +557,12 @@ public class KeyManager {
         double min = fecha.getMinute()*razonmin*100;
         double total = day + hour + min;
         return (int) total;
-    } 
+    }
+    //DEVUELVE EL DIA DEL MES CON LA FECHA INGRESADA
+    public static int getDay(Date date){
+        ZonedDateTime fecha = ZonedDateTime.ofInstant(date.toInstant(),ZoneId.systemDefault());
+        return fecha.getDayOfMonth();
+    }
     //BUSCA EL PARAMETRO INDICADO
     private static ParameterDTO findParameter(String name){
         SteamParameters sp = EntityController.find(new SteamParameters(name));
@@ -692,7 +689,7 @@ public class KeyManager {
   
   public static void main(String[] args){
       
-      
+
       InitInventory();
       
       System.out.println("FIN");

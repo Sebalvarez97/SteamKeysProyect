@@ -61,10 +61,10 @@ DefaultTableModel modelotrades = new DefaultTableModel();
     }
     //SETEA LOS PARAMETROS DE LA PANTALLA
     private void SetHistory(){
-        TradeHistoryTable.getTableHeader().setResizingAllowed(false);
         TableColumn columnaid = TradeHistoryTable.getColumn("TradeID");
         columnaid.setPreferredWidth(50);
         columnaid.setMaxWidth(100);
+        TradeHistoryTable.getTableHeader().setResizingAllowed(false);
     }
     //CLASE PADRE, RECARGA LA PAGINA
     public void Reload(){
@@ -75,7 +75,7 @@ DefaultTableModel modelotrades = new DefaultTableModel();
     //CARGA EL CHART
     private void LoadChart(){
     try {
-        ChartPanel.setSize(676,249);
+        ChartPanel.setSize(791,305);
         XYLineChart chart = new XYLineChart(ChartPanel.getSize());
         ChartLabel.setIcon(new ImageIcon(chart.getImage()));
         ChartPanel.updateUI();
@@ -88,7 +88,7 @@ DefaultTableModel modelotrades = new DefaultTableModel();
         try {
             List<Object[]> trades = KeyManager.getTradeList();
             Iterator iter = trades.iterator();
-            String[] columnames = {"TradeID","Date", "CantKeys", "Profit/key", "Left", "StorePrice" };
+            String[] columnames = {"TradeID","Date", "CantKeys", "Profit/key", "Left", "KeyPrice" };
             modelotrades = new DefaultTableModel(null, columnames);
             //LLENADO
             while(iter.hasNext()){
@@ -138,7 +138,7 @@ public class XYLineChart extends ImageIcon{
         domain.setTickUnit(new NumberTickUnit(1));
         domain.setVerticalTickLabels(true);
         NumberAxis range = (NumberAxis) xyplot.getRangeAxis();;
-        range.setRange(miny-100, maxy+100);
+        range.setRange(miny-50, maxy+50);
         range.setTickUnit(new NumberTickUnit(50.00));
         //fin de personalización
         //se crea la imagen y se asigna a la clase ImageIcon
@@ -178,35 +178,35 @@ public class XYLineChart extends ImageIcon{
             sIngresos.add(fecha,hvalue); 
         }
         //serie #2
-        list = KeyManager.ListHByType("KeyValue");
-        
-        fecha = list.get(0)[0];
-        hvalue = list.get(0)[1];
-        fecha = fecha/10000;
-        miny = hvalue/100;
-        minx = fecha;
-        
-        for(Integer[] ob : list){
-            hvalue = ob[1];
-            hvalue = hvalue/100;
-            fecha = ob[0];
-            fecha = fecha/10000;
-            if(fecha>maxx){
-                maxx = fecha;
-            }else if(fecha<minx){
-                minx = fecha;
-            }
-            if(hvalue>maxy){
-                maxy = hvalue;
-            }else if(hvalue<miny){
-                miny = hvalue;
-            }
-            keyMoney.add(fecha,hvalue); 
-        }
+//        list = KeyManager.ListHByType("KeyValue");
+//        
+//        fecha = list.get(0)[0];
+//        hvalue = list.get(0)[1];
+//        fecha = fecha/10000;
+//        miny = hvalue/100;
+//        minx = fecha;
+//        
+//        for(Integer[] ob : list){
+//            hvalue = ob[1];
+//            hvalue = hvalue/100;
+//            fecha = ob[0];
+//            fecha = fecha/10000;
+//            if(fecha>maxx){
+//                maxx = fecha;
+//            }else if(fecha<minx){
+//                minx = fecha;
+//            }
+//            if(hvalue>maxy){
+//                maxy = hvalue;
+//            }else if(hvalue<miny){
+//                miny = hvalue;
+//            }
+//            keyMoney.add(fecha,hvalue); 
+//        }
 
         XYSeriesCollection xyseriescollection =  new XYSeriesCollection();
         xyseriescollection.addSeries( sIngresos );        
-        xyseriescollection.addSeries( keyMoney ); 
+//        xyseriescollection.addSeries( keyMoney ); 
         return xyseriescollection;
 }
 }
@@ -264,17 +264,11 @@ public class XYLineChart extends ImageIcon{
         ChartPanel.setLayout(ChartPanelLayout);
         ChartPanelLayout.setHorizontalGroup(
             ChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ChartPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(ChartLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 656, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(ChartLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         ChartPanelLayout.setVerticalGroup(
             ChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ChartPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(ChartLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(ChartLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
         );
 
         jLabel1.setFont(new java.awt.Font("Comic Sans MS", 1, 14)); // NOI18N
@@ -285,21 +279,21 @@ public class XYLineChart extends ImageIcon{
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(36, 36, 36)
-                .addComponent(ReloadButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 649, Short.MAX_VALUE)
-                .addComponent(BackButton, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(48, 48, 48))
+                .addContainerGap(32, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(18, 18, 18)
+                .addComponent(TradeHistoryScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 657, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(111, 111, 111))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(ChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(TradeHistoryScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 647, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(21, 21, 21)))
-                .addGap(94, 94, 94))
+                .addGap(36, 36, 36)
+                .addComponent(ChartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(56, 56, 56))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(31, 31, 31)
+                .addComponent(ReloadButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(BackButton, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(45, 45, 45))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -312,9 +306,9 @@ public class XYLineChart extends ImageIcon{
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(TradeHistoryScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(100, Short.MAX_VALUE))
+                .addContainerGap(134, Short.MAX_VALUE))
         );
 
         pack();
