@@ -201,6 +201,7 @@ public class Inventory extends Interface{
             }
         }
       }
+        initSaldo();
         Reload();
     }
     //ABRE UNA VENTANA DEL TIPO INGRESADO
@@ -217,7 +218,7 @@ public class Inventory extends Interface{
             MessageDialog("Select a key first");
         }else{
             try {
-                int sellprice = KeyManager.numberConvertor(String.valueOf(JOptionPane.showInputDialog("Ingrese el precio de venta")));
+                int sellprice = KeyManager.numberConvertor(JOptionPane.showInputDialog("Ingrese el precio de venta"));
                 int confirm = JOptionPane.showConfirmDialog(this, "You are selling this " + keys.size()+ " keys. Are you sure?");
                 if(confirm == 0){
                     Iterator iter = keys.iterator();
@@ -230,6 +231,7 @@ public class Inventory extends Interface{
                 MessageDialog(ex.getMessage());
             }
         }
+        initSaldo();
         Reload();
     }
     

@@ -348,10 +348,9 @@ public class KeyManager {
     }
     //PERMITE VENDER UNA KEY
     public static void SellKey(KeyDTO key, int sellprice) throws NonexistentEntityException, Exception{
-        Key k = KeyManager.getKey(key);
-        k = KeyManager.ChangeState(k, "Sold");
-        EntityController.Edit(k);
         int ganancia = KeyManager.profit(sellprice);
+        Key k = KeyManager.getKey(key);
+        EntityController.Edit(k);
         SumarSaldo(ganancia);
     }
     //SUMA EL VALOR AL SALDO
