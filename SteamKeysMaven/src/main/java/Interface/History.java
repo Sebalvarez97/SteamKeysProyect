@@ -5,40 +5,31 @@
  */
 package Interface;
 
-import Controller.exceptions.NonexistentEntityException;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import steam.jewishs.steamkeysmaven.KeyManager;
-import java.awt.image.BufferedImage;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.ImageIcon;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.xy.XYDataset;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.ImageIcon;
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartFrame;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.labels.StandardXYItemLabelGenerator;
 import org.jfree.chart.labels.XYItemLabelGenerator;
-import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.xy.DefaultHighLowDataset;
+import org.jfree.data.time.Day;
+import org.jfree.data.time.Minute;
+import org.jfree.data.time.TimeSeries;
+import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -113,9 +104,9 @@ public class XYLineChart extends ImageIcon{
     public XYLineChart( Dimension d ) throws Exception{
         //se declara el grafico XY Lineal
         XYDataset xydataset = xyDataset();
-        JFreeChart jfreechart = ChartFactory.createXYLineChart(
+        JFreeChart jfreechart = ChartFactory.createTimeSeriesChart(
         "Money Chart" , "Day", "Total Money",  
-        xydataset, PlotOrientation.VERTICAL,  true, true, false);               
+        xydataset,  true, true, false);               
     
         //personalización del grafico
         XYPlot xyplot = (XYPlot) jfreechart.getPlot();
@@ -133,9 +124,10 @@ public class XYLineChart extends ImageIcon{
         
         xyplot.setNoDataMessage("NO DATA");
         //SET RANGE OF AXIS
-        NumberAxis domain = (NumberAxis) xyplot.getDomainAxis();
-        domain.setRange(minx-1,maxx+1);
-        domain.setTickUnit(new NumberTickUnit(1));
+//        NumberAxis domain = (NumberAxis) xyplot.getDomainAxis();
+        DateAxis domain = (DateAxis) xyplot.getDomainAxis();
+        domain.setDateFormatOverride(new SimpleDateFormat("dd-MM-yyyy"));
+//        domain.setRange(minx-1,maxx+1);
         domain.setVerticalTickLabels(true);
         NumberAxis range = (NumberAxis) xyplot.getRangeAxis();;
         range.setRange(miny-50, maxy+50);
@@ -149,62 +141,33 @@ public class XYLineChart extends ImageIcon{
     private XYDataset xyDataset() throws Exception
     {
         //se declaran las series y se llenan los datos
-        XYSeries sIngresos = new XYSeries("Ingresos");
-        XYSeries keyMoney = new XYSeries("Money in keys");
+        TimeSeries sIngresos = new TimeSeries("Ingresos");
+        //XYSeries keyMoney = new XYSeries("Money in keys");
         //serie #1
-        List<Integer[]> list = KeyManager.ListHByType("Total");
+        List<Object[]> list = KeyManager.ListHByType("Total");
         
-        double fecha = list.get(0)[0];
-        double hvalue = list.get(0)[1];
-        fecha = fecha/10000;
+        Date fecha = (Date) list.get(0)[0];
+        int hvalue = (int) list.get(0)[1];
         miny = hvalue/100;
-        minx = fecha;
         
-        for(Integer[] ob : list){
-            hvalue = ob[1];
-            hvalue = hvalue/100;
-            fecha = ob[0];
-            fecha = fecha/10000;
-            if(fecha>maxx){
-                maxx = fecha;
-            }else if(fecha<minx){
-                minx = fecha;
+        for(Object[] ob : list){
+            hvalue = (int) ob[1];
+            double value = hvalue/100;
+            fecha = (Date) ob[0];
+//            if(day>maxx){
+//                maxx = day;
+//            }else if(day<minx){
+//                minx = day;
+//            }
+            if(value>maxy){
+                maxy = value;
+            }else if(value<miny){
+                miny =  value;
             }
-            if(hvalue>maxy){
-                maxy = hvalue;
-            }else if(hvalue<miny){
-                miny = hvalue;
-            }
-            sIngresos.add(fecha,hvalue); 
+            Minute dia = new Minute(fecha);
+            sIngresos.addOrUpdate(dia,value);
         }
-        //serie #2
-//        list = KeyManager.ListHByType("KeyValue");
-//        
-//        fecha = list.get(0)[0];
-//        hvalue = list.get(0)[1];
-//        fecha = fecha/10000;
-//        miny = hvalue/100;
-//        minx = fecha;
-//        
-//        for(Integer[] ob : list){
-//            hvalue = ob[1];
-//            hvalue = hvalue/100;
-//            fecha = ob[0];
-//            fecha = fecha/10000;
-//            if(fecha>maxx){
-//                maxx = fecha;
-//            }else if(fecha<minx){
-//                minx = fecha;
-//            }
-//            if(hvalue>maxy){
-//                maxy = hvalue;
-//            }else if(hvalue<miny){
-//                miny = hvalue;
-//            }
-//            keyMoney.add(fecha,hvalue); 
-//        }
-
-        XYSeriesCollection xyseriescollection =  new XYSeriesCollection();
+        TimeSeriesCollection xyseriescollection =  new TimeSeriesCollection();
         xyseriescollection.addSeries( sIngresos );        
 //        xyseriescollection.addSeries( keyMoney ); 
         return xyseriescollection;

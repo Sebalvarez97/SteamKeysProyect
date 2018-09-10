@@ -318,14 +318,6 @@ public class KeyManager {
     }
     //DEVUELVE UNA LISTA DE TYPESTATESDTO A PARTIR DE UNA LISTA DE STRINGS
     public static List<TypeStateDTO> ListStateTypesDTO(List<String> list){
-//        List<TypeStateDTO> ret = new ArrayList();
-//        Iterator iter = list.iterator();
-//        while(iter.hasNext()){
-//            TypeStateDTO dto = KeyManager.getStateType((String) iter.next());
-//            if(dto != null){
-//                    ret.add(dto);
-//                }
-//        }
         List<TypeStateDTO> ret = new ArrayList();
         for(String it : list){
             TypeStateDTO dto = KeyManager.getStateType(it);
@@ -498,21 +490,21 @@ public class KeyManager {
     }
     //ACTUALIZA EL HISTORIAL SI FUERA NECESARIO
     private static void UpdateHistory() throws NonexistentEntityException{
-        DeleteUnUsedHistory();  
+        DeleteUnUsedHistory(30);  
         List<History> last = EntityController.getLast(new History());
         if(last.isEmpty()){
             SaveHistory();
         }
-        else if(last.get(0).getTotalmoney() != KeyManager.getTotalMoney()){
+        else if(getLastHistoryOf("Total").getTotalmoney() != KeyManager.getTotalMoney()){
             SaveHistory();
         }
     }
     //BORRA LOS HISTORY REDUNDANTES
-    private static void DeleteUnUsedHistory() throws NonexistentEntityException{
+    private static void DeleteUnUsedHistory(int days) throws NonexistentEntityException{
         List<History> hist = ListHistoryByType("Total");
         if(!hist.isEmpty()){
             for(History h : hist){
-                if(HavePassed(h.getDate(),8)){
+                if(HavePassed(h.getDate(),days)){
                     EntityController.destroy(h);
                 }
             }
@@ -520,11 +512,16 @@ public class KeyManager {
         hist = ListHistoryByType("Balance");
         if(!hist.isEmpty()){
             for(History h : hist){
-                if(HavePassed(h.getDate(),8)){
+                if(HavePassed(h.getDate(),days)){
                     EntityController.destroy(h);
                 }
             }
         }
+    }
+    //DEVUELVE EL ULTIMO HISTORY DEL TIPO INGRESADO
+    private static History getLastHistoryOf(String str){
+        List<History> lista = ListHistoryByType(str);
+        return lista.get(lista.size()-1);
     }
     //LISTA EL HISTORY SEGUN EL TIPO
     private static List<History> ListHistoryByType(String type){
@@ -563,6 +560,26 @@ public class KeyManager {
         ZonedDateTime fecha = ZonedDateTime.ofInstant(date.toInstant(),ZoneId.systemDefault());
         return fecha.getDayOfMonth();
     }
+    //DEVUELVE LA HORA
+    public static int getHour(Date date){
+        ZonedDateTime fecha = ZonedDateTime.ofInstant(date.toInstant(),ZoneId.systemDefault());
+        return fecha.getMonthValue();
+    }
+    //DEVUELVE LOS MINUTOS
+    public static int getMinutes(Date date){
+        ZonedDateTime fecha = ZonedDateTime.ofInstant(date.toInstant(),ZoneId.systemDefault());
+        return fecha.getMonthValue();
+    }
+    //DEVUELVE EL MES DE LA FECHA INGRESADA
+    public static int getMonth(Date date){
+        ZonedDateTime fecha = ZonedDateTime.ofInstant(date.toInstant(),ZoneId.systemDefault());
+        return fecha.getMonthValue();
+    }
+    //DEVUELVE EL AÑO DE LA FECHA INGRESADA
+    public static int getYear(Date date){
+        ZonedDateTime fecha = ZonedDateTime.ofInstant(date.toInstant(),ZoneId.systemDefault());
+        return fecha.getYear();
+    }
     //BUSCA EL PARAMETRO INDICADO
     private static ParameterDTO findParameter(String name){
         SteamParameters sp = EntityController.find(new SteamParameters(name));
@@ -585,12 +602,13 @@ public class KeyManager {
         return ret;
     }
     //LISTA LOS HISTORIES PARA USO EN LA INTERFAZ PERO POR TIPO
-    public static List<Integer[]> ListHByType(String type){
-        List<Integer[]> ret = new ArrayList();
+    public static List<Object[]> ListHByType(String type){
+        List<Object[]> ret = new ArrayList();
         List<History> list = KeyManager.ListHistoryByType(type);
         if(!list.isEmpty()){
             list.forEach((h) -> {
-                Integer[] ob = {getDayTimeValue(h.getDate()),h.getTotalmoney()};
+                Date fecha = h.getDate();
+                Object[] ob = {fecha,h.getTotalmoney()};
                 ret.add(ob);
             });
         }
@@ -689,7 +707,7 @@ public class KeyManager {
   
   public static void main(String[] args){
       
-
+      
       InitInventory();
       
       System.out.println("FIN");
