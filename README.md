@@ -1,5 +1,5 @@
 # SteamKeysProyect
-Features:
+FEATURES:
 -Inventory to register all your keys
 -Grafic data about your actual money inverted and your real money
 -Buy, Trade, Sell register
