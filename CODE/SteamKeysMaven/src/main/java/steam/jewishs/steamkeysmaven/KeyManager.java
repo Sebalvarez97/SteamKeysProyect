@@ -406,11 +406,8 @@ public class KeyManager {
     //LISTA LAS KEYS POR FECHA
     public static List<KeyDTO> ListKeysOrderByDate() throws Exception{
         List<KeyDTO> list = ListKeys();
-        if(!list.isEmpty()){
             list.sort(null);
             return list;
-        }
-        throw new Exception("There is no items to sort");
     }
     //DEVUELVE UNA LISTA DE LAS LLAVES PARA LA INTERFAZ
     public static List<KeyDTO> ListKeys() throws NonexistentEntityException{
