@@ -9,6 +9,6 @@ package TransporterUnits;
  *
  * @author eltet
  */
-public class DTO {
+public abstract class DTO implements Comparable<DTO>{
     
 }

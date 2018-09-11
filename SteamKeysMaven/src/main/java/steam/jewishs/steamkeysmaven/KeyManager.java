@@ -7,19 +7,13 @@ package steam.jewishs.steamkeysmaven;
 
 import Controller.EntityController;
 import Controller.exceptions.NonexistentEntityException;
-import Interface.AddKey;
-import Interface.Configurations;
 import Interface.Inventory;
 import Model.*;
 import TransporterUnits.*;
-import java.awt.Window;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 
@@ -409,7 +403,15 @@ public class KeyManager {
         }
         return VMRlist;
     }
-    
+    //LISTA LAS KEYS POR FECHA
+    public static List<KeyDTO> ListKeysOrderByDate() throws Exception{
+        List<KeyDTO> list = ListKeys();
+        if(!list.isEmpty()){
+            list.sort(null);
+            return list;
+        }
+        throw new Exception("There is no items to sort");
+    }
     //DEVUELVE UNA LISTA DE LAS LLAVES PARA LA INTERFAZ
     public static List<KeyDTO> ListKeys() throws NonexistentEntityException{
         List<Key> keys = EntityController.ListKeys();
@@ -429,6 +431,7 @@ public class KeyManager {
     public static List<Object[]> getTradeList() throws Exception{
         List<Object[]> ret = new ArrayList();
         List<Trade> trades = EntityController.ListTrades();
+        Collections.reverse(trades);
         Iterator iter = trades.iterator();
         while(iter.hasNext()){
             Trade trade = (Trade) iter.next();
@@ -446,8 +449,7 @@ public class KeyManager {
                 String pk = String.valueOf(profitxkey);
                 Object[] listelement = {trade.getId(),SimpleFormatDate(trade.getDateoftrade()), trade.getCantkey(),numberConvertor(numberConvertor(pk)) , numberConvertor(trade.getBalancestore()), numberConvertor(trade.getPriceinstore())};
                 ret.add(listelement);
-            }
-            
+            } 
         }
         return ret;
     }

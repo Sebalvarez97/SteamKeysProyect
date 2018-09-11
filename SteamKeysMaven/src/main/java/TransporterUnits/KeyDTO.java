@@ -64,7 +64,19 @@ public class KeyDTO extends DTO{
     public void setState(String state) {
         this.state = state;
     }
-   
     
+    
+    @Override
+    public int compareTo(DTO dto) {
+        KeyDTO key = (KeyDTO) dto;
+        if (buydate.after(key.getbuydate())) {
+                return -1;
+            }
+            if (buydate.before(key.getbuydate())) {
+                return 1;
+            }
+            return 0;
+    }
+
     
 }

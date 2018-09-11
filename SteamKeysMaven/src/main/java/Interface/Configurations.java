@@ -102,7 +102,7 @@ public class Configurations extends Interface {
                 .addComponent(KeyField, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27)
                 .addComponent(ChangeKeyButton)
-                .addContainerGap(308, Short.MAX_VALUE))
+                .addContainerGap(517, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -116,7 +116,7 @@ public class Configurations extends Interface {
                     .addComponent(KeyPriceTittle)
                     .addComponent(KeyField, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ChangeKeyButton))
-                .addContainerGap(347, Short.MAX_VALUE))
+                .addContainerGap(482, Short.MAX_VALUE))
         );
 
         pack();

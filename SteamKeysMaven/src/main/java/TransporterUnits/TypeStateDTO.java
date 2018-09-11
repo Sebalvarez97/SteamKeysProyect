@@ -39,6 +39,11 @@ public class TypeStateDTO extends DTO{
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public int compareTo(DTO t) {
+        throw new UnsupportedOperationException("Not supported comparator yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     
 }

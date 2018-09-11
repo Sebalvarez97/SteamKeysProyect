@@ -47,6 +47,18 @@ public class ParameterDTO extends DTO {
     public int getValue() {
         return value;
     }
+
+    @Override
+    public int compareTo(DTO dto) {
+        ParameterDTO parameter = (ParameterDTO) dto;
+         if (value < parameter.getValue()) {
+                return -1;
+            }
+            if (value > parameter.getValue()) {
+                return 1;
+            }
+            return 0;
+    }
       
       
     

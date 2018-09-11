@@ -126,12 +126,12 @@ public class XYLineChart extends ImageIcon{
         //SET RANGE OF AXIS
 //        NumberAxis domain = (NumberAxis) xyplot.getDomainAxis();
         DateAxis domain = (DateAxis) xyplot.getDomainAxis();
-        domain.setDateFormatOverride(new SimpleDateFormat("dd-MM-yyyy"));
+        domain.setDateFormatOverride(new SimpleDateFormat("dd/MM"));
 //        domain.setRange(minx-1,maxx+1);
         domain.setVerticalTickLabels(true);
         NumberAxis range = (NumberAxis) xyplot.getRangeAxis();;
         range.setRange(miny-50, maxy+50);
-        range.setTickUnit(new NumberTickUnit(50.00));
+        range.setTickUnit(new NumberTickUnit(100.00));
         //fin de personalización
         //se crea la imagen y se asigna a la clase ImageIcon
         BufferedImage bufferedImage  = jfreechart.createBufferedImage( d.width , d.height);
@@ -147,7 +147,7 @@ public class XYLineChart extends ImageIcon{
         List<Object[]> list = KeyManager.ListHByType("Total");
         
         Date fecha = (Date) list.get(0)[0];
-        int hvalue = (int) list.get(0)[1];
+        double hvalue = (int) list.get(0)[1];
         miny = hvalue/100;
         
         for(Object[] ob : list){

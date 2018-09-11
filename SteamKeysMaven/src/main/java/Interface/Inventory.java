@@ -127,7 +127,7 @@ public class Inventory extends Interface{
     private void ListTable(){
            try {
             KeyManager.UpdateState();
-            List<KeyDTO> keys = KeyManager.ListKeys();
+            List<KeyDTO> keys = KeyManager.ListKeysOrderByDate();
             Iterator iter = keys.iterator();
             KeyDTO dto;
             //CONFIGURACION DEL MODELO DE LA TABLA

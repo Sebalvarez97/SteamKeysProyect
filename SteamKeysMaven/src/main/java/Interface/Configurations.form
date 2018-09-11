@@ -38,7 +38,7 @@
               <Component id="KeyField" min="-2" pref="66" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
               <Component id="ChangeKeyButton" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="308" max="32767" attributes="0"/>
+              <EmptySpace pref="517" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -56,7 +56,7 @@
                   <Component id="KeyField" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
                   <Component id="ChangeKeyButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="347" max="32767" attributes="0"/>
+              <EmptySpace pref="482" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
