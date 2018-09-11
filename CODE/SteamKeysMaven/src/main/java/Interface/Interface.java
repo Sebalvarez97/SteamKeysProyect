@@ -17,12 +17,12 @@ public class Interface extends JFrame{
     
         //INICIA EL ICONO
       protected void initICon() {
-        try {
-            Image img = ImageIO.read(new File("D:\\Sebastian\\Programacion\\SteamKeysProyect\\IMAGENES\\icono.jpg"));
-            this.setIconImage(img);
-        } catch (IOException ex) {
-            MessageDialog(ex.getMessage());
-        }
+//        try {
+//            Image img = ImageIO.read(new File("D:\\Sebastian\\Programacion\\SteamKeysProyect\\IMAGENES\\icono.jpg"));
+//            this.setIconImage(img);
+//        } catch (IOException ex) {
+//            MessageDialog(ex.getMessage());
+//        }
     }
        //PERMITE MOSTRAR UNA ALERTA O MENSAJE EN PANTALLA
     protected void MessageDialog(String scr){
