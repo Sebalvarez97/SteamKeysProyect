@@ -41,8 +41,9 @@ public class TypeStateDTO extends DTO{
     }
 
     @Override
-    public int compareTo(DTO t) {
-        throw new UnsupportedOperationException("Not supported comparator yet."); //To change body of generated methods, choose Tools | Templates.
+    public int compareTo(DTO dto) {
+        TypeStateDTO tsdto = (TypeStateDTO) dto;
+        return description.compareTo(tsdto.getDescription());
     }
     
     

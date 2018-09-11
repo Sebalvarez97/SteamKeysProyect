@@ -18,7 +18,7 @@ public class Interface extends JFrame{
         //INICIA EL ICONO
       protected void initICon() {
         try {
-            Image img = ImageIO.read(new File("D:\\Sebastian\\Programacion\\SteamKeysProyect\\Imagenes\\icono.jpg"));
+            Image img = ImageIO.read(new File("D:\\Sebastian\\Programacion\\SteamKeysProyect\\IMAGENES\\icono.jpg"));
             this.setIconImage(img);
         } catch (IOException ex) {
             MessageDialog(ex.getMessage());
