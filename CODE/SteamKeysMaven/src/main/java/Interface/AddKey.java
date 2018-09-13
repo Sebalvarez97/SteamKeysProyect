@@ -80,7 +80,7 @@ private void ListDate(){
     for(int i = 1; i< 32;i++){
         modelodia.addElement(i);;
     }
-    for(int i = 1; i< 13; i++){
+    for(int i = 1; i< monthnow+1; i++){
         modelomes.addElement(i);
     }
     for(int i = yearnow; i> yearnow-10; i--){
@@ -111,19 +111,23 @@ private void AddNewKey(){
     if(saldo-total <0){
         throw new Exception("Not enough money");
     }else{
+       if(cantidad != 0){
          int confirmation = JOptionPane.showConfirmDialog(this, "Are you sure you want to create " + cantidad + " of "+ type + " key/s?");
          if (confirmation == 0){
-            int i = 1;
-        while(i<=cantidad){
-            KeyDTO ktu = new KeyDTO();
-            ktu.setState(state);
-            ktu.setType(type);
-            ktu.setbuydate(getImputDate());
-            KeyManager.EnterKey(ktu);
-            i++;
-        }
-         KeyManager.UpdateSaldo(saldo-total);
-    }
+            
+                int i = 1;
+                while(i<=cantidad){
+                    KeyDTO ktu = new KeyDTO();
+                    ktu.setState(state);
+                    ktu.setType(type);
+                    ktu.setbuydate(getImputDate());
+                    KeyManager.EnterKey(ktu);
+                    i++;
+                }
+            MessageDialog("Key/s succesfully registered");
+         }
+          KeyManager.UpdateSaldo(saldo-total);
+        }else MessageDialog("How Many???. Please enter it");  
     }
    
   }catch(Exception e){
