@@ -14,6 +14,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 
@@ -48,7 +50,7 @@ public class KeyManager {
         return ret;
     } 
     //CREA UN ESTADO CON EL STRING INGRESADO
-    private static void EnterState(String name){
+    public static void EnterState(String name){
         KeyState ks = new KeyState();
         ks.setStateDescription(name);
         EntityController.create(ks);
@@ -450,6 +452,14 @@ public class KeyManager {
         }
         return ret;
     }
+    //CREA UN PARAMETRO NUEVO
+    private static void EnterParameter(ParameterDTO dto){
+        SteamParameters p = new SteamParameters();
+        p.setName(dto.getName());
+        p.setDescription(dto.getDescription());
+        p.setValue(dto.getValue());
+        EntityController.create(p);
+    }
     //SETEA EL VALOR DEL PARAMETRO INGRESADO(ES UN PATRON NO HACE FALTA AGREGAR LA DESCRIPCION)
     private static void setValue(ParameterDTO dto) throws Exception{
         SteamParameters sp = EntityController.find(new SteamParameters(dto.getName()));
@@ -579,6 +589,15 @@ public class KeyManager {
         ZonedDateTime fecha = ZonedDateTime.ofInstant(date.toInstant(),ZoneId.systemDefault());
         return fecha.getYear();
     }
+    //DEVUELVE EL VALOR DE LA CONTRASEÑA GLOBAL
+    public static String getGlobalPassword(){
+        return KeyManager.findParameter("Password").getDescription();
+    }
+    private static void ChangeGlobalPassword(String nueva) throws Exception{
+        SteamParameters sp = EntityController.find(new SteamParameters("Password"));
+        sp.setDescription(nueva);
+        EntityController.Edit(sp);
+    }
     //BUSCA EL PARAMETRO INDICADO
     private static ParameterDTO findParameter(String name){
         SteamParameters sp = EntityController.find(new SteamParameters(name));
@@ -706,7 +725,7 @@ public class KeyManager {
   
   public static void main(String[] args){
       
-      
+
       InitInventory();
       
       System.out.println("FIN");

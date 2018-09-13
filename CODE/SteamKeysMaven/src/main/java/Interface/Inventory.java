@@ -522,8 +522,14 @@ public class Inventory extends Interface{
     }//GEN-LAST:event_ReloadButtonActionPerformed
 
     private void ConfigButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfigButtonActionPerformed
-        // TODO add your handling code here:
-      AddWindow(new Configurations());
+        try {
+            if(ValidateUser()){
+                AddWindow(new Configurations());
+            }
+            
+        } catch (Exception ex) {
+            MessageDialog(ex.getMessage());
+        }
       
     }//GEN-LAST:event_ConfigButtonActionPerformed
 
