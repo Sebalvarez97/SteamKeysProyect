@@ -40,7 +40,7 @@ public class Configurations extends Interface {
     private void ShowConfiguration(){
         int keyprice = KeyManager.getKeyPrice();
         KeyField.setText(KeyManager.numberConvertor(keyprice));
-        TypeTextField.setText(null);
+        AddTypeTextField.setText(null);
         AddStateTextField.setText(null);
         ListStates();
         ListTypes();
@@ -60,6 +60,41 @@ public class Configurations extends Interface {
             MessageDialog(ex.getMessage());
         }
     }
+    private void DeleteType(){
+          try{
+            List<String> selected = TypeList.getSelectedValuesList();
+            if(selected.isEmpty()){
+                MessageDialog("Select a type first");
+            }else{
+              int confirmation = JOptionPane.showConfirmDialog(this, "Are you sure?");
+              if (confirmation == 0){
+                  for(String sel : selected){
+                      KeyManager.DeleteType(sel);
+                      MessageDialog("Deleted Succefully");
+                  }
+              }
+            }
+          }catch(NonexistentEntityException ex){
+              MessageDialog(ex.getMessage());
+          }
+          Reload();
+    }
+    private void AddType(){
+        String input = getText(AddTypeTextField);
+        if(input != null){
+            int confirmation = JOptionPane.showConfirmDialog(this, "Are you sure?");
+            if (confirmation == 0 && input != null){
+                try {
+                    KeyManager.EnterType(input);
+                } catch (Exception ex) {
+                    MessageDialog(ex.getMessage());
+                }
+            }
+        }else{
+            MessageDialog("You did not enter a value");
+        }
+        Reload();
+    }
     private void ListStates(){
         try {
             List<String> list = KeyManager.ListStatesTypesString(KeyManager.AlphabeticOrder(KeyManager.ListStates()));
@@ -72,26 +107,43 @@ public class Configurations extends Interface {
             MessageDialog(ex.getMessage());
         }
     }
-    private void AddTypeState(String str, int what){
-        String TyOrSt = null;
-        if(!str.isEmpty()){
-            if(what == 0){
-                TyOrSt = "state";
-            }else if(what == 1){
-                TyOrSt = "type";
+      private void DeleteState(){
+          try{
+            List<String> selected = StateList.getSelectedValuesList();
+            if(selected.isEmpty()){
+                MessageDialog("Select a state first");
+            }else{
+              int confirmation = JOptionPane.showConfirmDialog(this, "Are you sure?");
+              if (confirmation == 0){
+                  for(String sel : selected){
+                      KeyManager.DeleteState(sel);
+                      MessageDialog("Deleted Succefully");
+                  }
+              }
             }
-            if(JOptionPane.showConfirmDialog(this, "Are you sure you want to create this new "+TyOrSt +"?") == 0){
-                KeyManager.EnterState(str);
-                MessageDialog("The "+ TyOrSt + " was succesfully created");
+          }catch(NonexistentEntityException ex){
+              MessageDialog(ex.getMessage());
+          }
+          Reload();
+    }
+    private void AddState(){
+        String input = getText(AddStateTextField);
+        if(input != null){
+            int confirmation = JOptionPane.showConfirmDialog(this, "Are you sure?");
+            if (confirmation == 0 && input != null){
+                try {
+                    KeyManager.EnterState(input);
+                } catch (Exception ex) {
+                    MessageDialog(ex.getMessage());
+                }
             }
         }else{
-            MessageDialog("Empty input");
+             MessageDialog("You did not enter a value");
         }
         Reload();
     }
     private String getText(JTextField field){
         String ret = field.getText();
-        
         return ret;
     }
     //CAMBIA EL VALOR DE LA KEY
@@ -130,7 +182,7 @@ public class Configurations extends Interface {
         TypeList = new javax.swing.JList<>();
         DeleteTypeButton = new javax.swing.JButton();
         AddDelTypePanel = new javax.swing.JPanel();
-        TypeTextField = new javax.swing.JTextField();
+        AddTypeTextField = new javax.swing.JTextField();
         AddTypeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -204,6 +256,11 @@ public class Configurations extends Interface {
         );
 
         DeleteStateButton.setText("Delete");
+        DeleteStateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DeleteStateButtonActionPerformed(evt);
+            }
+        });
 
         TypesTittle.setFont(new java.awt.Font("Comic Sans MS", 0, 14)); // NOI18N
         TypesTittle.setText("Types");
@@ -219,11 +276,11 @@ public class Configurations extends Interface {
             }
         });
 
-        TypeTextField.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        TypeTextField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        TypeTextField.addActionListener(new java.awt.event.ActionListener() {
+        AddTypeTextField.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        AddTypeTextField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        AddTypeTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                TypeTextFieldActionPerformed(evt);
+                AddTypeTextFieldActionPerformed(evt);
             }
         });
 
@@ -240,7 +297,7 @@ public class Configurations extends Interface {
             AddDelTypePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(AddDelTypePanelLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
-                .addComponent(TypeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(AddTypeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(AddTypeButton)
                 .addContainerGap())
@@ -250,7 +307,7 @@ public class Configurations extends Interface {
             .addGroup(AddDelTypePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(AddDelTypePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(TypeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(AddTypeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(AddTypeButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -343,20 +400,24 @@ public class Configurations extends Interface {
     }//GEN-LAST:event_AddStateTextFieldActionPerformed
 
     private void AddStateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddStateButtonActionPerformed
-       AddTypeState(getText(AddStateTextField),0); // TODO add your handling code here:
+       AddState();// TODO add your handling code here:
     }//GEN-LAST:event_AddStateButtonActionPerformed
 
     private void DeleteTypeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteTypeButtonActionPerformed
-        // TODO add your handling code here:
+        DeleteType();// TODO add your handling code here:
     }//GEN-LAST:event_DeleteTypeButtonActionPerformed
 
     private void AddTypeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddTypeButtonActionPerformed
-       AddTypeState(getText(TypeTextField),1); // TODO add your handling code here:
+       AddType(); // TODO add your handling code here:
     }//GEN-LAST:event_AddTypeButtonActionPerformed
 
-    private void TypeTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TypeTextFieldActionPerformed
+    private void AddTypeTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddTypeTextFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_TypeTextFieldActionPerformed
+    }//GEN-LAST:event_AddTypeTextFieldActionPerformed
+
+    private void DeleteStateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteStateButtonActionPerformed
+        DeleteState();        // TODO add your handling code here:
+    }//GEN-LAST:event_DeleteStateButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -365,6 +426,7 @@ public class Configurations extends Interface {
     private javax.swing.JButton AddStateButton;
     private javax.swing.JTextField AddStateTextField;
     private javax.swing.JButton AddTypeButton;
+    private javax.swing.JTextField AddTypeTextField;
     private javax.swing.JButton BackButton;
     private javax.swing.JButton ChangeKeyButton;
     private javax.swing.JLabel ConfigurationTittle;
@@ -377,7 +439,6 @@ public class Configurations extends Interface {
     private javax.swing.JLabel StateTittle;
     private javax.swing.JList<String> TypeList;
     private javax.swing.JScrollPane TypeListScroll;
-    private javax.swing.JTextField TypeTextField;
     private javax.swing.JLabel TypesTittle;
     // End of variables declaration//GEN-END:variables
 }

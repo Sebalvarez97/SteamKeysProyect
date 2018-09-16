@@ -50,10 +50,34 @@ public class KeyManager {
         return ret;
     } 
     //CREA UN ESTADO CON EL STRING INGRESADO
-    public static void EnterState(String name){
+    public static void EnterState(String name) throws Exception{
         KeyState ks = new KeyState();
         ks.setStateDescription(name);
-        EntityController.create(ks);
+        if(!EntityController.findIfExist(ks)){
+            EntityController.create(ks);
+        }else{
+            throw new Exception("The entity already exists");
+        }  
+    }
+    //BORRA UN ESTADO DE LLAVE CON EL STRING INGRESADO
+    public static void DeleteState(String name) throws NonexistentEntityException{
+        KeyState ks = EntityController.find(new KeyState(name));
+        EntityController.destroy(ks);
+    }
+    //CREA UN TIPO CON EL STRING INGRESADO
+    public static void EnterType(String name) throws Exception{
+        KeyType kt = new KeyType();
+        kt.setTypeDescription(name);
+         if(!EntityController.findIfExist(kt)){
+            EntityController.create(kt);
+        }else{
+            throw new Exception("The entity already exists");
+        }
+    }
+    //BORRA UN TIPO DE LLAVE SEGUN EL STRING INGRESADO
+    public static void DeleteType(String name) throws NonexistentEntityException{
+        KeyType kt = EntityController.find(new KeyType(name));
+        EntityController.destroy(kt);
     }
     //DEVUELVE LA LLAVE SEGUN EL ID INGRESADO EN EL KEYDTO PATRON
     public static KeyDTO getKeyDTO(KeyDTO patron) throws NonexistentEntityException{
@@ -438,9 +462,6 @@ public class KeyManager {
             int profit = trade.getGanancia();
             int cant = trade.getCantkey();
             int total = profit-(keyprice*cant);
-            if(total<0){
-                throw new Exception("getTradeListError");
-            }else{
                 double cantkey = (double) trade.getCantkey();
                 double t = (double) total;
                 double profitxkey = t/cantkey;
@@ -448,7 +469,6 @@ public class KeyManager {
                 String pk = String.valueOf(profitxkey);
                 Object[] listelement = {trade.getId(),SimpleFormatDate(trade.getDateoftrade()), trade.getCantkey(),numberConvertor(numberConvertor(pk)) , numberConvertor(trade.getBalancestore()), numberConvertor(trade.getPriceinstore())};
                 ret.add(listelement);
-            } 
         }
         return ret;
     }
