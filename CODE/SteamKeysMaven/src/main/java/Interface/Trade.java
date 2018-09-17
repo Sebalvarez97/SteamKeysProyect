@@ -25,7 +25,7 @@ public class Trade extends Interface {
     DefaultTableModel modelotabla;
     DefaultTableModel modeloitems;
     DefaultListModel modelolista;
-    private List<Object[]> Items = new ArrayList();
+    private List<Integer[]> Items = new ArrayList();
     
     //CONSTRUCTOR
     public Trade() {
@@ -66,7 +66,7 @@ public class Trade extends Interface {
     private void initTrade(){
         try {
             PriceImput.setText("2.50");
-            SellPriceInput.setText("0.00");
+            SellPriceInput.setText("0.00");;
             BalanceInput.setText(KeyManager.numberConvertor(getPriceInput()*keys.size()));
             ItemsTable.setSelectionMode(0);
             ItemsTable.getTableHeader().setResizingAllowed(false);
@@ -78,36 +78,42 @@ public class Trade extends Interface {
     }
     //MUESTRA LA LISTA DE ITEMS AGREGADOS
     private void ListItems(){
-        //MODELO
-        String [] columnames = {"Item","StorePrice","SellPrice"};
-        modeloitems = new DefaultTableModel(null,columnames);
-        //LLENADO DE LA TABLA
-        Iterator iter = Items.iterator();
-        while(iter.hasNext()){
-            Object[] row = (Object[]) iter.next();
-            modeloitems.addRow(row);
+        try {
+            //MODELO
+            String [] columnames = {"StorePrice","SellPrice"};
+            Integer [] vacio = {, };
+            Integer [] totalizer = {0,0};
+            if(!Items.isEmpty()){
+                totalizer = KeyManager.getTotalizer(Items);
+            }
+            String [] total = {KeyManager.numberConvertor(totalizer[0]),KeyManager.numberConvertor(totalizer[1])};
+            modeloitems = new DefaultTableModel(null,columnames);
+            //LLENADO DE LA TABLA
+            for(Integer[] row: Items){
+                String[] element = {KeyManager.numberConvertor(row[0]), KeyManager.numberConvertor(row[1])};
+                modeloitems.addRow(element);
+            }
+            modeloitems.addRow(vacio);
+            modeloitems.addRow(total);
+            ItemsTable.setModel(modeloitems);
+        } catch (Exception ex) {
+            MessageDialog(ex.getMessage());
         }
-        ItemsTable.setModel(modeloitems);
-        TableColumn columnaid = ItemsTable.getColumn("Item");
-        columnaid.setPreferredWidth(40);
-        columnaid.setMaxWidth(100);
     }
     //AGREGA UN ITEM A LA LISTA DE ITEMS
     private void AddItem(){
         try {
-            String sellprice = KeyManager.numberConvertor(KeyManager.numberConvertor(SellPriceInput.getText()));
+            int sellprice = KeyManager.numberConvertor(SellPriceInput.getText());
             int index = VmrTable.getSelectedRow();
             if(index == -1){
                 throw new Exception("You did not select a value");
-            }else if(KeyManager.numberConvertor(sellprice) != 0){
-                String storeprice = String.valueOf(VmrTable.getValueAt(index, 0));
-                Object[] row ={Items.size()+1,storeprice, sellprice};
-                UpdateBalance(KeyManager.numberConvertor(storeprice));
+            }else if(sellprice != 0){
+                int storeprice = KeyManager.numberConvertor(String.valueOf(VmrTable.getValueAt(index, 0)));
+                Integer[] row ={storeprice, sellprice};
                 Items.add(row);
-            }else if(KeyManager.numberConvertor(sellprice) == 0){
+            }else if(sellprice == 0){
                 throw new Exception("You did not enter a sell price");
             }
-            ItemsTable.setModel(modeloitems);
         } catch (Exception ex) {
             MessageDialog(ex.getMessage());
         }
@@ -116,13 +122,10 @@ public class Trade extends Interface {
     //ELIMINA UN ITEM DE LA LISTA DE ITEMS //ERROR// 
     private void DeleteItem(){
             int index = ItemsTable.getSelectedRow();
-            if(index != 0){
+            if(index >= 0){
                 int confirm = JOptionPane.showOptionDialog(this, "Are you sure?", "Errase Alert", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Yes", "No"}, "Yes");
                 if(confirm == 0){
                     try {
-                        Object[] ob = Items.get(index);
-                        String storeprice = (String) ob[1];
-                        UpdateBalance(-KeyManager.numberConvertor(storeprice));  
                         Items.remove(index);
                     } catch (Exception ex) {
                         MessageDialog("Error in entry");

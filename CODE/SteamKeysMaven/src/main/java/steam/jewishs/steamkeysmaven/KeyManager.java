@@ -250,7 +250,7 @@ public class KeyManager {
                         }
            
                     }else{
-                        throw new Exception("is not a number");
+                        throw new Exception(str + " is not a number");
                     }
                 }else{
                         return numberConvertor(str + ".00");
@@ -282,18 +282,26 @@ public class KeyManager {
         return ret;
     }
     //DEVUELVE EL VALOR DE GANANCIA DE UN TRADE
-    private static int getGanancia(List<Object[]> list) throws Exception{
+    private static int getGanancia(List<Integer[]> list) throws Exception{
         int ganancia = 0;
         Iterator iter = list.iterator();
         while(iter.hasNext()){
-            Object[] listelement = (Object[]) iter.next();
-            int sellprice = numberConvertor(String.valueOf(listelement[2]));
+            Integer[] listelement = (Integer[]) iter.next();
+            int sellprice = listelement[1];
             ganancia = ganancia + profit(sellprice);
         }
         return ganancia;
     }
+    public static int getCantUcanBuy(int money){
+        int ret = 0;
+        int keyprice = KeyManager.getKeyPrice();
+        if(money>= keyprice){
+            ret = Math.round(money/keyprice);
+        }
+        return ret;
+    }
     //CREA UN NUEVO TRADE EN BASE DE DATOS
-    public static void EnterTrade(List<KeyDTO> keys, List<Object[]> items, int storeprice, int balance) throws Exception{
+    public static void EnterTrade(List<KeyDTO> keys, List<Integer[]> items, int storeprice, int balance) throws Exception{
         List<Key> listakeys = new ArrayList();
         //SE CREA EL TRADE Y SE SETEAN LOS PARAMETROS
         int ganancia = getGanancia(items);
@@ -450,6 +458,19 @@ public class KeyManager {
         }
         return dtos;
     }
+    //DEVUELVE UN ARREGLO CON LOS TOTALES DE LAS COLUMNAS
+    public static Integer[] getTotalizer(List<Integer[]> lista) throws Exception{
+        Integer[] ret = new Integer[lista.get(0).length];
+        for(int i = 0; i < ret.length;  i++){
+            ret[i] = 0;
+        }
+        for(Integer[] row : lista){
+            for(int i = 0; i< ret.length; i++){
+                ret[i] = ret[i] + row[i];
+            }
+        }
+        return ret;
+    }
     //DEVUELVE UNA LISTA PARA MOSTRAR LOS TRADE
     public static List<Object[]> getTradeList() throws Exception{
         List<Object[]> ret = new ArrayList();
@@ -461,8 +482,12 @@ public class KeyManager {
             int keyprice = trade.getPriceinstore();
             int profit = trade.getGanancia();
             int cant = trade.getCantkey();
+            if(cant == 0){
+                cant = 1;
+                keyprice = 0;
+            }
             int total = profit-(keyprice*cant);
-                double cantkey = (double) trade.getCantkey();
+                double cantkey = (double) cant;
                 double t = (double) total;
                 double profitxkey = t/cantkey;
                 profitxkey = profitxkey/100;

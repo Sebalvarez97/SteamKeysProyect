@@ -12,6 +12,8 @@ import javax.swing.table.TableColumn;
 import steam.jewishs.steamkeysmaven.KeyManager;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,16 +25,12 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.labels.StandardXYItemLabelGenerator;
 import org.jfree.chart.labels.XYItemLabelGenerator;
-import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.data.time.Day;
 import org.jfree.data.time.Minute;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 
 
 public class History extends Interface {
@@ -55,7 +53,7 @@ DefaultTableModel modelotrades = new DefaultTableModel();
         TableColumn columnaid = TradeHistoryTable.getColumn("TradeID");
         columnaid.setPreferredWidth(50);
         columnaid.setMaxWidth(100);
-        TradeHistoryTable.getTableHeader().setResizingAllowed(false);
+        TradeHistoryTable.getTableHeader().setResizingAllowed(false);   
     }
     //CLASE PADRE, RECARGA LA PAGINA
     public void Reload(){
@@ -190,6 +188,7 @@ public class XYLineChart extends ImageIcon{
         setFocusable(false);
         setResizable(false);
 
+        TradeHistoryTable.setAutoCreateRowSorter(true);
         TradeHistoryTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},

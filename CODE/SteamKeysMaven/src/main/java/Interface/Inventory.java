@@ -117,7 +117,7 @@ public class Inventory extends Interface{
             CantTittle.setText("Cant.Keys: "+Integer.toString(cantidad));
             TradTittle.setText("Tradeables: "+Integer.toString(tradeables));
             UntradTittle.setText("Untradeables: "+Integer.toString(untradeables));
-            TotalTittle.setText("TOTAL   "+ "$ "+KeyManager.numberConvertor(totalmoney));
+            TotalTittle.setText("TOTAL   "+ "$ "+KeyManager.numberConvertor(totalmoney) + "  (Can buy: "+ KeyManager.getCantUcanBuy(KeyManager.getBalanceMoney()) +")");
             
         } catch (Exception ex) {
             MessageDialog(ex.getMessage());
@@ -342,6 +342,7 @@ public class Inventory extends Interface{
             .addComponent(ChartLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
+        KeyTable.setAutoCreateRowSorter(true);
         KeyTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
