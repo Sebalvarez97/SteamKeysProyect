@@ -5,6 +5,8 @@ import Controller.exceptions.NonexistentEntityException;
 import TransporterUnits.KeyDTO;
 import TransporterUnits.ParameterDTO;
 import TransporterUnits.TypeStateDTO;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -81,7 +83,24 @@ public class Inventory extends Interface{
         KeyTable.getTableHeader().setResizingAllowed(false);//DESABILITA LA EDICION DE LAS COLUMNAS
         TableColumn columnaid = KeyTable.getColumn("ID");
         columnaid.setPreferredWidth(40);
-        columnaid.setMaxWidth(100);  
+        columnaid.setMaxWidth(100);
+        Balance.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent ke) {
+                
+            }
+            @Override
+            public void keyPressed(KeyEvent ke) {
+                if (ke.getKeyCode() == KeyEvent.VK_ENTER){
+                    SetEstadistics();
+                    LoadChart();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent ke) {
+                
+            }
+        });
     }
     //RECARGA LA LISTA DE LLAVES
     protected void Reload(){
@@ -150,7 +169,9 @@ public class Inventory extends Interface{
                    }
                }
                int release = KeyManager.getDay(KeyManager.ReleaseDate(dto.getbuydate()));
-               Object[] row = {dto.getId(), type , date , state ,"("+ days + ")  "+release};
+               int monthrel = KeyManager.getMonth(KeyManager.ReleaseDate(dto.getbuydate()));
+               int yearrel = KeyManager.getYear(KeyManager.ReleaseDate(dto.getbuydate()));
+               Object[] row = {dto.getId(), type , date , state ,"("+ days + ")  "+release + "-" + monthrel + "-" + yearrel};
                modelotabla.addRow(row);
                }
             }
@@ -298,6 +319,11 @@ public class Inventory extends Interface{
         Balance.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         Balance.setDebugGraphicsOptions(javax.swing.DebugGraphics.NONE_OPTION);
         Balance.setName("Balance"); // NOI18N
+        Balance.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BalanceActionPerformed(evt);
+            }
+        });
 
         TotalTittle.setFont(new java.awt.Font("Comic Sans MS", 1, 14)); // NOI18N
         TotalTittle.setText("Total");
@@ -538,8 +564,13 @@ public class Inventory extends Interface{
     
     private void TradeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TradeButtonActionPerformed
         List<KeyDTO> keys = getKeySelection();
-        if(keys.size() == 0){
-             MessageDialog("Select a valid key first");
+        if(keys.isEmpty()){
+            int confirmacion = JOptionPane.showConfirmDialog(this, "You did not select a key. It is correct?");
+            if(confirmacion == 0){
+                    Trade window = new Trade();
+                    window.setKeys(keys);
+                    AddWindow(window);
+            }    
         }else if(KeyManager.ValidateTradeSelection(keys)) {
             int confirmacion = JOptionPane.showConfirmDialog(this, "This key/s selected will be traded, Are you sure?");
             if(confirmacion == 0){
@@ -562,6 +593,10 @@ public class Inventory extends Interface{
      AddWindow(new History());
        // TODO add your handling code here:
     }//GEN-LAST:event_HistoryButtonActionPerformed
+
+    private void BalanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BalanceActionPerformed
+      
+    }//GEN-LAST:event_BalanceActionPerformed
 
    
 

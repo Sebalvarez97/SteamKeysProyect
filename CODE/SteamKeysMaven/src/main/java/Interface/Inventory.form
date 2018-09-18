@@ -245,6 +245,9 @@
               <AccessibilityProperties>
                 <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Balance"/>
               </AccessibilityProperties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BalanceActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="TotalTittle">
               <Properties>

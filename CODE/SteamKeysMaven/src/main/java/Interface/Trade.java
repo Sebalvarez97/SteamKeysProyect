@@ -7,6 +7,8 @@ package Interface;
 
 import Controller.exceptions.NonexistentEntityException;
 import TransporterUnits.KeyDTO;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -71,6 +73,37 @@ public class Trade extends Interface {
             ItemsTable.setSelectionMode(0);
             ItemsTable.getTableHeader().setResizingAllowed(false);
             VmrTable.getTableHeader().setResizingAllowed(false);
+            PriceImput.addKeyListener(new KeyListener() {
+                @Override
+                public void keyTyped(KeyEvent ke) {
+                    
+                }
+                @Override
+                public void keyPressed(KeyEvent ke) {
+                    if (ke.getKeyCode() == KeyEvent.VK_ENTER){
+                    Reload();    
+                    }
+                }
+                @Override
+                public void keyReleased(KeyEvent ke) {
+                   
+                }});
+            SellPriceInput.addKeyListener(new KeyListener() {
+                @Override
+                public void keyTyped(KeyEvent ke) {
+                    
+                }
+                @Override
+                public void keyPressed(KeyEvent ke) {
+                    if(ke.getKeyCode() == KeyEvent.VK_ENTER){
+                        AddItem();
+                    }
+                }
+                @Override
+                public void keyReleased(KeyEvent ke) {
+                    
+                }
+            });
             Reload();
         } catch (Exception ex) {
            MessageDialog(ex.getMessage());
@@ -307,6 +340,7 @@ public class Trade extends Interface {
 
         BalanceInput.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         BalanceInput.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        BalanceInput.setFocusable(false);
 
         ItemsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {

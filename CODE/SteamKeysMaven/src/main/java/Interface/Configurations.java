@@ -8,6 +8,8 @@ package Interface;
 import Controller.exceptions.NonexistentEntityException;
 import TransporterUnits.ParameterDTO;
 import TransporterUnits.TypeStateDTO;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,7 +31,55 @@ public class Configurations extends Interface {
         initICon();
         ShowConfiguration();
         this.setSize(Inventory.getLastWindow().getSize());
-        this.setLocationRelativeTo(Inventory.getLastWindow()); 
+        this.setLocationRelativeTo(Inventory.getLastWindow());
+        KeyField.addKeyListener(new KeyListener() {
+           @Override
+            public void keyTyped(KeyEvent ke) {
+                
+            }
+            @Override
+            public void keyPressed(KeyEvent ke) {
+                if (ke.getKeyCode() == KeyEvent.VK_ENTER){
+                    ChangeKeyValue();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent ke) {
+                
+            }
+        });
+        AddStateTextField.addKeyListener(new KeyListener() {
+         @Override
+            public void keyTyped(KeyEvent ke) {
+                
+            }
+            @Override
+            public void keyPressed(KeyEvent ke) {
+                if (ke.getKeyCode() == KeyEvent.VK_ENTER){
+                    AddState();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent ke) {
+                
+            }
+        });
+        AddTypeTextField.addKeyListener(new KeyListener() {
+         @Override
+            public void keyTyped(KeyEvent ke) {
+                
+            }
+            @Override
+            public void keyPressed(KeyEvent ke) {
+                if (ke.getKeyCode() == KeyEvent.VK_ENTER){
+                    AddType();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent ke) {
+                
+            }
+        });
     }
     //DEVUELVE EL VALOR INGRESADO EN EL CAMPO DE LA LLAVE
     private int getKeyFieldInput() throws Exception{
