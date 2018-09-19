@@ -8,9 +8,12 @@ package Model;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
@@ -33,27 +36,26 @@ public class SteamItem implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    
-    @Column(name = "cant")
-    private int cant;
+        
+    @Column(name = "ispending")
+    private boolean pending;
     
     @Column(name = "storeprice")
     private int storeprice;
     
     @Column(name = "sellprice")
     private int sellprice;
+    
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn(name = "trade_id")
+    private Trade trade;
 
     public SteamItem() {
     }
 
     public SteamItem(int cant, int storeprice, int sellprice) {
-        this.cant = cant;
         this.storeprice = storeprice;
         this.sellprice = sellprice;
-    }
-
-    public void setCant(int cant) {
-        this.cant = cant;
     }
 
     public void setStoreprice(int storeprice) {
@@ -68,8 +70,20 @@ public class SteamItem implements Serializable {
         return serialVersionUID;
     }
 
-    public int getCant() {
-        return cant;
+    public boolean isPending() {
+        return pending;
+    }
+
+    public Trade getTrade() {
+        return trade;
+    }
+
+    public void setPending(boolean pending) {
+        this.pending = pending;
+    }
+
+    public void setTrade(Trade trade) {
+        this.trade = trade;
     }
 
     public int getStoreprice() {
@@ -79,7 +93,6 @@ public class SteamItem implements Serializable {
     public int getSellprice() {
         return sellprice;
     }
-    
    
     
     @Override

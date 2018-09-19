@@ -38,16 +38,21 @@ public class Trade implements Serializable {
     @Column(name = "priceinstore")
     private int priceinstore;
     
+    @Column(name = "ingameprice")
+    private int keyprice;
+    
     @Column(name = "ganancia")
     private int ganancia;
     
     @Column(name = "balancestore")
     private int balancestore;
     
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "key_id")
+    @OneToMany(mappedBy = "trade" ,cascade = CascadeType.ALL)
     private List <Key> keytraded = new ArrayList();
     
+    @OneToMany(mappedBy = "trade" ,cascade = CascadeType.ALL)
+    private List <SteamItem> items = new ArrayList();
+ 
     @Column(name = "cantkey")
     private int cantkey;
 
@@ -89,8 +94,24 @@ public class Trade implements Serializable {
 
     public void AddKey(Key k){
         this.keytraded.add(k);
-    }    
+    }
 
+    public void setKeyprice(int keyprice) {
+        this.keyprice = keyprice;
+    }
+
+    public int getKeyprice() {
+        return keyprice;
+    }
+    
+    public void setItems(List<SteamItem> items) {
+        this.items = items;
+    }
+
+    public List<SteamItem> getItems() {
+        return items;
+    }
+    
     public void setKeytraded(List<Key> keytraded) {
         this.keytraded = keytraded;
     }

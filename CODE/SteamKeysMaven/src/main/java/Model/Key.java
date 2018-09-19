@@ -10,6 +10,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,19 +33,20 @@ public class Key implements Serializable{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-//    @Column(name = "buyprice")
-//    private double buyprice;
-    
     @Column(name = "buydate")
     private Date buydate;
     
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "keystate")
     private KeyState keyState;
     
-    @ManyToOne//(fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "keytype")
     private KeyType keyType;
+    
+    @ManyToOne (fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "trade_id")
+    private Trade trade;
     
     public Key(){
         
@@ -91,8 +93,23 @@ public class Key implements Serializable{
     public void setBuyDate(Date date){
         this.buydate = date;
     }
-    
 
+    public Date getBuydate() {
+        return buydate;
+    }
+
+    public Trade getTrade() {
+        return trade;
+    }
+
+    public void setBuydate(Date buydate) {
+        this.buydate = buydate;
+    }
+
+    public void setTrade(Trade trade) {
+        this.trade = trade;
+    }
+    
     /////////////////////////
     
     public Long getId() {
