@@ -20,7 +20,6 @@ import java.util.logging.Logger;
 
 
 public class KeyManager { 
-    
  //INGRESA UNA NUEVA KEY
     public static void EnterKey(KeyDTO ktu){
         try{
@@ -748,7 +747,69 @@ public class KeyManager {
             return (i + (i/10) + (i/20));
         } 
     }
-    
+    private static void InitAll(){
+        InitParameters();
+        InitStates();
+        InitTypes();
+    }
+    private static void InitParameters(){
+        ParameterDTO dto = new ParameterDTO();
+        dto.setName("KeysPrice");
+        dto.setDescription("price of the key ingame");
+        dto.setValue(9599);
+        KeyManager.EnterParameter(dto);
+        dto = new ParameterDTO();
+        dto.setName("Saldo");
+        dto.setDescription("balance in steam accoun");
+        dto.setValue(0);
+        KeyManager.EnterParameter(dto);
+        dto = new ParameterDTO();
+        dto.setName("Password");
+        dto.setDescription("1234");
+        dto.setValue(0);
+        KeyManager.EnterParameter(dto);
+    }
+    private static void InitStates(){
+        try{
+            KeyManager.EnterState("Untradeable");
+            KeyManager.EnterState("Tradeable");
+            KeyManager.EnterState("Traded");
+            KeyManager.EnterState("Sold");
+        }catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+    }
+    private static void InitTypes(){
+        try{
+            KeyManager.EnterType("Croma 2");
+            KeyManager.EnterType("Croma");
+            KeyManager.EnterType("Croma 3");
+            KeyManager.EnterType("Esports");
+            KeyManager.EnterType("Guantes");
+            KeyManager.EnterType("Espectro 2");
+            KeyManager.EnterType("Espectro");
+            KeyManager.EnterType("Clutch");
+            KeyManager.EnterType("Gamma");
+            KeyManager.EnterType("Gamma 2");
+            KeyManager.EnterType("Wildfire");
+            KeyManager.EnterType("Phoenix");
+            KeyManager.EnterType("Sombria");
+            KeyManager.EnterType("CS:GO");
+            KeyManager.EnterType("Cazador");
+            KeyManager.EnterType("Revolver");
+            KeyManager.EnterType("Breakout");
+            KeyManager.EnterType("Alfanje");
+            KeyManager.EnterType("Vanguard");
+            KeyManager.EnterType("Invernal Offensive");
+            KeyManager.EnterType("Hydra");
+            KeyManager.EnterType("cápsula comunidad 1");
+            KeyManager.EnterType("cápsula CS:GO");
+            KeyManager.EnterType("Horizon");
+        }catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+        
+    }
   public static int KeyCounter(){
      return EntityController.KeyCant();
   }
@@ -770,8 +831,13 @@ public class KeyManager {
   
   public static void main(String[] args){
       
-      
-      InitInventory();
+      try{
+          InitInventory();
+          
+      }catch(java.lang.IndexOutOfBoundsException ex){
+          InitAll();
+          InitInventory();
+      }
       
       System.out.println("FIN");
       
