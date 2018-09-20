@@ -238,6 +238,7 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="CheckBox">
       <Properties>
+        <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="After 4:00 AM?"/>
       </Properties>
       <Events>
