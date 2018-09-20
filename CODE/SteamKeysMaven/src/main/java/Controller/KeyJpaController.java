@@ -8,14 +8,14 @@ package Controller;
 import Controller.exceptions.NonexistentEntityException;
 import Model.Key;
 import java.io.Serializable;
-import java.util.Iterator;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import Model.Trade;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 /**
  *
@@ -37,7 +37,16 @@ public class KeyJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            Trade trade = key.getTrade();
+            if (trade != null) {
+                trade = em.getReference(trade.getClass(), trade.getId());
+                key.setTrade(trade);
+            }
             em.persist(key);
+            if (trade != null) {
+                trade.getKeytraded().add(key);
+                trade = em.merge(trade);
+            }
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -51,7 +60,22 @@ public class KeyJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            Key persistentKey = em.find(Key.class, key.getId());
+            Trade tradeOld = persistentKey.getTrade();
+            Trade tradeNew = key.getTrade();
+            if (tradeNew != null) {
+                tradeNew = em.getReference(tradeNew.getClass(), tradeNew.getId());
+                key.setTrade(tradeNew);
+            }
             key = em.merge(key);
+            if (tradeOld != null && !tradeOld.equals(tradeNew)) {
+                tradeOld.getKeytraded().remove(key);
+                tradeOld = em.merge(tradeOld);
+            }
+            if (tradeNew != null && !tradeNew.equals(tradeOld)) {
+                tradeNew.getKeytraded().add(key);
+                tradeNew = em.merge(tradeNew);
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -80,6 +104,11 @@ public class KeyJpaController implements Serializable {
                 key.getId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The key with id " + id + " no longer exists.", enfe);
+            }
+            Trade trade = key.getTrade();
+            if (trade != null) {
+                trade.getKeytraded().remove(key);
+                trade = em.merge(trade);
             }
             em.remove(key);
             em.getTransaction().commit();
@@ -113,7 +142,6 @@ public class KeyJpaController implements Serializable {
             em.close();
         }
     }
-    
 
     public Key findKey(Long id) {
         EntityManager em = getEntityManager();

@@ -12,8 +12,6 @@ import javax.swing.table.TableColumn;
 import steam.jewishs.steamkeysmaven.KeyManager;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -76,20 +74,17 @@ DefaultTableModel modelotrades = new DefaultTableModel();
     private void ListHistory(){
         try {
             List<Object[]> trades = KeyManager.getTradeList();
-            Iterator iter = trades.iterator();
             String[] columnames = {"TradeID","Date", "CantKeys", "Profit/key", "Left", "KeyPrice" };
             modelotrades = new DefaultTableModel(null, columnames);
             //LLENADO
-            while(iter.hasNext()){
-                Object[] listelement = (Object[]) iter.next();
-                Object[] row = {listelement[0], listelement[1], listelement[2], "$ "+listelement[3], "$ " +listelement[4], "$ " +listelement[5]};
+            for(Object[] trade : trades){
+                Object[] row = {trade[0], trade[1], trade[2], "$ "+trade[3], "$ " +trade[4], "$ " +trade[5]};
                 modelotrades.addRow(row);
             }
             TradeHistoryTable.setModel(modelotrades);
         } catch (Exception ex) {
             MessageDialog(ex.getMessage());
         }
-        
     }
     //CLASE NECESARIA PARA EL CHART
 public class XYLineChart extends ImageIcon{
@@ -152,11 +147,6 @@ public class XYLineChart extends ImageIcon{
             hvalue = (int) ob[1];
             double value = hvalue/100;
             fecha = (Date) ob[0];
-//            if(day>maxx){
-//                maxx = day;
-//            }else if(day<minx){
-//                minx = day;
-//            }
             if(value>maxy){
                 maxy = value;
             }else if(value<miny){
