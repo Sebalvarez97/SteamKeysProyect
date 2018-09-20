@@ -53,7 +53,6 @@ public class Key implements Serializable{
     }
 
     public Key(KeyState keyState, KeyType keyType) {
-//        this.buyprice = buyprice;
         this.keyState = keyState;
         this.keyType = keyType;
     }
@@ -61,10 +60,6 @@ public class Key implements Serializable{
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
-///////////////////////////////////////////////////
-//    public double getBuyprice() {
-//        return buyprice;
-//    }
 
     public KeyState getKeyState() {
         return keyState;
@@ -73,10 +68,6 @@ public class Key implements Serializable{
     public KeyType getKeyType() {
         return keyType;
     }
-
-//    public void setBuyprice(double buyprice) {
-//        this.buyprice = buyprice;
-//    }
 
     public void setKeyState(KeyState keyState) {
         this.keyState = keyState;
@@ -89,20 +80,12 @@ public class Key implements Serializable{
     public Date getBuyDate(){
         return this.buydate;
     }
-    
-    public void setBuyDate(Date date){
-        this.buydate = date;
-    }
-
-    public Date getBuydate() {
-        return buydate;
-    }
 
     public Trade getTrade() {
         return trade;
     }
 
-    public void setBuydate(Date buydate) {
+    public void setBuyDate(Date buydate) {
         this.buydate = buydate;
     }
 

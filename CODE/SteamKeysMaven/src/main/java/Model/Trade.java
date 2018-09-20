@@ -81,6 +81,10 @@ public class Trade implements Serializable {
     public Trade(long id){
         this.id = id;
     }
+
+    public Trade(Long id) {
+        this.id = id;
+    }
     
     public Long getId() {
         return id;
@@ -95,7 +99,15 @@ public class Trade implements Serializable {
     public void AddKey(Key k){
         this.keytraded.add(k);
     }
-
+    public void DeleteKey(Key k){
+        this.keytraded.remove(k);
+    }
+    public void AddItem(SteamItem item){
+        this.items.add(item);
+    }
+    public void DeleteItem(SteamItem item){
+        this.items.remove(item);
+    }
     public void setKeyprice(int keyprice) {
         this.keyprice = keyprice;
     }

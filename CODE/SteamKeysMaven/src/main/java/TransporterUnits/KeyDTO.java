@@ -22,6 +22,15 @@ public class KeyDTO extends DTO{
     public KeyDTO() {
     }
 
+    public KeyDTO(long id) {
+        this.id = id;
+    }  
+    public KeyDTO(String type, String state, Date date) {
+        this.type = type;
+        this.state = state;
+        this.buydate = date;
+    }
+
     public KeyDTO(String type, String state) {
         this.type = type;
         this.state = state;
@@ -32,16 +41,11 @@ public class KeyDTO extends DTO{
     public Date getbuydate(){
         return this.buydate;
     }
-    public void setbuydate(Date buydate){
-        this.buydate = buydate;
-    }
+   
     public String getType() {
         return type;
     }
  
-    public Date getBuydate() {
-        return buydate;
-    }
 
     public Long getTrade() {
         return tradeid;

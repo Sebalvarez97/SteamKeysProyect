@@ -6,17 +6,11 @@
 package Interface;
 
 import Controller.exceptions.NonexistentEntityException;
-import TransporterUnits.KeyDTO;
-import TransporterUnits.ParameterDTO;
 import TransporterUnits.TypeStateDTO;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import steam.jewishs.steamkeysmaven.KeyManager;
@@ -54,17 +48,12 @@ private void ListTypes(){
         modelocombobox = new DefaultComboBoxModel();
         try {
             List<TypeStateDTO> types = KeyManager.AlphabeticOrder(KeyManager.ListTypes());
-            Iterator iter = types.iterator();
-            String type = new String();
-            TypeStateDTO dto;
-            while(iter.hasNext()){
-                dto = (TypeStateDTO) iter.next();
-                type = dto.getDescription();
-                modelocombobox.addElement(type);
+            for(TypeStateDTO dto : types){
+                modelocombobox.addElement(dto.getDescription());
             }
             ComboBoxTypes.setModel(modelocombobox);
         } catch (NonexistentEntityException ex) {
-            System.out.println("FALLA");Logger.getLogger(AddKey.class.getName()).log(Level.SEVERE, null, ex);
+            MessageDialog(ex.getMessage());
         }  
 }
 //LISTA LOS COMBOBOX DE LA FECHA
@@ -80,7 +69,7 @@ private void ListDate(){
     for(int i = 1; i< 32;i++){
         modelodia.addElement(i);;
     }
-    for(int i = 1; i< monthnow+1; i++){
+    for(int i = 1; i< monthnow+2; i++){
         modelomes.addElement(i);
     }
     for(int i = yearnow; i> yearnow-10; i--){
@@ -93,8 +82,8 @@ private void ListDate(){
     MonthComboBox.setModel(modelomes);
     YearComboBox.setModel(modeloano);
 }
-    //DEVUELVE EL VALOR DE LA CANTIDAD DE LLAVES VALIDADO
-    private int getCantValue() throws Exception{
+    //DEVUELVE EL VALOR DE LA CANTIDAD DE LLAVES
+    private int getCantValue(){
         int input = (int) CantSpinner.getValue();
         return input;
     } 
@@ -103,55 +92,32 @@ private void ListDate(){
 private void AddNewKey(){
   try{  
     String type = (String) ComboBoxTypes.getSelectedItem();
-    String state = "Untradeable";
     int cantidad = getCantValue();
-    int keyprice = KeyManager.getKeyPrice();
-    int total = cantidad * keyprice;
-    int saldo = KeyManager.getBalanceMoney();
-    if(saldo-total <0){
+    if(!KeyManager.isPossibleToBuyKeys()){
         throw new Exception("Not enough money");
     }else{
-       if(cantidad != 0){
+       if(cantidad > 0){
          int confirmation = JOptionPane.showConfirmDialog(this, "Are you sure you want to create " + cantidad + " of "+ type + " key/s?");
          if (confirmation == 0){
-            
-                int i = 1;
-                while(i<=cantidad){
-                    KeyDTO ktu = new KeyDTO();
-                    ktu.setState(state);
-                    ktu.setType(type);
-                    ktu.setbuydate(getImputDate());
-                    KeyManager.EnterKey(ktu);
-                    i++;
-                }
-            MessageDialog("Key/s succesfully registered");
+               KeyManager.EnterSomeKeys(type, cantidad, getImputDate());
+               MessageDialog("Key/s succesfully registered");
          }
-          KeyManager.UpdateSaldo(saldo-total);
         }else MessageDialog("How Many???. Please enter it");  
     }
-   
   }catch(Exception e){
      MessageDialog(e.getMessage());
   }
     
-}//GENERA EL CALENDARIO CON LA FECHA INGRESADA
+}//GENERA EL DATE CON LA FECHA INGRESADA
   private Date getImputDate(){
-      
       int day = (int) DayComboBox.getSelectedItem();
       int month = (int) MonthComboBox.getSelectedItem()-1;
       int year = (int) YearComboBox.getSelectedItem();
-      Date returnated = new Date();
-      
-      Calendar cal = Calendar.getInstance();
-      cal.clear();
       if(CheckBox.isSelected()){
-          cal.set(year, month, day);
-          
+          return KeyManager.ConvertDate(day, month, year);     
       }else{
-          cal.set(year,month,day-1);
-      }
-      returnated = cal.getTime();
-     return returnated;      
+          return KeyManager.ConvertDate(day-1, month, year);
+      }       
   }  
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -226,6 +192,7 @@ private void AddNewKey(){
 
         YearTittle.setText("Year");
 
+        CheckBox.setSelected(true);
         CheckBox.setText("After 4:00 AM?");
         CheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

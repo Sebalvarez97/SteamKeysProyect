@@ -19,22 +19,27 @@ import java.util.concurrent.TimeUnit;
 
 public class KeyManager { 
  //INGRESA UNA NUEVA KEY
-    public static void EnterKey(KeyDTO ktu){
-        try{
+    private static void EnterKey(KeyDTO ktu) throws NonexistentEntityException{
          KeyState ks = EntityController.find(new KeyState(ktu.getState()));
          KeyType kt = EntityController.find(new KeyType(ktu.getType()));
-        if(ks != null && kt != null){ 
-            Key k = new Key();
-            k.setBuyDate(ConvertDate(ktu.getbuydate())); //PERMITE GUARDAR EN BASE DE DATOS LA FECHA PARA STEAM
-            k.setKeyState(ks);
-            k.setKeyType(kt);
-            EntityController.create(k);
+            if(ks != null && kt != null){ 
+                Key k = new Key();
+                k.setBuyDate(ConvertDate(ktu.getbuydate())); //PERMITE GUARDAR EN BASE DE DATOS LA FECHA PARA STEAM
+                k.setKeyState(ks);
+                k.setKeyType(kt);
+                EntityController.create(k);
         }else {
             throw new NonexistentEntityException("The type or the state does not exist");
         }
-        }catch(NonexistentEntityException Ne){
-            //se enviaran al ExceptionManager
-        }
+    }
+    public static void EnterSomeKeys(String type, int cantidad, Date date) throws Exception{
+        if(cantidad > 0){
+            while(cantidad> 0){
+                EnterKey(new KeyDTO(type,"Untradeable", date));
+                SumarSaldo(-getKeyPrice());
+                cantidad--;
+            }
+        }else throw new Exception("Quantity ingresed fail");
     }
     //DEVUELVE UN TYPESTATEDTO A PARTIR DE UN STRING DE ESTADO O TIPO
     private static TypeStateDTO getStateType(String str){
@@ -45,7 +50,15 @@ public class KeyManager {
             ret.setDescription(str);
         }
         return ret;
-    } 
+    }
+    //DEVUELVE UN ESTADO A PARTIR DE UN STRING
+    private static KeyState getState(String str){
+        return EntityController.find(new KeyState(str));
+    }
+    //DEVUELVE UN TIPO A PARTIR DE UN STRING
+    private static KeyType getType(String str){
+        return EntityController.find(new KeyType(str));
+    }
     //CREA UN ESTADO CON EL STRING INGRESADO
     public static void EnterState(String name) throws Exception{
         KeyState ks = new KeyState();
@@ -76,13 +89,13 @@ public class KeyManager {
         KeyType kt = EntityController.find(new KeyType(name));
         EntityController.destroy(kt);
     }
-    //DEVUELVE LA LLAVE SEGUN EL ID INGRESADO EN EL KEYDTO PATRON
-    public static KeyDTO getKeyDTO(KeyDTO patron) throws NonexistentEntityException{
+    //DEVUELVE LA LLAVE SEGUN EL ID INGRESADO
+    public static KeyDTO getKeyDTO(long id) throws NonexistentEntityException{
         KeyDTO ret = null;
         Iterator iter = ListKeys().iterator();
         while(iter.hasNext()){
             KeyDTO dto = (KeyDTO) iter.next();
-            if(dto.getId() == patron.getId()){
+            if(dto.getId() == id){
                 ret = dto;
             }
         }
@@ -99,11 +112,7 @@ public class KeyManager {
     public static void DeleteKey(KeyDTO ktu) throws NonexistentEntityException{
         Key key = new Key();
         key.setId(ktu.getId());
-        try {
-            EntityController.destroy(key);
-        } catch (NonexistentEntityException ex) {
-           //se enviaran al ExceptionManager
-        }
+        EntityController.destroy(key);
         UpdateHistory();
     }
     //DEVUELVE SI ES TRADEABLE LA LLAVE
@@ -131,21 +140,23 @@ public class KeyManager {
         cal.add(Calendar.DAY_OF_MONTH, value);
         return cal.getTime();
     }
+    //TRANSFORMA UN CONJUNTO DE INT EN UN DATE
+    public static Date ConvertDate(int day, int month, int year){;
+        Calendar cal = Calendar.getInstance();
+        cal.clear();
+        cal.set(year, month, day);
+        return cal.getTime();
+    }
     //ACTUALIZA EL ESTADO DE LAS LLAVES DEL INVENTARIO 
-    public static void UpdateState() throws Exception{
-            List<Key> keys = EntityController.ListKeys();
-            Key key;
-            Iterator iter = keys.iterator();
-            while(iter.hasNext()){
-                key = (Key) iter.next();
-                if(key.getKeyState().getStateDescription().equals("Untradeable")){
-                    if(isTradeable(key)){
-                        key.setKeyState(EntityController.find(new KeyState("Tradeable")));
-                        EntityController.Edit(key);
-                    }   
-                }            
+    public static void UpdateState() throws NonexistentEntityException, Exception {
+            List<KeyDTO> keys = KeyManager.ListWithStateKeys(new KeyDTO("","Untradeable"));
+            for(KeyDTO key : keys){
+                Key k = getKey(key);
+                if(isTradeable(k)){
+                    k = ChangeState(k, "Tradeable");
+                    EntityController.Edit(k);
+                }
             }
-
     }
     //DEVUELVE LA DIFERENCIA EN DIAS
     public static int DayDiference(Date date1, Date date2){
@@ -170,11 +181,8 @@ public class KeyManager {
     //DEVUELVE LA CANTIDAD DE LLAVES CON CIERTO ESTADO
     public static int CantWithState(TypeStateDTO dto) throws NonexistentEntityException{
         List<KeyDTO> keys = ListKeys();
-        Iterator iter = keys.iterator();
-        KeyDTO k;
         int cantidad = 0;
-        while(iter.hasNext()){
-            k = (KeyDTO) iter.next();
+        for(KeyDTO k : keys){            
             if(k.getState().equals(dto.getDescription())){
                 cantidad++;
             }
@@ -183,17 +191,13 @@ public class KeyManager {
     }
     //DEVUELVE LA FECHA CONVERTIDA AL HORARIO DE STEAM 
     public static Date ConvertDate(Date date){
-        
         ZonedDateTime inicial = ZonedDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
         ZonedDateTime finaldate = inicial.withZoneSameInstant(ZoneId.of("GMT+1")); //TRABAJAR CON LA HORA DE GMT
-        //ZonedDateTime finaldate = inicial.withZoneSameInstant(ZoneId.systemDefault());
         Calendar cal = Calendar.getInstance();
         cal.clear();
         cal.set(finaldate.getYear(), finaldate.getMonthValue()-1, finaldate.getDayOfMonth(), finaldate.getHour(), finaldate.getMinute());
-        
         Date returnated = cal.getTime();
-        
-       return returnated;
+        return returnated;
     }
     //DEVUELVE EL VALOR DINERO TOTAL EN STEAM
     public static int getTotalMoney() throws NonexistentEntityException{
@@ -260,35 +264,44 @@ public class KeyManager {
         k.setKeyState(ks);
         return k;
     }
-    //LISTA LOS STEAMITEMS A PARTIR DE UNA MATRIZ DE PRECIOS //FALLA//NO USAR HASTA ARREGLAR
-    private static List<SteamItem> ListSteamItems(List<Object[]> list) throws Exception {
-        List<SteamItem> ret = new ArrayList();
-        List<Object[]> list2 = list; 
-        Iterator iter = list.iterator();
-        while(iter.hasNext()){
-            Object[] listelement = (Object[]) iter.next();
-            int storeprice = numberConvertor(String.valueOf(listelement[1]));
-            int sellprice = numberConvertor(String.valueOf(listelement[2]));
-            int cant = 1;
+    //LISTA LOS STEAMITEMS A PARTIR DE UNA LISTA DE STEAMITEMSDTO 
+    private static List<SteamItem> ListSteamItems(List<SteamItemDTO> list) throws Exception {
+        List<SteamItem> ret = new ArrayList(); 
+        for(SteamItemDTO row : list){
             SteamItem item = new SteamItem();
-            item.setCant(cant);
-            item.setStoreprice(storeprice);
-            item.setSellprice(sellprice);
+            item.setPending(row.isIspending());
+            item.setSellprice(row.getSellprice());
+            item.setStoreprice(row.getStoreprice());
             ret.add(item);
         }
         return ret;
     }
+    //LISTA LAS LLAVES A PARTIR DE UNA LISTA DE KEYDTO
+    private static List<Key> ListSteamKeys(List<KeyDTO> list) throws NonexistentEntityException{
+        List<Key> llaves = new ArrayList();
+        for(KeyDTO key : list){
+          Key k = KeyManager.getKey(key);
+          llaves.add(k);
+        }
+        return llaves;
+    }
     //DEVUELVE EL VALOR DE GANANCIA DE UN TRADE
-    private static int getGanancia(List<Integer[]> list) throws Exception{
+    private static int getGanancia(List<SteamItem> list) throws Exception{
         int ganancia = 0;
-        Iterator iter = list.iterator();
-        while(iter.hasNext()){
-            Integer[] listelement = (Integer[]) iter.next();
-            int sellprice = listelement[1];
-            ganancia = ganancia + profit(sellprice);
+        for(SteamItem item : list){
+            if(!item.isPending()){
+                ganancia = ganancia + profit(item.getSellprice());
+            }
         }
         return ganancia;
     }
+    //DEVUELVE TRUE SI ES POSIBLE COMPRAR LLAVES
+    public static boolean isPossibleToBuyKeys(){
+        if(getCantUcanBuy(getBalanceMoney()) == 0){
+            return false;
+        }else return true;
+    }
+    //DEVUELVE LA CANTIDAD DE LLAVES QUE SE PUEDE COMPRAR
     public static int getCantUcanBuy(int money){
         int ret = 0;
         int keyprice = KeyManager.getKeyPrice();
@@ -298,32 +311,34 @@ public class KeyManager {
         return ret;
     }
     //CREA UN NUEVO TRADE EN BASE DE DATOS
-    public static void EnterTrade(List<KeyDTO> keys, List<Integer[]> items, int storeprice, int balance) throws Exception{
-        List<Key> listakeys = new ArrayList();
-        //SE CREA EL TRADE Y SE SETEAN LOS PARAMETROS
+    public static void EnterTrade(List<KeyDTO> keys, List<SteamItemDTO> listaitems, int storeprice, int balance) throws Exception{
+        List<Key> llaves = ListSteamKeys(keys);
+        List<SteamItem> items = ListSteamItems(listaitems);
         int ganancia = getGanancia(items);
+        //SE CREA EL TRADE Y SE SETEAN LOS PARAMETROS
         Trade trade = new Trade();
         trade.setBalancestore(balance);
-        trade.setGanancia(ganancia);
-        trade.setPriceinstore(storeprice);
-        trade.setDateoftrade(Calendar.getInstance().getTime());
         trade.setCantkey(keys.size());
-        //SE PONEN LAS LLAVES COMO TRADED
-        Iterator iter = keys.iterator();
-        trade.setKeytraded(listakeys);
-        EntityController.create(trade);
-           while(iter.hasNext()){
-             KeyDTO dto = (KeyDTO) iter.next();
-             Key key = getKey(dto);
-             key = ChangeState(key, "Traded");
-             listakeys.add(key);
-             EntityController.Edit(key);
-        }
+        trade.setDateoftrade(Calendar.getInstance().getTime());
+        trade.setGanancia(ganancia);
+        trade.setKeyprice(getKeyPrice());
+        trade.setPriceinstore(storeprice);
+            EntityController.create(trade);
+            trade = EntityController.getLast(trade);
+            for(Key llave : llaves){
+                llave = KeyManager.ChangeState(llave,"Traded");
+                EntityController.Edit(llave);
+                trade.AddKey(llave);
+            }
+            for(SteamItem item : items){
+                EntityController.create(item);
+                trade.AddItem(item);
+            }
+            EntityController.Edit(trade);
         //SE AGREGA LA GANANCIA AL SALDO
-        SumarSaldo(ganancia);
-        
+        SumarSaldo(ganancia);    
     }
-        //VALIDA LA SELECCION PARA TRADEAR
+    //VALIDA LA SELECCION PARA TRADEAR
     public static boolean ValidateTradeSelection(List<KeyDTO> list){
         boolean validation = true;
         Iterator iter = list.iterator();
@@ -363,10 +378,17 @@ public class KeyManager {
         }
         return ret;
     }
+    //DEVUELVE EL ID DE LA KEY CON FORMATO ID-ALGO
+    public static long getKeyID(String str){
+        int guion = str.indexOf("-");
+        String id = str.substring( 0,guion);
+        return Long.parseLong(id);
+    }
     //PERMITE VENDER UNA KEY
     public static void SellKey(KeyDTO key, int sellprice) throws NonexistentEntityException, Exception{
         int ganancia = KeyManager.profit(sellprice);
         Key k = KeyManager.getKey(key);
+        k = KeyManager.ChangeState(k, "Sold");
         EntityController.Edit(k);
         SumarSaldo(ganancia);
     }
@@ -403,7 +425,7 @@ public class KeyManager {
         }
         return ret;
     }
-    //DEVUELVE UNA LISTA CON SOLO LAS LLAVES TRADEABLES
+    //DEVUELVE UNA LISTA CON SOLO LAS LLAVES DEL ESTADO INDICADO
     public static List<KeyDTO> ListWithStateKeys(KeyDTO patron) throws NonexistentEntityException{
         List<KeyDTO> list = new ArrayList();
         Iterator iter = ListKeys().iterator();
@@ -443,17 +465,28 @@ public class KeyManager {
     //DEVUELVE UNA LISTA DE LAS LLAVES PARA LA INTERFAZ
     public static List<KeyDTO> ListKeys() throws NonexistentEntityException{
         List<Key> keys = EntityController.ListKeys();
-        Key key;
         List<KeyDTO> dtos = new ArrayList();
-        Iterator iter = keys.iterator();
-        while(iter.hasNext()){
-            key = (Key) iter.next();
-            KeyDTO dto = new KeyDTO(key.getKeyType().getTypeDescription(), key.getKeyState().getStateDescription());
-            dto.setbuydate(key.getBuyDate());
+        for(Key key : keys){
+            KeyDTO dto = new KeyDTO();
             dto.setId(key.getId());
+            dto.setBuydate(key.getBuyDate());
+            dto.setState(key.getKeyState().getStateDescription());
+            dto.setType(key.getKeyType().getTypeDescription());
             dtos.add(dto);
         }
         return dtos;
+    }
+    //DEVUELVE UNA ROW DE TOTAL
+    public static Integer[] getTotalOfItems(List<SteamItemDTO> lista) throws Exception{
+        if(lista.isEmpty()){
+            lista.add(new SteamItemDTO());
+        }
+        List<Integer[]> converted = new ArrayList();
+        for(SteamItemDTO item : lista){
+            Integer[] row = {item.getStoreprice(), item.getSellprice()};
+            converted.add(row);
+        }
+        return getTotalizer(converted);
     }
     //DEVUELVE UN ARREGLO CON LOS TOTALES DE LAS COLUMNAS
     public static Integer[] getTotalizer(List<Integer[]> lista) throws Exception{
@@ -473,10 +506,8 @@ public class KeyManager {
         List<Object[]> ret = new ArrayList();
         List<Trade> trades = EntityController.ListTrades();
         Collections.reverse(trades);
-        Iterator iter = trades.iterator();
-        while(iter.hasNext()){
-            Trade trade = (Trade) iter.next();
-            int keyprice = trade.getPriceinstore();
+        for(Trade trade : trades){
+            int keyprice = trade.getKeyprice();
             int profit = trade.getGanancia();
             int cant = trade.getCantkey();
             if(cant == 0){
@@ -506,8 +537,7 @@ public class KeyManager {
     private static void setValue(ParameterDTO dto) throws Exception{
         SteamParameters sp = EntityController.find(new SteamParameters(dto.getName()));
         sp.setValue(dto.getValue());
-        
-            EntityController.Edit(sp);
+        EntityController.Edit(sp);
     }
     //CAMBIA EL VALOR DEL SALDO
     public static void UpdateSaldo(int saldo) throws Exception{
@@ -649,7 +679,7 @@ public class KeyManager {
         p.setValue(sp.getValue());
         return p;
     }
-    //LISTA LOS HISTORES PARA EL USO EN LA INTERFAZ
+    //LISTA LOS HISTORES PARA EL USO EN LA INTERFAZ //NO TIENE UTILIDAD ACTUAL
     public static List<Integer[]> ListHistory(){
         List<Integer[]> ret = new ArrayList();
         List<History> list = EntityController.ListHistory();
@@ -704,12 +734,9 @@ public class KeyManager {
     //DESTRUYE TODAS LAS LLAVES
     public static void DeleteAllKeys() throws NonexistentEntityException{
         List<Key> keys = EntityController.ListKeys();
-        Key key;
-        Iterator iter = keys.iterator();
-        while(iter.hasNext()){
-            key = (Key) iter.next();
+        for(Key key : keys){
             EntityController.destroy(key);
-        } 
+        }
     }
     //DEVUELVE EL VALOR DE BENEFICIO A PARTIR DE UN VALOR DE VENTA
     public static int profit(int valor) throws Exception {     //buscar el valor de ganancia de un item a partir del valor de venta
@@ -807,16 +834,16 @@ public class KeyManager {
             System.out.println(ex.getMessage());
         }
         
-    }
-  public static int KeyCounter(){
+    } 
+    public static int KeyCounter(){
      return EntityController.KeyCant();
-  }
-  public static int StateCounter(){
+    }
+    public static int StateCounter(){
      return EntityController.StateCant();
-  }
-  public static int TypeCounter(){
+    }
+    public static int TypeCounter(){
      return EntityController.TypeCant();
-  }
+    }
   
   
   //INTERFAZ
@@ -828,7 +855,7 @@ public class KeyManager {
 
   
   public static void main(String[] args){
-      
+
       try{
           InitInventory();
           
