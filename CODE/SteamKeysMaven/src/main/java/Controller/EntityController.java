@@ -156,6 +156,13 @@ public interface EntityController {
     public static History findWithDate(History h){
         return historyController.findHistory(h.getDate());
     }
+    public static Trade getLast(Trade t){
+        Trade trade = new Trade();
+        if(!EntityController.ListTrades().isEmpty()){
+            trade = tradeController.findTradeEntities(1, TradeCant()-1).get(0);
+        }
+        return trade;
+    }
     public static List<History> getLast(History h){
         List<History> list = new ArrayList();
         if(!EntityController.ListHistory().isEmpty()){

@@ -3,7 +3,7 @@ package Interface;
 
 import Controller.exceptions.NonexistentEntityException;
 import TransporterUnits.KeyDTO;
-import TransporterUnits.ParameterDTO;
+import TransporterUnits.TradeDTO;
 import TransporterUnits.TypeStateDTO;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -18,8 +18,7 @@ import javax.swing.table.TableColumn;
 import steam.jewishs.steamkeysmaven.KeyManager;
 
 import java.awt.image.BufferedImage;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Date;
 import javax.swing.ImageIcon;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -63,10 +62,8 @@ public class Inventory extends Interface{
             datos = new DefaultCategoryDataset();
             int total = KeyManager.getTotalMoney();
             int valorenkeys = KeyManager.getKeysMoney();
-            int saldo = KeyManager.getBalanceMoney();
             datos.setValue(Double.parseDouble(KeyManager.numberConvertor(total)), "Total", "");
-            datos.setValue(Double.parseDouble(KeyManager.numberConvertor(valorenkeys)), "KeysValue", "");       
-//            datos.setValue(Double.parseDouble(KeyManager.numberConvertor(saldo)), "Balance", "");
+            datos.setValue(Double.parseDouble(KeyManager.numberConvertor(valorenkeys)), "KeysValue", "");
             
             barra = ChartFactory.createBarChart("Money Chart", "","$",datos,PlotOrientation.VERTICAL,true,true,true);
             BufferedImage graficoBarra=barra.createBufferedImage(ChartPanel.getWidth(), ChartPanel.getHeight());
@@ -146,15 +143,12 @@ public class Inventory extends Interface{
     private void ListTable(){
            try {
             KeyManager.UpdateState();
-            List<KeyDTO> keys = KeyManager.ListKeysOrderByDate();
-            Iterator iter = keys.iterator();
-            KeyDTO dto;
+            List<KeyDTO> keys = KeyManager.ListKeysOrderByDate();;
             //CONFIGURACION DEL MODELO DE LA TABLA
             String[] columnames = {"ID", "Type","BuyDate", "State","Release in"};
             modelotabla = new DefaultTableModel(null, columnames);
             //LENADO DEL MODELO DE LA TABLA
-            while(iter.hasNext()){
-               dto = (KeyDTO) iter.next();
+            for(KeyDTO dto : keys){
                if(dto.getState().equals("Tradeable") || dto.getState().equals("Untradeable")){
                    String type = dto.getType();
                    String date = KeyManager.SimpleFormatDate(dto.getbuydate());
@@ -168,10 +162,8 @@ public class Inventory extends Interface{
                     days = String.valueOf(day+1);
                    }
                }
-               int release = KeyManager.getDay(KeyManager.ReleaseDate(dto.getbuydate()));
-               int monthrel = KeyManager.getMonth(KeyManager.ReleaseDate(dto.getbuydate()));
-               int yearrel = KeyManager.getYear(KeyManager.ReleaseDate(dto.getbuydate()));
-               Object[] row = {dto.getId(), type , date , state ,"("+ days + ")  "+release + "-" + monthrel + "-" + yearrel};
+               Date release = KeyManager.ReleaseDate(dto.getbuydate());
+               Object[] row = {dto.getId(), type , date , state ,"("+ days + ")  "+KeyManager.SimpleFormatDate(release)};
                modelotabla.addRow(row);
                }
             }
@@ -211,10 +203,8 @@ public class Inventory extends Interface{
       }else{
         int confirmation = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete selected keys?");
         if (confirmation == 0){
-           Iterator iter = keys.iterator();
-           while(iter.hasNext()){
+           for(KeyDTO dto : keys){
                try {
-                   KeyDTO dto = (KeyDTO) iter.next();
                    KeyManager.DeleteKey(dto);
                } catch (NonexistentEntityException ex) {
                    MessageDialog(ex.getMessage());
@@ -242,9 +232,7 @@ public class Inventory extends Interface{
                 int sellprice = KeyManager.numberConvertor(JOptionPane.showInputDialog("Ingrese el precio de venta"));
                 int confirm = JOptionPane.showConfirmDialog(this, "You are selling this " + keys.size()+ " keys. Are you sure?");
                 if(confirm == 0){
-                    Iterator iter = keys.iterator();
-                    while(iter.hasNext()){
-                        KeyDTO key = (KeyDTO) iter.next();
+                    for(KeyDTO key : keys){
                         KeyManager.SellKey(key, sellprice);
                     }
                 }
@@ -567,15 +555,13 @@ public class Inventory extends Interface{
         if(keys.isEmpty()){
             int confirmacion = JOptionPane.showConfirmDialog(this, "You did not select a key. It is correct?");
             if(confirmacion == 0){
-                    Trade window = new Trade();
-                    window.setKeys(keys);
+                    Trade window = new Trade(new TradeDTO(250,0));
                     AddWindow(window);
             }    
         }else if(KeyManager.ValidateTradeSelection(keys)) {
             int confirmacion = JOptionPane.showConfirmDialog(this, "This key/s selected will be traded, Are you sure?");
             if(confirmacion == 0){
-                    Trade window = new Trade();
-                    window.setKeys(keys);
+                    Trade window = new Trade(new TradeDTO(250,0,keys));
                     AddWindow(window);
             }
         }else if(!KeyManager.ValidateTradeSelection(keys)){

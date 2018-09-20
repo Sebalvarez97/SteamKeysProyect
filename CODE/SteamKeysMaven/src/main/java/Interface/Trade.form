@@ -48,37 +48,37 @@
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace pref="125" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
                   <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Group type="102" alignment="1" attributes="0">
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                              <Component id="DeleteItemButton" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="1" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="ReloadButton" min="-2" max="-2" attributes="0"/>
-                                  <Group type="102" attributes="0">
-                                      <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
-                                      <Component id="AddButton" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Component id="SellPriceInput" alignment="0" min="-2" pref="81" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace pref="139" max="32767" attributes="0"/>
-                              <Component id="ItemsScroll" min="-2" pref="244" max="-2" attributes="0"/>
-                          </Group>
+                      <EmptySpace min="-2" pref="125" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="ReloadButton" min="-2" max="-2" attributes="0"/>
+                          <Component id="SellPriceInput" alignment="0" min="-2" pref="81" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace pref="139" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="ItemsScroll" alignment="1" min="-2" pref="244" max="-2" attributes="0"/>
+                          <Component id="DeleteItemButton" alignment="1" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="93" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="BalanceInput" min="-2" pref="80" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="90" max="-2" attributes="0"/>
-                              <Component id="TradeButton" min="-2" pref="146" max="-2" attributes="0"/>
+                          <Group type="103" alignment="1" groupAlignment="1" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="BalanceInput" min="-2" pref="80" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="90" max="-2" attributes="0"/>
+                                  <Component id="TradeButton" min="-2" pref="146" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="BalanceTittle" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="BalanceTittle" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Component id="PendingCheckBox" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="AddButton" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="192" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
@@ -115,16 +115,19 @@
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
                               <Component id="ItemsScroll" min="-2" pref="301" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="DeleteItemButton" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="241" max="-2" attributes="0"/>
                               <Component id="SellPriceInput" min="-2" pref="30" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="AddButton" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="AddButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="PendingCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
                       </Group>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="DeleteItemButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace pref="38" max="32767" attributes="0"/>
                       <Component id="BalanceTittle" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -333,6 +336,11 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="AddKeyButtonActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="PendingCheckBox">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Pending"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

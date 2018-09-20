@@ -8,13 +8,14 @@ package Controller;
 import Controller.exceptions.NonexistentEntityException;
 import Model.SteamItem;
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import Model.Trade;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 /**
  *
@@ -36,7 +37,16 @@ public class SteamItemJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            Trade trade = steamItem.getTrade();
+            if (trade != null) {
+                trade = em.getReference(trade.getClass(), trade.getId());
+                steamItem.setTrade(trade);
+            }
             em.persist(steamItem);
+            if (trade != null) {
+                trade.getItems().add(steamItem);
+                trade = em.merge(trade);
+            }
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -50,7 +60,22 @@ public class SteamItemJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            SteamItem persistentSteamItem = em.find(SteamItem.class, steamItem.getId());
+            Trade tradeOld = persistentSteamItem.getTrade();
+            Trade tradeNew = steamItem.getTrade();
+            if (tradeNew != null) {
+                tradeNew = em.getReference(tradeNew.getClass(), tradeNew.getId());
+                steamItem.setTrade(tradeNew);
+            }
             steamItem = em.merge(steamItem);
+            if (tradeOld != null && !tradeOld.equals(tradeNew)) {
+                tradeOld.getItems().remove(steamItem);
+                tradeOld = em.merge(tradeOld);
+            }
+            if (tradeNew != null && !tradeNew.equals(tradeOld)) {
+                tradeNew.getItems().add(steamItem);
+                tradeNew = em.merge(tradeNew);
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -79,6 +104,11 @@ public class SteamItemJpaController implements Serializable {
                 steamItem.getId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The steamItem with id " + id + " no longer exists.", enfe);
+            }
+            Trade trade = steamItem.getTrade();
+            if (trade != null) {
+                trade.getItems().remove(steamItem);
+                trade = em.merge(trade);
             }
             em.remove(steamItem);
             em.getTransaction().commit();

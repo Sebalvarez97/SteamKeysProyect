@@ -10,6 +10,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,26 +33,26 @@ public class Key implements Serializable{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-//    @Column(name = "buyprice")
-//    private double buyprice;
-    
     @Column(name = "buydate")
     private Date buydate;
     
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "keystate")
     private KeyState keyState;
     
-    @ManyToOne//(fetch = FetchType.LAZY)
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "keytype")
     private KeyType keyType;
+    
+    @ManyToOne (fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "trade_id")
+    private Trade trade;
     
     public Key(){
         
     }
 
     public Key(KeyState keyState, KeyType keyType) {
-//        this.buyprice = buyprice;
         this.keyState = keyState;
         this.keyType = keyType;
     }
@@ -59,10 +60,6 @@ public class Key implements Serializable{
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
-///////////////////////////////////////////////////
-//    public double getBuyprice() {
-//        return buyprice;
-//    }
 
     public KeyState getKeyState() {
         return keyState;
@@ -71,10 +68,6 @@ public class Key implements Serializable{
     public KeyType getKeyType() {
         return keyType;
     }
-
-//    public void setBuyprice(double buyprice) {
-//        this.buyprice = buyprice;
-//    }
 
     public void setKeyState(KeyState keyState) {
         this.keyState = keyState;
@@ -87,12 +80,19 @@ public class Key implements Serializable{
     public Date getBuyDate(){
         return this.buydate;
     }
-    
-    public void setBuyDate(Date date){
-        this.buydate = date;
+
+    public Trade getTrade() {
+        return trade;
+    }
+
+    public void setBuyDate(Date buydate) {
+        this.buydate = buydate;
+    }
+
+    public void setTrade(Trade trade) {
+        this.trade = trade;
     }
     
-
     /////////////////////////
     
     public Long getId() {
