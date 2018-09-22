@@ -23,7 +23,7 @@ import javax.swing.table.TableColumn;
 import steam.jewishs.steamkeysmaven.KeyManager;
 
 
-public class Trade extends Interface {
+public class TradeInterface extends Interface {
     
     private TradeDTO activetrade;
     DefaultTableModel modelotabla;
@@ -31,7 +31,7 @@ public class Trade extends Interface {
     DefaultListModel modelolista;
     
     //CONSTRUCTOR
-    public Trade(TradeDTO dto) {
+    public TradeInterface(TradeDTO dto) {
         initComponents();
         initICon();
         this.setSize(Inventory.getLastWindow().getSize());

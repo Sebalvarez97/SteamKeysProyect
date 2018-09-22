@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class TradeDTO extends DTO{
 
-    
+    private Long id;
     private Date dateoftrade;
     private int priceinstore;
     private int ingameprice;
@@ -69,6 +69,14 @@ public class TradeDTO extends DTO{
         return items;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
     public void setDateoftrade(Date dateoftrade) {
         this.dateoftrade = dateoftrade;
     }

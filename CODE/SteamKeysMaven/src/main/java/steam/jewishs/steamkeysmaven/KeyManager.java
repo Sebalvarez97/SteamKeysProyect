@@ -14,6 +14,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 
@@ -264,6 +266,13 @@ public class KeyManager {
         k.setKeyState(ks);
         return k;
     }
+    //CAMBIA EL ESTADO DE UNA LISTA DE KEYS
+    private static void ChangeState(List<Key> keys, String state) throws Exception{
+        for(Key key :  keys){
+            key = KeyManager.ChangeState(key,state);
+            EntityController.Edit(key);
+        }
+    }
     //LISTA LOS STEAMITEMS A PARTIR DE UNA LISTA DE STEAMITEMSDTO 
     private static List<SteamItem> ListSteamItems(List<SteamItemDTO> list) throws Exception {
         List<SteamItem> ret = new ArrayList(); 
@@ -311,32 +320,50 @@ public class KeyManager {
         return ret;
     }
     //CREA UN NUEVO TRADE EN BASE DE DATOS
-    public static void EnterTrade(TradeDTO tradedto) throws Exception{
-        List<Key> llaves = ListSteamKeys(tradedto.getKeys());
-        List<SteamItem> items = ListSteamItems(tradedto.getItems());
-        int ganancia = getGanancia(items);
+    public static void EnterTrade(TradeDTO tradedto) throws Exception {    
         //SE CREA EL TRADE Y SE SETEAN LOS PARAMETROS
+            Trade trade = CreateTradeByDTO(tradedto);
+            KeyManager.ChangeState(trade.getKeytraded(), "Traded");
+        //SE AGREGA LA GANANCIA AL SALDO
+            SumarSaldo(trade.getGanancia());    
+    }
+    //DEVUELVE UN TRADE Y LO CREA A PARTIR DE UN TRADEDTO
+    private static Trade CreateTradeByDTO(TradeDTO dto) throws NonexistentEntityException, Exception{
+        List<Key> llaves = ListSteamKeys(dto.getKeys());
+        List<SteamItem> items = ListSteamItems(dto.getItems());
+        int ganancia = getGanancia(items);
         Trade trade = new Trade();
-        trade.setBalancestore(tradedto.getBalance());
-        trade.setCantkey(tradedto.getKeys().size());
+        trade.setId(dto.getId());
+        trade.setBalancestore(dto.getBalance());
+        trade.setCantkey(dto.getKeys().size());
         trade.setDateoftrade(Calendar.getInstance().getTime());
         trade.setGanancia(ganancia);
         trade.setKeyprice(getKeyPrice());
-        trade.setPriceinstore(tradedto.getPriceinstore());
+        trade.setPriceinstore(dto.getPriceinstore());
+        trade = AttachKeysItems(trade,llaves,items);
+        return trade;
+    }
+    //LE AGREGA LOS ITEMS Y LAS KEYS AL TRADE
+    private static Trade AttachKeysItems(Trade trade, List<Key> keys, List<SteamItem> items) throws Exception{
+        if(trade.getId() != null){
+            trade.setKeytraded(keys);
+            trade = AttachItems(trade, items);
+            EntityController.Edit(trade);
+        }else{
             EntityController.create(trade);
-            trade = EntityController.getLast(trade);
-            for(Key llave : llaves){
-                llave = KeyManager.ChangeState(llave,"Traded");
-                EntityController.Edit(llave);
-                trade.AddKey(llave);
-            }
-            for(SteamItem item : items){
+            trade = EntityController.getLast(new Trade());
+            AttachKeysItems(trade,keys,items);
+        }
+        return trade;
+    }
+    private static Trade AttachItems(Trade trade,List<SteamItem> items){
+        for(SteamItem item : items){
+            if(item.isPending()){
                 EntityController.create(item);
                 trade.AddItem(item);
             }
-            EntityController.Edit(trade);
-        //SE AGREGA LA GANANCIA AL SALDO
-        SumarSaldo(ganancia);    
+        }
+        return trade;
     }
     //VALIDA LA SELECCION PARA TRADEAR
     public static boolean ValidateTradeSelection(List<KeyDTO> list){

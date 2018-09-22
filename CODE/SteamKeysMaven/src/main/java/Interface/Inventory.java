@@ -555,13 +555,13 @@ public class Inventory extends Interface{
         if(keys.isEmpty()){
             int confirmacion = JOptionPane.showConfirmDialog(this, "You did not select a key. It is correct?");
             if(confirmacion == 0){
-                    Trade window = new Trade(new TradeDTO(250,0));
+                    TradeInterface window = new TradeInterface(new TradeDTO(250,0));
                     AddWindow(window);
             }    
         }else if(KeyManager.ValidateTradeSelection(keys)) {
             int confirmacion = JOptionPane.showConfirmDialog(this, "This key/s selected will be traded, Are you sure?");
             if(confirmacion == 0){
-                    Trade window = new Trade(new TradeDTO(250,0,keys));
+                    TradeInterface window = new TradeInterface(new TradeDTO(250,0,keys));
                     AddWindow(window);
             }
         }else if(!KeyManager.ValidateTradeSelection(keys)){

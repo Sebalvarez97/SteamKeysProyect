@@ -59,7 +59,7 @@ public class Trade implements Serializable {
     public void setCantkey(int cantkey) {
         this.cantkey = cantkey;
     }
-
+    
     public int getCantkey() {
         return cantkey;
     }
