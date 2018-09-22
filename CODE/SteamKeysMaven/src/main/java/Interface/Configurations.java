@@ -437,7 +437,7 @@ public class Configurations extends Interface {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
-          BackToInventory();
+          Back();
            // TODO add your handling code here:
     }//GEN-LAST:event_BackButtonActionPerformed
 

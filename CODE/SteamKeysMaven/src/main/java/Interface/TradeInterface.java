@@ -114,22 +114,30 @@ public class TradeInterface extends Interface {
     private void ListItems(){
         try {
             //MODELO
-            String [] columnames = {"StorePrice","SellPrice"};
-            String [] vacio = {"------","------"};
+            String [] columnames = {"P","StorePrice","SellPrice"};
+            String [] vacio = {"--","------","------"};
             Integer [] totalizer = {0,0};
             if(!activetrade.getItems().isEmpty()){
                 totalizer = KeyManager.getTotalOfItems(activetrade.getItems());
             }
-            String [] total = {KeyManager.numberConvertor(totalizer[0]),KeyManager.numberConvertor(totalizer[1])};
+            String [] total = {"--",KeyManager.numberConvertor(totalizer[0]),KeyManager.numberConvertor(totalizer[1])};
             modeloitems = new DefaultTableModel(null,columnames);
             //LLENADO DE LA TABLA
             for(SteamItemDTO row: activetrade.getItems()){
-                String[] element = {KeyManager.numberConvertor(row.getStoreprice()), KeyManager.numberConvertor(row.getSellprice())};
+                String p = "";
+                if(row.isIspending()){
+                    p = "P";
+                }
+                String[] element = {p,KeyManager.numberConvertor(row.getStoreprice()), KeyManager.numberConvertor(row.getSellprice())};
                 modeloitems.addRow(element);
             }
             modeloitems.addRow(vacio);
             modeloitems.addRow(total);
             ItemsTable.setModel(modeloitems);
+            ItemsTable.getTableHeader().setResizingAllowed(false);//DESABILITA LA EDICION DE LAS COLUMNAS
+            TableColumn columnaid = ItemsTable.getColumn("P");
+            columnaid.setPreferredWidth(40);
+            columnaid.setMaxWidth(100);
         } catch (Exception ex) {
             MessageDialog(ex.getMessage());
         }
@@ -550,10 +558,10 @@ public class TradeInterface extends Interface {
         if(!activetrade.getItems().isEmpty()){
            int confirm = JOptionPane.showOptionDialog(this, "You are trading, Are you sure you wanna leave?", "Leaving TradeHelper", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Yes", "No"}, "Yes");
                     if (confirm == 0){
-                        BackToInventory();
+                        Back();
                     }
            }else if(activetrade.getItems().isEmpty()){
-               BackToInventory();
+               Back();
            }
         // TODO add your handling code here:
     }//GEN-LAST:event_BackButtonActionPerformed

@@ -285,6 +285,23 @@ public class KeyManager {
         }
         return ret;
     }
+    //LISTA STEAMITEMDTO A PARTIR DE UNA LISTA DE STEAMITEMS
+    private static List<SteamItemDTO> ListSteamItemsDTO(List<SteamItem> items){
+        List<SteamItemDTO> ret = new ArrayList();
+        for(SteamItem item : items){
+            ret.add(getItemDTO(item));
+        }
+        return ret;
+    }
+    //DEVUELVE UN ITEMDTO A PARTIR DE UN ITEM
+    private static SteamItemDTO getItemDTO(SteamItem item){
+        SteamItemDTO dto = new SteamItemDTO();
+        dto.setIspending(item.isPending());
+        dto.setSellprice(item.getSellprice());
+        dto.setStoreprice(item.getStoreprice());
+        dto.setTrade_id(item.getTrade().getId());
+        return dto;
+    }
     //LISTA LAS LLAVES A PARTIR DE UNA LISTA DE KEYDTO
     private static List<Key> ListSteamKeys(List<KeyDTO> list) throws NonexistentEntityException{
         List<Key> llaves = new ArrayList();
@@ -356,6 +373,7 @@ public class KeyManager {
         }
         return trade;
     }
+    //LE AGREGA LOS ITEMS
     private static Trade AttachItems(Trade trade,List<SteamItem> items){
         for(SteamItem item : items){
             if(item.isPending()){
@@ -364,6 +382,41 @@ public class KeyManager {
             }
         }
         return trade;
+    }
+    //RETORNA TRUE SI EL TRADE ES EDITABLE
+    public static boolean isEditable(long id){
+        Trade trade = EntityController.find(new Trade(id));
+        if(trade.getBalancestore() == 0 || AnyPending(trade)){
+            return true;
+        }else return false; 
+    }
+    //RETORNA TRUE SI ALGUN ITEM QUEDO PENDIENTE
+    private static boolean AnyPending(Trade trade){
+        for(SteamItem item : trade.getItems()){
+            if(item.isPending()){
+                return true;
+            }
+        }
+        return false;
+    }
+    //DEVUELVE UN TRADEDTO A PARTIR DE UN ID
+    public static TradeDTO getTrade(long id) throws NonexistentEntityException{
+        Trade trade = EntityController.find(new Trade(id));
+        return getTradeDTO(trade);
+    }
+    //DEVUELVE UN TRADEDTO A PARTIR DE UN TRADE
+    private static TradeDTO getTradeDTO(Trade trade) throws NonexistentEntityException{
+        TradeDTO dto = new TradeDTO();
+        dto.setBalance(trade.getBalancestore());
+        dto.setCantkeys(trade.getCantkey());
+        dto.setDateoftrade(trade.getDateoftrade());
+        dto.setGanancia(trade.getGanancia());
+        dto.setId(trade.getId());
+        dto.setIngameprice(trade.getKeyprice());
+        dto.setItems(KeyManager.ListSteamItemsDTO(trade.getItems()));
+        dto.setKeys(KeyManager.ListKeysByList(trade.getKeytraded()));
+        dto.setPriceinstore(trade.getPriceinstore());
+        return dto;
     }
     //VALIDA LA SELECCION PARA TRADEAR
     public static boolean ValidateTradeSelection(List<KeyDTO> list){
@@ -376,7 +429,7 @@ public class KeyManager {
             }
         }
         return validation;
-    }
+    } 
     //ORDENA ALFABETICAMENTE UNA LISTA DE TYPESTATESDTO
     public static List<TypeStateDTO> AlphabeticOrder(List<TypeStateDTO> lista){
        List<String> list = ListStatesTypesString(lista);
@@ -502,6 +555,14 @@ public class KeyManager {
             dtos.add(dto);
         }
         return dtos;
+    }
+    //DEVUELVE UNA LISTA DE DTOS A PARTIR DE UNA LISTA DE KEYS
+    private static List<KeyDTO> ListKeysByList(List<Key> keys) throws NonexistentEntityException{
+        List<KeyDTO> ret = new ArrayList();
+        for(Key key : keys){
+            ret.add(getKeyDTO(key.getId()));
+        }
+        return ret;
     }
     //DEVUELVE UNA ROW DE TOTAL
     public static Integer[] getTotalOfItems(List<SteamItemDTO> lista) throws Exception{

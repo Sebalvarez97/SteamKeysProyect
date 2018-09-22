@@ -30,19 +30,7 @@ public class Inventory extends Interface{
     
     DefaultTableModel modelotabla; //MODELO PARA LA TABLE DE LLAVES   
     //MANEJO DE VENTANAS
-    public static List<JFrame> windows = new ArrayList();
-    public static JFrame getLastWindow(){
-       return windows.get(windows.size()-1);
-    }
-    //ABRE UNA NUEVA VENTANA
-    public void OpenWindow(JFrame window){
-        windows.add(window);
-    }
-    //CIERRA LA ULTIMA VENTANA ABIERTA
-    public static void CloseLastWindow(){
-        int lastindex = windows.size()-1;
-        windows.remove(lastindex);
-    }
+
     
     //CONSTRUCTOR
     public Inventory() {
@@ -146,7 +134,13 @@ public class Inventory extends Interface{
             List<KeyDTO> keys = KeyManager.ListKeysOrderByDate();;
             //CONFIGURACION DEL MODELO DE LA TABLA
             String[] columnames = {"ID", "Type","BuyDate", "State","Release in"};
-            modelotabla = new DefaultTableModel(null, columnames);
+            modelotabla = new DefaultTableModel(null, columnames){
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                //all cells false
+                return false;
+                }
+            };
             //LENADO DEL MODELO DE LA TABLA
             for(KeyDTO dto : keys){
                if(dto.getState().equals("Tradeable") || dto.getState().equals("Untradeable")){
@@ -215,13 +209,7 @@ public class Inventory extends Interface{
         initSaldo();
         Reload();
     }
-    //ABRE UNA VENTANA DEL TIPO INGRESADO
-    private void AddWindow(JFrame window){
-        window.setTitle("SteamKeysApp");
-        OpenWindow(window);
-        this.setVisible(false);
-        window.setVisible(true);
-    }
+   
     //VENDE UNA LLAVE O LLAVES
     private void SellKey(){
         List<KeyDTO> keys = getKeySelection();
