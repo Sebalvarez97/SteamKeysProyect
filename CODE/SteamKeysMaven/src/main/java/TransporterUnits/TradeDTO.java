@@ -72,7 +72,9 @@ public class TradeDTO extends DTO{
     public Long getId() {
         return id;
     }
-
+    public void CleanITems(){
+        this.items = new ArrayList();
+    }
     public void setId(Long id) {
         this.id = id;
     }

@@ -89,6 +89,7 @@ public class Inventory extends Interface{
     }
     //RECARGA LA LISTA DE LLAVES
     protected void Reload(){
+        initSaldo();
         ListTable();
         SetKeyTable();
         SetEstadistics();

@@ -9,8 +9,11 @@ import Controller.exceptions.NonexistentEntityException;;
 import TransporterUnits.KeyDTO;
 import TransporterUnits.SteamItemDTO;
 import TransporterUnits.TradeDTO;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -26,6 +29,8 @@ import steam.jewishs.steamkeysmaven.KeyManager;
 public class TradeInterface extends Interface {
     
     private TradeDTO activetrade;
+    private boolean editing = false;
+    private int edititem = -1;
     DefaultTableModel modelotabla;
     DefaultTableModel modeloitems;
     DefaultListModel modelolista;
@@ -42,7 +47,11 @@ public class TradeInterface extends Interface {
         try {
             activetrade = dto;
             PriceImput.setText(KeyManager.numberConvertor(activetrade.getPriceinstore()));
-            SellPriceInput.setText("0.00");;
+            SellPriceInput.setText("0.00");
+            if(activetrade.getId() != null){
+                editing = true;
+                TradeTittle.setText("Trade  N° "+ activetrade.getId());
+            }
             BalanceInput.setText(KeyManager.numberConvertor(activetrade.getBalance()));
             ItemsTable.setSelectionMode(0);
             ItemsTable.getTableHeader().setResizingAllowed(false);
@@ -99,17 +108,18 @@ public class TradeInterface extends Interface {
         try {
             int confirm = JOptionPane.showOptionDialog(this, "Are you sure?", "Trade Alert", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Yes", "No"}, "Yes");
             if(confirm == 0){
-                KeyManager.EnterTrade(activetrade);
-                MessageDialog("Trade Succesfully");
-                initTrade(new TradeDTO(250,0));
+                    activetrade.setBalance(getBalanceInput());
+                    KeyManager.EnterTrade(activetrade);
+                    MessageDialog("Trade Succesfully");
+                    initTrade(new TradeDTO(250,0));
+                    if(editing){
+                        Back();
+                    }
             }
         } catch (Exception ex) {
             MessageDialog(ex.getMessage());
-        }
-        
-    }
-    //INICIALIZA LAS TABLAS PARA EL TRADE
-  
+        } 
+    }  
     //MUESTRA LA LISTA DE ITEMS AGREGADOS
     private void ListItems(){
         try {
@@ -121,7 +131,13 @@ public class TradeInterface extends Interface {
                 totalizer = KeyManager.getTotalOfItems(activetrade.getItems());
             }
             String [] total = {"--",KeyManager.numberConvertor(totalizer[0]),KeyManager.numberConvertor(totalizer[1])};
-            modeloitems = new DefaultTableModel(null,columnames);
+            modeloitems = new DefaultTableModel(null,columnames){
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                //all cells false
+                return false;
+                }
+            };
             //LLENADO DE LA TABLA
             for(SteamItemDTO row: activetrade.getItems()){
                 String p = "";
@@ -138,9 +154,48 @@ public class TradeInterface extends Interface {
             TableColumn columnaid = ItemsTable.getColumn("P");
             columnaid.setPreferredWidth(40);
             columnaid.setMaxWidth(100);
+            ItemsTable.addMouseListener(new MouseAdapter() {
+               public void mouseClicked(MouseEvent evnt)
+    		{
+                        if (evnt.getClickCount()> 1 && evnt.getClickCount()<3)
+                        {   
+                            try {
+                                if(activetrade.getItems().get(ItemsTable.getSelectedRow()).isIspending()){
+                                    EditItemData(ItemsTable.getSelectedRow());
+                                    System.out.println("doble click");
+                                }
+                            } catch (Exception ex) {
+                                MessageDialog(ex.getMessage());
+                            }
+                        }
+    		} 
+            });
         } catch (Exception ex) {
             MessageDialog(ex.getMessage());
         }
+    }
+    //PERMITE HACER UN EDI DE LOS DATOS DEL ITEM
+    private void EditItemData(int row) throws Exception{
+        ViewItemData(row);
+        edititem = row;
+    }
+    //PERMITE VER LOS DATOS DEL ITEM
+    private void ViewItemData(int row) throws Exception{
+        SellPriceInput.setText(KeyManager.numberConvertor(activetrade.getItems().get(row).getSellprice()));
+        PendingCheckBox.setSelected(activetrade.getItems().get(row).isIspending());
+        int value = activetrade.getItems().get(row).getStoreprice();
+        VmrTable.getSelectionModel().setSelectionInterval(SearchRow(value), SearchRow(value));
+    }
+    //BUSCA UN VALOR EN LA TABLA VMR
+    private int SearchRow(int value) throws Exception{
+        int index = 0;
+        for(Object[] row : KeyManager.ListVMR(Double.valueOf(KeyManager.numberConvertor(activetrade.getPriceinstore())))){
+            if(KeyManager.numberConvertor(String.valueOf(row[0])) == value){
+                return index;
+            }
+            index++;
+        }
+        return 0;
     }
     //AGREGA UN ITEM A LA LISTA DE ITEMS
     private void AddItem(){
@@ -151,6 +206,12 @@ public class TradeInterface extends Interface {
                 throw new Exception("You did not select a value");
             }else if(sellprice != 0){
                 int storeprice = KeyManager.numberConvertor(String.valueOf(VmrTable.getValueAt(index, 0)));
+                if(editing){
+                    if(edititem != -1){
+                        DeleteI(edititem);
+                        edititem = -1;
+                    }
+                }
                 activetrade.AddItem(new SteamItemDTO(isPending(),storeprice,sellprice));
                 UpdateBalance(-storeprice);
             }else if(sellprice == 0){
@@ -159,19 +220,17 @@ public class TradeInterface extends Interface {
         } catch (Exception ex) {
             MessageDialog(ex.getMessage());
         }
-        Reload();
+        ListItems();
     }
     //ELIMINA UN ITEM DE LA LISTA DE ITEMS //ERROR// 
-    private void DeleteItem(){
-            int index = ItemsTable.getSelectedRow();
+    private void DeleteItem(int index){
             if(index >= 0){
                 int confirm = JOptionPane.showOptionDialog(this, "Are you sure?", "Errase Alert", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Yes", "No"}, "Yes");
                 if(confirm == 0){
                     try {
-                        List<SteamItemDTO> items = activetrade.getItems();
-                        UpdateBalance(items.get(index).getStoreprice());
-                        items.remove(index);
-                        activetrade.setItems(items);
+                        if(!editing){
+                            DeleteI(index);
+                        }
                     } catch (Exception ex) {
                         MessageDialog("Error in entry");
                     }
@@ -179,7 +238,13 @@ public class TradeInterface extends Interface {
             }else{
                  MessageDialog("Select an item first");
             }
-            Reload();
+            ListItems();
+    }
+    private void DeleteI(int index) throws Exception{
+        List<SteamItemDTO> items = activetrade.getItems();
+        UpdateBalance(items.get(index).getStoreprice());
+        items.remove(index);
+        activetrade.setItems(items);
     }
     //MUESTRA LAS LLAVES QUE SE ESTAN TRADEANDO AL MOMENTO
     private void ShowKeys(){
@@ -197,6 +262,7 @@ public class TradeInterface extends Interface {
     //BORRA LA KEY SELECCIONADA
     private void DeleteTradingKey(){
         try {
+            if(!editing){
             String key = KeysTradingList.getSelectedValue();
             int index = KeysTradingList.getSelectedIndex();
             if(key != null){
@@ -208,16 +274,20 @@ public class TradeInterface extends Interface {
             }else{
                 throw new Exception("select a key first");
             }  
+            }else{
+                throw new Exception("You can't delete a key while editing");
+            }
         } catch (Exception ex) {
             MessageDialog(ex.getMessage());
         }
-        Reload();
+        ShowKeys();
     }
     //AGREGA UNA LLAVE AL TRADE
     private void AddTradingKey(){
         try {
+            
             List<KeyDTO> missing = KeyManager.getmissingKeys(activetrade.getKeys());
-            if(missing.isEmpty()){
+            if(missing.isEmpty() || editing){
                 missing = KeyManager.ListWithStateKeys(new KeyDTO("","Tradeable"));
             }
             String[] panel = new String[missing.size()];
@@ -232,14 +302,13 @@ public class TradeInterface extends Interface {
                 UpdateBalance(getPriceInput());
                 KeyDTO key = KeyManager.getKeyDTO(getKeyID(confirmacion));
                 activetrade.AddKey(key); 
-            }
-            
+            }  
         } catch (NonexistentEntityException ex) {
             MessageDialog(ex.getMessage());
         } catch (Exception ex) {
             MessageDialog(ex.getMessage());
         }
-        Reload();
+        ShowKeys();
     }
     //ACTUALIZA EL BALANCE DE SALDO EN LA PAGINA //SIN USO POR AHORA
     private void UpdateBalance(int value) throws Exception{
@@ -357,7 +426,6 @@ public class TradeInterface extends Interface {
 
         BalanceInput.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         BalanceInput.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        BalanceInput.setFocusable(false);
 
         ItemsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -447,10 +515,6 @@ public class TradeInterface extends Interface {
             .addGroup(layout.createSequentialGroup()
                 .addGap(49, 49, 49)
                 .addComponent(TradeTittle)
-                .addGap(238, 238, 238)
-                .addComponent(PriceTittle)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(PriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(BackButton)
                 .addGap(60, 60, 60))
@@ -477,18 +541,23 @@ public class TradeInterface extends Interface {
                         .addGap(22, 22, 22))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGap(93, 93, 93)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(BalanceInput, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(90, 90, 90)
-                                    .addComponent(TradeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(BalanceTittle, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(PendingCheckBox)
-                                .addGap(18, 18, 18)
-                                .addComponent(AddButton)
-                                .addGap(192, 192, 192)))
+                                .addComponent(PriceTittle)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(PriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addComponent(BalanceInput, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(90, 90, 90)
+                                        .addComponent(TradeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(BalanceTittle, javax.swing.GroupLayout.Alignment.LEADING))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(PendingCheckBox)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(AddButton)
+                                    .addGap(192, 192, 192))))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
@@ -501,13 +570,8 @@ public class TradeInterface extends Interface {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(TradeTittle)
-                                .addGap(9, 9, 9))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(PriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(PriceTittle)))))
+                        .addComponent(TradeTittle)
+                        .addGap(9, 9, 9)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -539,7 +603,10 @@ public class TradeInterface extends Interface {
                                     .addComponent(DeleteKeyButton)
                                     .addComponent(ReloadButton))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(AddKeyButton)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(AddKeyButton)
+                                    .addComponent(PriceTittle)
+                                    .addComponent(PriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(VmrScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addGap(53, 53, 53))))
@@ -575,7 +642,7 @@ public class TradeInterface extends Interface {
     }//GEN-LAST:event_PriceImputActionPerformed
 
     private void DeleteItemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteItemButtonActionPerformed
-      DeleteItem();  // TODO add your handling code here:
+      DeleteItem(ItemsTable.getSelectedRow());  // TODO add your handling code here:
     }//GEN-LAST:event_DeleteItemButtonActionPerformed
 
     private void DeleteKeyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteKeyButtonActionPerformed

@@ -52,6 +52,10 @@ public class Key implements Serializable{
         
     }
 
+    public Key(Long id) {
+        this.id = id;
+    }
+
     public Key(KeyState keyState, KeyType keyType) {
         this.keyState = keyState;
         this.keyType = keyType;

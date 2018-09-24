@@ -93,14 +93,15 @@ public class KeyManager {
     }
     //DEVUELVE LA LLAVE SEGUN EL ID INGRESADO
     public static KeyDTO getKeyDTO(long id) throws NonexistentEntityException{
-        KeyDTO ret = null;
-        Iterator iter = ListKeys().iterator();
-        while(iter.hasNext()){
-            KeyDTO dto = (KeyDTO) iter.next();
-            if(dto.getId() == id){
-                ret = dto;
-            }
-        }
+        Key key = EntityController.find(new Key(id));
+        KeyDTO ret = new KeyDTO();
+        ret.setBuydate(key.getBuyDate());
+        ret.setId(key.getId());
+        ret.setState(key.getKeyState().getStateDescription());
+        ret.setType(key.getKeyType().getTypeDescription());
+        if(key.getTrade() != null){
+            ret.setTrade(key.getTrade().getId());
+        }else ret.setTrade(null);
         return ret;
     }
     //DEVUELVE LA KEY A PARTIR DE UN KEYDTO PATRON
@@ -267,23 +268,43 @@ public class KeyManager {
         return k;
     }
     //CAMBIA EL ESTADO DE UNA LISTA DE KEYS
-    private static void ChangeState(List<Key> keys, String state) throws Exception{
+    private static List<Key> ChangeState(List<Key> keys, String state) throws Exception{
+        List<Key> ret = new ArrayList();
         for(Key key :  keys){
             key = KeyManager.ChangeState(key,state);
             EntityController.Edit(key);
+            key = EntityController.find(key);
+            ret.add(key);
         }
+        return ret;
     }
     //LISTA LOS STEAMITEMS A PARTIR DE UNA LISTA DE STEAMITEMSDTO 
     private static List<SteamItem> ListSteamItems(List<SteamItemDTO> list) throws Exception {
         List<SteamItem> ret = new ArrayList(); 
         for(SteamItemDTO row : list){
-            SteamItem item = new SteamItem();
-            item.setPending(row.isIspending());
-            item.setSellprice(row.getSellprice());
-            item.setStoreprice(row.getStoreprice());
-            ret.add(item);
+            ret.add(getItem(row));
         }
         return ret;
+    }
+    private static SteamItem getItem(SteamItemDTO dto) throws Exception{
+        SteamItem item = new SteamItem();
+        if(dto.getId() != null){
+            item.setId(dto.getId());
+            item = EntityController.find(item);
+            //EDITO
+            item.setPending(dto.isIspending());
+            item.setSellprice(dto.getSellprice());
+            item.setStoreprice(dto.getStoreprice());
+            EntityController.Edit(item);
+            item = EntityController.find(item);
+        }else{
+            item.setPending(dto.isIspending());
+            item.setSellprice(dto.getSellprice());
+            item.setStoreprice(dto.getStoreprice());
+            EntityController.create(item);
+            item = EntityController.getLast(item);
+        }
+        return item;
     }
     //LISTA STEAMITEMDTO A PARTIR DE UNA LISTA DE STEAMITEMS
     private static List<SteamItemDTO> ListSteamItemsDTO(List<SteamItem> items){
@@ -296,6 +317,7 @@ public class KeyManager {
     //DEVUELVE UN ITEMDTO A PARTIR DE UN ITEM
     private static SteamItemDTO getItemDTO(SteamItem item){
         SteamItemDTO dto = new SteamItemDTO();
+        dto.setId(item.getId());
         dto.setIspending(item.isPending());
         dto.setSellprice(item.getSellprice());
         dto.setStoreprice(item.getStoreprice());
@@ -339,54 +361,51 @@ public class KeyManager {
     //CREA UN NUEVO TRADE EN BASE DE DATOS
     public static void EnterTrade(TradeDTO tradedto) throws Exception {    
         //SE CREA EL TRADE Y SE SETEAN LOS PARAMETROS
-            Trade trade = CreateTradeByDTO(tradedto);
-            KeyManager.ChangeState(trade.getKeytraded(), "Traded");
-        //SE AGREGA LA GANANCIA AL SALDO
-            SumarSaldo(trade.getGanancia());    
+        if(tradedto.getId() == null){
+            CreateTradeByDTO(tradedto);
+        }else{
+            EditTrade(tradedto);
+        }
     }
-    //DEVUELVE UN TRADE Y LO CREA A PARTIR DE UN TRADEDTO
-    private static Trade CreateTradeByDTO(TradeDTO dto) throws NonexistentEntityException, Exception{
-        List<Key> llaves = ListSteamKeys(dto.getKeys());
+    //CREA A PARTIR DE UN TRADEDTO
+    private static void CreateTradeByDTO(TradeDTO dto) throws NonexistentEntityException, Exception{
+        List<Key> llaves = ChangeState(ListSteamKeys(dto.getKeys()),"Traded");
         List<SteamItem> items = ListSteamItems(dto.getItems());
         int ganancia = getGanancia(items);
         Trade trade = new Trade();
-        trade.setId(dto.getId());
         trade.setBalancestore(dto.getBalance());
         trade.setCantkey(dto.getKeys().size());
         trade.setDateoftrade(Calendar.getInstance().getTime());
         trade.setGanancia(ganancia);
         trade.setKeyprice(getKeyPrice());
         trade.setPriceinstore(dto.getPriceinstore());
-        trade = AttachKeysItems(trade,llaves,items);
-        return trade;
+        //AGREGAR LAS LLAVES E ITEMS NUEVOS
+        trade.setKeytraded(llaves);
+        trade.setItems(items);
+        EntityController.create(trade);
+        SumarSaldo(trade.getGanancia()); 
     }
-    //LE AGREGA LOS ITEMS Y LAS KEYS AL TRADE
-    private static Trade AttachKeysItems(Trade trade, List<Key> keys, List<SteamItem> items) throws Exception{
-        if(trade.getId() != null){
-            trade.setKeytraded(keys);
-            trade = AttachItems(trade, items);
-            EntityController.Edit(trade);
-        }else{
-            EntityController.create(trade);
-            trade = EntityController.getLast(new Trade());
-            AttachKeysItems(trade,keys,items);
-        }
-        return trade;
+    
+    private static void EditTrade(TradeDTO tradedto) throws Exception{
+        Trade trade = EntityController.find(new Trade(tradedto.getId()));
+        List<SteamItem> items = ListSteamItems(tradedto.getItems());
+        List<Key> llaves = ChangeState(ListSteamKeys(tradedto.getKeys()),"Traded");
+        int newganancia = getGanancia(items);
+        int dif = newganancia - trade.getGanancia();
+        trade.setBalancestore(tradedto.getBalance());
+        trade.setCantkey(tradedto.getCantkeys());
+        trade.setGanancia(newganancia);
+         //AGREGAR LAS LLAVES E ITEMS NUEVOS
+        trade.setKeytraded(llaves);
+        trade.setItems(items);
+        EntityController.Edit(trade);
+        SumarSaldo(dif);
     }
-    //LE AGREGA LOS ITEMS
-    private static Trade AttachItems(Trade trade,List<SteamItem> items){
-        for(SteamItem item : items){
-            if(item.isPending()){
-                EntityController.create(item);
-                trade.AddItem(item);
-            }
-        }
-        return trade;
-    }
+
     //RETORNA TRUE SI EL TRADE ES EDITABLE
     public static boolean isEditable(long id){
         Trade trade = EntityController.find(new Trade(id));
-        if(trade.getBalancestore() == 0 || AnyPending(trade)){
+        if(trade.getBalancestore() != 0 || AnyPending(trade)){
             return true;
         }else return false; 
     }
@@ -490,6 +509,24 @@ public class KeyManager {
         }
         return ret;
     }
+    private static boolean itemInTheList(SteamItem item, List<SteamItem> items){
+        boolean ret = false;
+        for(SteamItem i : items){
+            if(i.getId() == item.getId()){
+                ret = true;
+            }
+        }
+        return ret;
+    }
+    private static List<SteamItem> NonRepited(List<SteamItem> list1, List<SteamItem> list2){
+        List<SteamItem> ret = new ArrayList();
+        for(SteamItem item : list2){
+            if(!itemInTheList(item, list1)){
+                ret.add(item);
+            }
+        }
+        return ret;
+    }
     //DEVUELVE LAS LLAVES RESTANTES QUE TIENEN EL MISMO ESTADO QUE LA INGRESADA
     public static List<KeyDTO> getmissingKeys(List<KeyDTO> list) throws NonexistentEntityException{
         List<KeyDTO> ret = new ArrayList();
@@ -552,6 +589,9 @@ public class KeyManager {
             dto.setBuydate(key.getBuyDate());
             dto.setState(key.getKeyState().getStateDescription());
             dto.setType(key.getKeyType().getTypeDescription());
+            if(key.getTrade() != null){
+                dto.setTrade(key.getTrade().getId());
+            }else dto.setTrade(null);
             dtos.add(dto);
         }
         return dtos;

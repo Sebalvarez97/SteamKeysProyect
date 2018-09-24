@@ -71,7 +71,9 @@ public class Trade implements Serializable {
         this.balancestore = balancestore;
         this.keytraded = keytraded;
     }
-
+    public void CleanITems(){
+        this.items = new ArrayList();
+    }
     public Trade() {
     }
 

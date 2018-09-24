@@ -48,6 +48,9 @@ public interface EntityController {
     public static int HistoryCant(){
         return historyController.getHistoryCount();
     }
+    public static int ItemCant(){
+        return itemController.getSteamItemCount();
+    }
     
        //CREA UNA ENTIDAD EN BASE DE DATOS SEGUN TIPO 
     public static void create(Key key){
@@ -124,7 +127,13 @@ public interface EntityController {
             return true;
         }
     }
-    
+    public static boolean findIfExist(SteamItem item){
+        if(find(item) == null){
+            return false;
+        }else{
+            return true;
+        }
+    }
     
       //ENCUENTRA LA ENTIDAD SEGUN EL TIPO 
     public static Key find(Key k){
@@ -134,7 +143,9 @@ public interface EntityController {
         if(findIfExist(ks)){
             return stateController.findKeyState(ks.getStateDescription());
         }else return null;
-        
+    }
+    public static SteamItem find(SteamItem item){
+        return itemController.findSteamItem(item.getId());
     }
     public static KeyType find(KeyType kt){
         if(findIfExist(kt)){
@@ -163,6 +174,13 @@ public interface EntityController {
         }
         return trade;
     }
+    public static SteamItem getLast(SteamItem item){
+        SteamItem i = new SteamItem();
+        if(!EntityController.ListItems().isEmpty()){
+            i = itemController.findSteamItemEntities(1, ItemCant()-1).get(0);
+        }
+        return i;
+    }
     public static List<History> getLast(History h){
         List<History> list = new ArrayList();
         if(!EntityController.ListHistory().isEmpty()){
@@ -190,6 +208,9 @@ public interface EntityController {
     public static List<History> ListHistory(){
             return historyController.findHistoryEntities();
     }
+    public static List<SteamItem> ListItems(){
+            return itemController.findSteamItemEntities();
+    }
     //EDITA LA ENTIDAD
     public static void Edit(Key key) throws Exception{
         keysController.edit(key);
@@ -208,5 +229,8 @@ public interface EntityController {
     }
     public static void Edit(History h) throws Exception{
         historyController.edit(h);
+    }
+    public static void Edit(SteamItem i) throws Exception{
+        itemController.edit(i);
     }
 }

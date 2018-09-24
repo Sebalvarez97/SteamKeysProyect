@@ -102,9 +102,8 @@ DefaultTableModel modelotrades = new DefaultTableModel();
                         {   
                             long id = (long) TradeHistoryTable.getValueAt(TradeHistoryTable.getSelectedRow(), 0);
                             if(KeyManager.isEditable(id)){
-                                EditTrade(id);
-                            }
-                            System.out.println(id);
+                                    EditTrade(id);
+                            }else MessageDialog("You can't edit this trade");
                         }
     		}
             });
@@ -116,7 +115,8 @@ DefaultTableModel modelotrades = new DefaultTableModel();
         int confirmacion = JOptionPane.showConfirmDialog(this, "You will edit the trade, Are you sure?");
             if(confirmacion == 0){
                 try {
-                    TradeInterface window = new TradeInterface(KeyManager.getTrade(id));
+                    TradeDTO dto = KeyManager.getTrade(id);
+                    TradeInterface window = new TradeInterface(dto);
                     AddWindow(window);
                 } catch (NonexistentEntityException ex) {
                    MessageDialog(ex.getMessage());
