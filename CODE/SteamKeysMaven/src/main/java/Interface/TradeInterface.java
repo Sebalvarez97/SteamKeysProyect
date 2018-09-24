@@ -8,8 +8,12 @@ package Interface;
 import Controller.exceptions.NonexistentEntityException;;
 import TransporterUnits.KeyDTO;
 import TransporterUnits.SteamItemDTO;
+import TransporterUnits.TradeDTO;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -22,55 +26,33 @@ import javax.swing.table.TableColumn;
 import steam.jewishs.steamkeysmaven.KeyManager;
 
 
-public class Trade extends Interface {
+public class TradeInterface extends Interface {
     
-    private List<KeyDTO> keys = new ArrayList();
+    private TradeDTO activetrade;
+    private boolean editing = false;
+    private int edititem = -1;
     DefaultTableModel modelotabla;
     DefaultTableModel modeloitems;
     DefaultListModel modelolista;
-    private List<SteamItemDTO> Items = new ArrayList();
     
     //CONSTRUCTOR
-    public Trade() {
+    public TradeInterface(TradeDTO dto) {
         initComponents();
         initICon();
         this.setSize(Inventory.getLastWindow().getSize());
         this.setLocationRelativeTo(Inventory.getLastWindow()); 
-        initTrade();
+        initTrade(dto);
     }
-
-    //SET DE LA VARIABLE
-    public void setKeys(List<KeyDTO> keys){
-        this.keys = keys;
-        Reload();
-    }
-    //RECARGA LAS TABLAS Y OTROS
-    protected void Reload(){
-        ListVMRTable();
-        ListItems();
-        ShowKeys();
-    }
-    //CREA UN TRADE CON LOS VALORES INGRESADOS
-    private void AddNewTrade(){
+  private void initTrade(TradeDTO dto){
         try {
-            int confirm = JOptionPane.showOptionDialog(this, "Are you sure?", "Trade Alert", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Yes", "No"}, "Yes");
-            if(confirm == 0){
-                KeyManager.EnterTrade(keys, Items, getPriceInput(),getBalanceInput());
-                Items.clear();
-                keys.clear();
-                MessageDialog("Trade Succesfully");
+            activetrade = dto;
+            PriceImput.setText(KeyManager.numberConvertor(activetrade.getPriceinstore()));
+            SellPriceInput.setText("0.00");
+            if(activetrade.getId() != null){
+                editing = true;
+                TradeTittle.setText("Trade  N° "+ activetrade.getId());
             }
-        } catch (Exception ex) {
-            MessageDialog(ex.getMessage());
-        }
-        initTrade();
-    }
-    //INICIALIZA LAS TABLAS PARA EL TRADE
-    private void initTrade(){
-        try {
-            PriceImput.setText("2.50");
-            SellPriceInput.setText("0.00");;
-            BalanceInput.setText("0.00");
+            BalanceInput.setText(KeyManager.numberConvertor(activetrade.getBalance()));
             ItemsTable.setSelectionMode(0);
             ItemsTable.getTableHeader().setResizingAllowed(false);
             VmrTable.getTableHeader().setResizingAllowed(false);
@@ -110,56 +92,145 @@ public class Trade extends Interface {
            MessageDialog(ex.getMessage());
         }
     }
+    //RECARGA LAS TABLAS Y OTROS
+    protected void Reload(){
+        try {
+            ListVMRTable();
+            ListItems();
+            ShowKeys();
+            UpdateBalance(0);
+        } catch (Exception ex) {
+            MessageDialog(ex.getMessage());
+        }
+    }
+    //CREA UN TRADE CON LOS VALORES INGRESADOS
+    private void AddNewTrade(){
+        try {
+            int confirm = JOptionPane.showOptionDialog(this, "Are you sure?", "Trade Alert", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Yes", "No"}, "Yes");
+            if(confirm == 0){
+                    activetrade.setBalance(getBalanceInput());
+                    KeyManager.EnterTrade(activetrade);
+                    MessageDialog("Trade Succesfully");
+                    initTrade(new TradeDTO(250,0));
+                    if(editing){
+                        Back();
+                    }
+            }
+        } catch (Exception ex) {
+            MessageDialog(ex.getMessage());
+        } 
+    }  
     //MUESTRA LA LISTA DE ITEMS AGREGADOS
     private void ListItems(){
         try {
             //MODELO
-            String [] columnames = {"StorePrice","SellPrice"};
-            Integer [] vacio = {, };
+            String [] columnames = {"P","StorePrice","SellPrice"};
+            String [] vacio = {"--","------","------"};
             Integer [] totalizer = {0,0};
-            if(!Items.isEmpty()){
-                totalizer = KeyManager.getTotalOfItems(Items);
+            if(!activetrade.getItems().isEmpty()){
+                totalizer = KeyManager.getTotalOfItems(activetrade.getItems());
             }
-            String [] total = {KeyManager.numberConvertor(totalizer[0]),KeyManager.numberConvertor(totalizer[1])};
-            modeloitems = new DefaultTableModel(null,columnames);
+            String [] total = {"--",KeyManager.numberConvertor(totalizer[0]),KeyManager.numberConvertor(totalizer[1])};
+            modeloitems = new DefaultTableModel(null,columnames){
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                //all cells false
+                return false;
+                }
+            };
             //LLENADO DE LA TABLA
-            for(SteamItemDTO row: Items){
-                String[] element = {KeyManager.numberConvertor(row.getStoreprice()), KeyManager.numberConvertor(row.getSellprice())};
+            for(SteamItemDTO row: activetrade.getItems()){
+                String p = "";
+                if(row.isIspending()){
+                    p = "P";
+                }
+                String[] element = {p,KeyManager.numberConvertor(row.getStoreprice()), KeyManager.numberConvertor(row.getSellprice())};
                 modeloitems.addRow(element);
             }
             modeloitems.addRow(vacio);
             modeloitems.addRow(total);
             ItemsTable.setModel(modeloitems);
+            ItemsTable.getTableHeader().setResizingAllowed(false);//DESABILITA LA EDICION DE LAS COLUMNAS
+            TableColumn columnaid = ItemsTable.getColumn("P");
+            columnaid.setPreferredWidth(40);
+            columnaid.setMaxWidth(100);
+            ItemsTable.addMouseListener(new MouseAdapter() {
+               public void mouseClicked(MouseEvent evnt)
+    		{
+                        if (evnt.getClickCount()> 1 && evnt.getClickCount()<3)
+                        {   
+                            try {
+                                if(activetrade.getItems().get(ItemsTable.getSelectedRow()).isIspending()){
+                                    EditItemData(ItemsTable.getSelectedRow());
+                                    System.out.println("doble click");
+                                }
+                            } catch (Exception ex) {
+                                MessageDialog(ex.getMessage());
+                            }
+                        }
+    		} 
+            });
         } catch (Exception ex) {
             MessageDialog(ex.getMessage());
         }
     }
+    //PERMITE HACER UN EDI DE LOS DATOS DEL ITEM
+    private void EditItemData(int row) throws Exception{
+        ViewItemData(row);
+        edititem = row;
+    }
+    //PERMITE VER LOS DATOS DEL ITEM
+    private void ViewItemData(int row) throws Exception{
+        SellPriceInput.setText(KeyManager.numberConvertor(activetrade.getItems().get(row).getSellprice()));
+        PendingCheckBox.setSelected(activetrade.getItems().get(row).isIspending());
+        int value = activetrade.getItems().get(row).getStoreprice();
+        VmrTable.getSelectionModel().setSelectionInterval(SearchRow(value), SearchRow(value));
+    }
+    //BUSCA UN VALOR EN LA TABLA VMR
+    private int SearchRow(int value) throws Exception{
+        int index = 0;
+        for(Object[] row : KeyManager.ListVMR(Double.valueOf(KeyManager.numberConvertor(activetrade.getPriceinstore())))){
+            if(KeyManager.numberConvertor(String.valueOf(row[0])) == value){
+                return index;
+            }
+            index++;
+        }
+        return 0;
+    }
     //AGREGA UN ITEM A LA LISTA DE ITEMS
     private void AddItem(){
         try {
-            int sellprice = KeyManager.numberConvertor(SellPriceInput.getText());
+            int sellprice = KeyManager.sellPriceCorrect(KeyManager.numberConvertor(SellPriceInput.getText()));
             int index = VmrTable.getSelectedRow();
             if(index == -1){
                 throw new Exception("You did not select a value");
             }else if(sellprice != 0){
                 int storeprice = KeyManager.numberConvertor(String.valueOf(VmrTable.getValueAt(index, 0)));
-                Items.add(new SteamItemDTO(isPending(),storeprice,sellprice));
+                if(editing){
+                    if(edititem != -1){
+                        DeleteI(edititem);
+                        edititem = -1;
+                    }
+                }
+                activetrade.AddItem(new SteamItemDTO(isPending(),storeprice,sellprice));
+                UpdateBalance(-storeprice);
             }else if(sellprice == 0){
                 throw new Exception("You did not enter a sell price");
             }
         } catch (Exception ex) {
             MessageDialog(ex.getMessage());
         }
-        Reload();
+        ListItems();
     }
     //ELIMINA UN ITEM DE LA LISTA DE ITEMS //ERROR// 
-    private void DeleteItem(){
-            int index = ItemsTable.getSelectedRow();
+    private void DeleteItem(int index){
             if(index >= 0){
                 int confirm = JOptionPane.showOptionDialog(this, "Are you sure?", "Errase Alert", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Yes", "No"}, "Yes");
                 if(confirm == 0){
                     try {
-                        Items.remove(index);
+                        if(!editing){
+                            DeleteI(index);
+                        }
                     } catch (Exception ex) {
                         MessageDialog("Error in entry");
                     }
@@ -167,12 +238,18 @@ public class Trade extends Interface {
             }else{
                  MessageDialog("Select an item first");
             }
-            Reload();
+            ListItems();
+    }
+    private void DeleteI(int index) throws Exception{
+        List<SteamItemDTO> items = activetrade.getItems();
+        UpdateBalance(items.get(index).getStoreprice());
+        items.remove(index);
+        activetrade.setItems(items);
     }
     //MUESTRA LAS LLAVES QUE SE ESTAN TRADEANDO AL MOMENTO
     private void ShowKeys(){
         modelolista = new DefaultListModel();
-        for(KeyDTO dto : keys){
+        for(KeyDTO dto : activetrade.getKeys()){
             String datos = String.valueOf(dto.getId()) + "--" + dto.getType();
             modelolista.addElement(datos);
         }
@@ -185,24 +262,32 @@ public class Trade extends Interface {
     //BORRA LA KEY SELECCIONADA
     private void DeleteTradingKey(){
         try {
+            if(!editing){
             String key = KeysTradingList.getSelectedValue();
             int index = KeysTradingList.getSelectedIndex();
             if(key != null){
                  long id = getKeyID(key);
-                 keys.remove(index);
+                 List<KeyDTO> keys = activetrade.getKeys();
+                     UpdateBalance(-getPriceInput());
+                     keys.remove(index);
+                     activetrade.setKeys(keys);
             }else{
                 throw new Exception("select a key first");
             }  
+            }else{
+                throw new Exception("You can't delete a key while editing");
+            }
         } catch (Exception ex) {
             MessageDialog(ex.getMessage());
         }
-        Reload();
+        ShowKeys();
     }
     //AGREGA UNA LLAVE AL TRADE
     private void AddTradingKey(){
         try {
-            List<KeyDTO> missing = KeyManager.getmissingKeys(keys);
-            if(missing.isEmpty()){
+            
+            List<KeyDTO> missing = KeyManager.getmissingKeys(activetrade.getKeys());
+            if(missing.isEmpty() || editing){
                 missing = KeyManager.ListWithStateKeys(new KeyDTO("","Tradeable"));
             }
             String[] panel = new String[missing.size()];
@@ -214,20 +299,26 @@ public class Trade extends Interface {
             }
             String confirmacion = (String) JOptionPane.showInputDialog(this, "Select de key", "AddKeyToTradeHelper", JOptionPane.QUESTION_MESSAGE,null,panel, "Select");
             if(confirmacion != null){
+                UpdateBalance(getPriceInput());
                 KeyDTO key = KeyManager.getKeyDTO(getKeyID(confirmacion));
-                keys.add(key);
-            }
-            
+                activetrade.AddKey(key); 
+            }  
         } catch (NonexistentEntityException ex) {
             MessageDialog(ex.getMessage());
+        } catch (Exception ex) {
+            MessageDialog(ex.getMessage());
         }
-        Reload();
+        ShowKeys();
     }
     //ACTUALIZA EL BALANCE DE SALDO EN LA PAGINA //SIN USO POR AHORA
     private void UpdateBalance(int value) throws Exception{
-        int last = getBalanceInput();
-        int nuevo = last + value;
-        BalanceInput.setText(KeyManager.numberConvertor(nuevo));
+//        int last = getBalanceInput();
+//        if(last-value >= 0){
+//            activetrade.setBalance(last + value);
+//        }else{
+//            throw new Exception("You can´t");
+//        }
+//        BalanceInput.setText(KeyManager.numberConvertor(activetrade.getBalance()));
     }
     //DEVUELVE EL PRECIO INGRESADO
     private int getPriceInput() throws Exception{
@@ -335,7 +426,6 @@ public class Trade extends Interface {
 
         BalanceInput.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         BalanceInput.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        BalanceInput.setFocusable(false);
 
         ItemsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -425,10 +515,6 @@ public class Trade extends Interface {
             .addGroup(layout.createSequentialGroup()
                 .addGap(49, 49, 49)
                 .addComponent(TradeTittle)
-                .addGap(238, 238, 238)
-                .addComponent(PriceTittle)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(PriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(BackButton)
                 .addGap(60, 60, 60))
@@ -455,18 +541,23 @@ public class Trade extends Interface {
                         .addGap(22, 22, 22))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGap(93, 93, 93)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(BalanceInput, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(90, 90, 90)
-                                    .addComponent(TradeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(BalanceTittle, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(PendingCheckBox)
-                                .addGap(18, 18, 18)
-                                .addComponent(AddButton)
-                                .addGap(192, 192, 192)))
+                                .addComponent(PriceTittle)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(PriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addComponent(BalanceInput, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(90, 90, 90)
+                                        .addComponent(TradeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(BalanceTittle, javax.swing.GroupLayout.Alignment.LEADING))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(PendingCheckBox)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(AddButton)
+                                    .addGap(192, 192, 192))))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
@@ -479,13 +570,8 @@ public class Trade extends Interface {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(TradeTittle)
-                                .addGap(9, 9, 9))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(PriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(PriceTittle)))))
+                        .addComponent(TradeTittle)
+                        .addGap(9, 9, 9)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -517,7 +603,10 @@ public class Trade extends Interface {
                                     .addComponent(DeleteKeyButton)
                                     .addComponent(ReloadButton))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(AddKeyButton)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(AddKeyButton)
+                                    .addComponent(PriceTittle)
+                                    .addComponent(PriceImput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(VmrScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addGap(53, 53, 53))))
@@ -533,13 +622,13 @@ public class Trade extends Interface {
     }//GEN-LAST:event_SellPriceInputActionPerformed
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
-        if(!Items.isEmpty()){
+        if(!activetrade.getItems().isEmpty()){
            int confirm = JOptionPane.showOptionDialog(this, "You are trading, Are you sure you wanna leave?", "Leaving TradeHelper", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Yes", "No"}, "Yes");
                     if (confirm == 0){
-                        BackToInventory();
+                        Back();
                     }
-           }else if(Items.isEmpty()){
-               BackToInventory();
+           }else if(activetrade.getItems().isEmpty()){
+               Back();
            }
         // TODO add your handling code here:
     }//GEN-LAST:event_BackButtonActionPerformed
@@ -553,7 +642,7 @@ public class Trade extends Interface {
     }//GEN-LAST:event_PriceImputActionPerformed
 
     private void DeleteItemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteItemButtonActionPerformed
-      DeleteItem();  // TODO add your handling code here:
+      DeleteItem(ItemsTable.getSelectedRow());  // TODO add your handling code here:
     }//GEN-LAST:event_DeleteItemButtonActionPerformed
 
     private void DeleteKeyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteKeyButtonActionPerformed

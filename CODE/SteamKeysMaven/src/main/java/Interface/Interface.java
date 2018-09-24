@@ -10,6 +10,8 @@ import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -64,13 +66,32 @@ public class Interface extends JFrame{
    protected void Reload(){
         
     }
-   protected void BackToInventory(){
-          Inventory.CloseLastWindow();
-          Inventory inventory = (Inventory) Inventory.getLastWindow();
-          inventory.setLocationRelativeTo(this);
-          inventory.initSaldo();
-          inventory.Reload();  
-          inventory.setVisible(true);
+    protected static List<JFrame> windows = new ArrayList();
+    protected static JFrame getLastWindow(){
+       return windows.get(windows.size()-1);
+    }
+    //ABRE UNA NUEVA VENTANA
+    protected void OpenWindow(JFrame window){
+        windows.add(window);
+    }
+     //ABRE UNA VENTANA DEL TIPO INGRESADO
+    protected void AddWindow(JFrame window){
+        window.setTitle("SteamKeysApp");
+        OpenWindow(window);
+        this.setVisible(false);
+        window.setVisible(true);
+    }
+    //CIERRA LA ULTIMA VENTANA ABIERTA
+    protected static void CloseLastWindow(){
+        int lastindex = windows.size()-1;
+        windows.remove(lastindex);
+    }
+   protected void Back(){
+          CloseLastWindow();
+          Interface lastwindow = (Interface) getLastWindow();
+          lastwindow.setLocationRelativeTo(this);
+          lastwindow.Reload();  
+          lastwindow.setVisible(true);
           dispose();
    } 
    

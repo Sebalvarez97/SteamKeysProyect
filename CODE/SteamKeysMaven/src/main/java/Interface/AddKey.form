@@ -73,6 +73,8 @@
                                       <Component id="CantTittle" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace type="separate" max="-2" attributes="0"/>
                                       <Component id="CantSpinner" min="-2" pref="44" max="-2" attributes="0"/>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                      <Component id="CanBuy" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -103,6 +105,7 @@
                   <Component id="ComboBoxTypes" alignment="3" min="-2" pref="22" max="-2" attributes="0"/>
                   <Component id="CantTittle" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="CantSpinner" alignment="3" min="-2" pref="22" max="-2" attributes="0"/>
+                  <Component id="CanBuy" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -258,6 +261,11 @@
           <Font name="Comic Sans MS" size="12" style="0"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Cant"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="CanBuy">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="jLabel1"/>
       </Properties>
     </Component>
   </SubComponents>

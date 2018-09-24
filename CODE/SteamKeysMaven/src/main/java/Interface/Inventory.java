@@ -3,6 +3,7 @@ package Interface;
 
 import Controller.exceptions.NonexistentEntityException;
 import TransporterUnits.KeyDTO;
+import TransporterUnits.TradeDTO;
 import TransporterUnits.TypeStateDTO;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -29,19 +30,7 @@ public class Inventory extends Interface{
     
     DefaultTableModel modelotabla; //MODELO PARA LA TABLE DE LLAVES   
     //MANEJO DE VENTANAS
-    public static List<JFrame> windows = new ArrayList();
-    public static JFrame getLastWindow(){
-       return windows.get(windows.size()-1);
-    }
-    //ABRE UNA NUEVA VENTANA
-    public void OpenWindow(JFrame window){
-        windows.add(window);
-    }
-    //CIERRA LA ULTIMA VENTANA ABIERTA
-    public static void CloseLastWindow(){
-        int lastindex = windows.size()-1;
-        windows.remove(lastindex);
-    }
+
     
     //CONSTRUCTOR
     public Inventory() {
@@ -100,6 +89,7 @@ public class Inventory extends Interface{
     }
     //RECARGA LA LISTA DE LLAVES
     protected void Reload(){
+        initSaldo();
         ListTable();
         SetKeyTable();
         SetEstadistics();
@@ -145,7 +135,13 @@ public class Inventory extends Interface{
             List<KeyDTO> keys = KeyManager.ListKeysOrderByDate();;
             //CONFIGURACION DEL MODELO DE LA TABLA
             String[] columnames = {"ID", "Type","BuyDate", "State","Release in"};
-            modelotabla = new DefaultTableModel(null, columnames);
+            modelotabla = new DefaultTableModel(null, columnames){
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                //all cells false
+                return false;
+                }
+            };
             //LENADO DEL MODELO DE LA TABLA
             for(KeyDTO dto : keys){
                if(dto.getState().equals("Tradeable") || dto.getState().equals("Untradeable")){
@@ -214,13 +210,7 @@ public class Inventory extends Interface{
         initSaldo();
         Reload();
     }
-    //ABRE UNA VENTANA DEL TIPO INGRESADO
-    private void AddWindow(JFrame window){
-        window.setTitle("SteamKeysApp");
-        OpenWindow(window);
-        this.setVisible(false);
-        window.setVisible(true);
-    }
+   
     //VENDE UNA LLAVE O LLAVES
     private void SellKey(){
         List<KeyDTO> keys = getKeySelection();
@@ -554,15 +544,13 @@ public class Inventory extends Interface{
         if(keys.isEmpty()){
             int confirmacion = JOptionPane.showConfirmDialog(this, "You did not select a key. It is correct?");
             if(confirmacion == 0){
-                    Trade window = new Trade();
-                    window.setKeys(keys);
+                    TradeInterface window = new TradeInterface(new TradeDTO(250,0));
                     AddWindow(window);
             }    
         }else if(KeyManager.ValidateTradeSelection(keys)) {
             int confirmacion = JOptionPane.showConfirmDialog(this, "This key/s selected will be traded, Are you sure?");
             if(confirmacion == 0){
-                    Trade window = new Trade();
-                    window.setKeys(keys);
+                    TradeInterface window = new TradeInterface(new TradeDTO(250,0,keys));
                     AddWindow(window);
             }
         }else if(!KeyManager.ValidateTradeSelection(keys)){

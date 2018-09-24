@@ -36,9 +36,13 @@ public class SteamItem implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public SteamItem(Long id) {
+        this.id = id;
+    }
         
     @Column(name = "ispending")
-    private boolean pending;
+    private boolean pending = false;
     
     @Column(name = "storeprice")
     private int storeprice;
@@ -52,7 +56,7 @@ public class SteamItem implements Serializable {
 
     public SteamItem() {
     }
-
+    
     public SteamItem(int cant, int storeprice, int sellprice) {
         this.storeprice = storeprice;
         this.sellprice = sellprice;

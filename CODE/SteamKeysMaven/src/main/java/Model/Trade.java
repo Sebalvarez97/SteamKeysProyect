@@ -50,7 +50,7 @@ public class Trade implements Serializable {
     @OneToMany(mappedBy = "trade" ,cascade = CascadeType.ALL)
     private List <Key> keytraded = new ArrayList();
     
-    @OneToMany(mappedBy = "trade" ,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "trade" ,cascade = CascadeType.ALL, orphanRemoval = true)
     private List <SteamItem> items = new ArrayList();
  
     @Column(name = "cantkey")
@@ -59,7 +59,7 @@ public class Trade implements Serializable {
     public void setCantkey(int cantkey) {
         this.cantkey = cantkey;
     }
-
+    
     public int getCantkey() {
         return cantkey;
     }
@@ -71,7 +71,9 @@ public class Trade implements Serializable {
         this.balancestore = balancestore;
         this.keytraded = keytraded;
     }
-
+    public void CleanITems(){
+        this.items = new ArrayList();
+    }
     public Trade() {
     }
 

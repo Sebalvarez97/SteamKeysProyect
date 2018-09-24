@@ -5,6 +5,8 @@
  */
 package Interface;
 
+import Controller.exceptions.NonexistentEntityException;
+import TransporterUnits.TradeDTO;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
@@ -12,10 +14,15 @@ import javax.swing.table.TableColumn;
 import steam.jewishs.steamkeysmaven.KeyManager;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
@@ -33,6 +40,7 @@ import org.jfree.data.xy.XYDataset;
 
 public class History extends Interface {
 
+private boolean editing;
 DefaultTableModel modelotrades = new DefaultTableModel();
     //CONSTRUCTOR
     public History() {
@@ -55,6 +63,7 @@ DefaultTableModel modelotrades = new DefaultTableModel();
     }
     //CLASE PADRE, RECARGA LA PAGINA
     public void Reload(){
+        editing = false;
         ListHistory();
         SetHistory();
         LoadChart();
@@ -75,16 +84,47 @@ DefaultTableModel modelotrades = new DefaultTableModel();
         try {
             List<Object[]> trades = KeyManager.getTradeList();
             String[] columnames = {"TradeID","Date", "CantKeys", "Profit/key", "Left", "KeyPrice" };
-            modelotrades = new DefaultTableModel(null, columnames);
+            modelotrades = new DefaultTableModel(null, columnames){
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                //all cells false
+                return false;
+                }
+            };
             //LLENADO
             for(Object[] trade : trades){
                 Object[] row = {trade[0], trade[1], trade[2], "$ "+trade[3], "$ " +trade[4], "$ " +trade[5]};
                 modelotrades.addRow(row);
             }
             TradeHistoryTable.setModel(modelotrades);
+            TradeHistoryTable.addMouseListener(new MouseAdapter() {
+                public void mouseClicked(MouseEvent evnt)
+    		{
+                        if (evnt.getClickCount()> 1 && evnt.getClickCount()<=2)
+                        {   
+                            long id = (long) TradeHistoryTable.getValueAt(TradeHistoryTable.getSelectedRow(), 0);
+                            if(KeyManager.isEditable(id) && !editing){
+                                EditTrade(id);
+                            }
+                        }
+    		}
+            });
         } catch (Exception ex) {
             MessageDialog(ex.getMessage());
         }
+    }
+    private void EditTrade(long id){
+        int confirmacion = JOptionPane.showConfirmDialog(this, "You will edit the trade, Are you sure?");
+            if(confirmacion == 0){
+                try {
+                    TradeDTO dto = KeyManager.getTrade(id);
+                    TradeInterface window = new TradeInterface(dto);
+                    editing = true;
+                    AddWindow(window);
+                } catch (NonexistentEntityException ex) {
+                   MessageDialog(ex.getMessage());
+                }
+            }
     }
     //CLASE NECESARIA PARA EL CHART
 public class XYLineChart extends ImageIcon{
@@ -267,7 +307,7 @@ public class XYLineChart extends ImageIcon{
     }// </editor-fold>//GEN-END:initComponents
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
-          BackToInventory();// TODO add your handling code here:
+          Back();// TODO add your handling code here:
     }//GEN-LAST:event_BackButtonActionPerformed
 
     private void ReloadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReloadButtonActionPerformed

@@ -10,6 +10,7 @@ package TransporterUnits;
  * @author eltet
  */
 public class SteamItemDTO extends DTO{
+    private Long id;
     private boolean ispending;
     private int storeprice;
     private int sellprice;
@@ -18,6 +19,18 @@ public class SteamItemDTO extends DTO{
     public SteamItemDTO() {
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public SteamItemDTO(Long id) {
+        this.id = id;
+    }
+    
     public SteamItemDTO(boolean ispending, int storeprice, int sellprice) {
         this.ispending = ispending;
         this.storeprice = storeprice;

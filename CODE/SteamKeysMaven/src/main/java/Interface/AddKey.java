@@ -41,8 +41,11 @@ private void SetAddKeyParameters(){
     
     ListDate();
     ListTypes();
-    
-}  
+    Reload();
+}
+protected void Reload(){
+    CanBuy.setText("You can buy " + KeyManager.getCantUcanBuy(KeyManager.getBalanceMoney()));
+}
 // LISTA LOS TIPOS DE LLAVE  
 private void ListTypes(){
         modelocombobox = new DefaultComboBoxModel();
@@ -107,7 +110,7 @@ private void AddNewKey(){
   }catch(Exception e){
      MessageDialog(e.getMessage());
   }
-    
+  Reload();  
 }//GENERA EL DATE CON LA FECHA INGRESADA
   private Date getImputDate(){
       int day = (int) DayComboBox.getSelectedItem();
@@ -139,6 +142,7 @@ private void AddNewKey(){
         CheckboxAclaration = new javax.swing.JLabel();
         CantSpinner = new javax.swing.JSpinner();
         CantTittle = new javax.swing.JLabel();
+        CanBuy = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setName("AddKeyFrame"); // NOI18N
@@ -205,6 +209,8 @@ private void AddNewKey(){
         CantTittle.setFont(new java.awt.Font("Comic Sans MS", 0, 12)); // NOI18N
         CantTittle.setText("Cant");
 
+        CanBuy.setText("jLabel1");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -249,7 +255,9 @@ private void AddNewKey(){
                                         .addGap(94, 94, 94)
                                         .addComponent(CantTittle)
                                         .addGap(18, 18, 18)
-                                        .addComponent(CantSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                        .addComponent(CantSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(CanBuy))))
                             .addComponent(ComboBoxTypes, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(89, 89, 89))))
         );
@@ -268,7 +276,8 @@ private void AddNewKey(){
                     .addComponent(KeyTypeTittle)
                     .addComponent(ComboBoxTypes, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(CantTittle)
-                    .addComponent(CantSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(CantSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(CanBuy))
                 .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(DayTittle)
@@ -292,7 +301,7 @@ private void AddNewKey(){
     }// </editor-fold>//GEN-END:initComponents
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
-  BackToInventory();
+  Back();
             
     }//GEN-LAST:event_BackButtonActionPerformed
 
@@ -346,6 +355,7 @@ private void AddNewKey(){
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BackButton;
     private javax.swing.JLabel BuyDateTittle;
+    private javax.swing.JLabel CanBuy;
     private javax.swing.JSpinner CantSpinner;
     private javax.swing.JLabel CantTittle;
     private javax.swing.JCheckBox CheckBox;
