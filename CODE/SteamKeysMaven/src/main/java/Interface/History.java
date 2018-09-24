@@ -40,6 +40,7 @@ import org.jfree.data.xy.XYDataset;
 
 public class History extends Interface {
 
+private boolean editing;
 DefaultTableModel modelotrades = new DefaultTableModel();
     //CONSTRUCTOR
     public History() {
@@ -62,6 +63,7 @@ DefaultTableModel modelotrades = new DefaultTableModel();
     }
     //CLASE PADRE, RECARGA LA PAGINA
     public void Reload(){
+        editing = false;
         ListHistory();
         SetHistory();
         LoadChart();
@@ -98,12 +100,12 @@ DefaultTableModel modelotrades = new DefaultTableModel();
             TradeHistoryTable.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent evnt)
     		{
-                        if (evnt.getClickCount()> 1 && evnt.getClickCount()<3)
+                        if (evnt.getClickCount()> 1 && evnt.getClickCount()<=2)
                         {   
                             long id = (long) TradeHistoryTable.getValueAt(TradeHistoryTable.getSelectedRow(), 0);
-                            if(KeyManager.isEditable(id)){
-                                    EditTrade(id);
-                            }else MessageDialog("You can't edit this trade");
+                            if(KeyManager.isEditable(id) && !editing){
+                                EditTrade(id);
+                            }
                         }
     		}
             });
@@ -117,6 +119,7 @@ DefaultTableModel modelotrades = new DefaultTableModel();
                 try {
                     TradeDTO dto = KeyManager.getTrade(id);
                     TradeInterface window = new TradeInterface(dto);
+                    editing = true;
                     AddWindow(window);
                 } catch (NonexistentEntityException ex) {
                    MessageDialog(ex.getMessage());

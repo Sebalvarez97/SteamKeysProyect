@@ -96,7 +96,7 @@ private void AddNewKey(){
   try{  
     String type = (String) ComboBoxTypes.getSelectedItem();
     int cantidad = getCantValue();
-    if(!KeyManager.isPossibleToBuyKeys()){
+    if(!KeyManager.isPossibleToBuyKeys(cantidad)){
         throw new Exception("Not enough money");
     }else{
        if(cantidad > 0){

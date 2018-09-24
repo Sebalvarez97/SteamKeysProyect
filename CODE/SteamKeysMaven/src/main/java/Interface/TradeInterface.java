@@ -200,7 +200,7 @@ public class TradeInterface extends Interface {
     //AGREGA UN ITEM A LA LISTA DE ITEMS
     private void AddItem(){
         try {
-            int sellprice = KeyManager.numberConvertor(SellPriceInput.getText());
+            int sellprice = KeyManager.sellPriceCorrect(KeyManager.numberConvertor(SellPriceInput.getText()));
             int index = VmrTable.getSelectedRow();
             if(index == -1){
                 throw new Exception("You did not select a value");
