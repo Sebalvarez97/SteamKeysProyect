@@ -339,8 +339,8 @@ public class KeyManager {
         return ganancia;
     }
     //DEVUELVE TRUE SI ES POSIBLE COMPRAR LLAVES
-    public static boolean isPossibleToBuyKeys(){
-        if(getCantUcanBuy(getBalanceMoney()) == 0){
+    public static boolean isPossibleToBuyKeys(int cantidad){
+        if(getCantUcanBuy(getBalanceMoney()) < cantidad){
             return false;
         }else return true;
     }

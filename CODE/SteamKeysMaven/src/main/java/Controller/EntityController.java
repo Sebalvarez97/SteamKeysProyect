@@ -8,8 +8,6 @@ package Controller;
 import Controller.exceptions.NonexistentEntityException;
 import Model.*;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
