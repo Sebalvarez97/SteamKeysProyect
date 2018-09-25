@@ -7,7 +7,6 @@ package Interface;
 
 import Controller.exceptions.NonexistentEntityException;
 import TransporterUnits.TradeDTO;
-import java.util.Iterator;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -19,8 +18,6 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import org.jfree.chart.ChartFactory;
@@ -103,8 +100,13 @@ DefaultTableModel modelotrades = new DefaultTableModel();
                         if (evnt.getClickCount()> 1 && evnt.getClickCount()<=2)
                         {   
                             long id = (long) TradeHistoryTable.getValueAt(TradeHistoryTable.getSelectedRow(), 0);
-                            if(KeyManager.isEditable(id) && !editing){
-                                EditTrade(id);
+                            if(!editing){
+                                if(KeyManager.isEditable(id)){
+                                    EditTrade(id);
+                                }else{
+                                    ViewTrade(id);
+                                }
+                                
                             }
                         }
     		}
@@ -113,12 +115,22 @@ DefaultTableModel modelotrades = new DefaultTableModel();
             MessageDialog(ex.getMessage());
         }
     }
+    private void ViewTrade(long id){
+                try {
+                    TradeDTO dto = KeyManager.getTrade(id);
+                    TradeInterface window = new TradeInterface(dto, true);
+                    editing = true;
+                    AddWindow(window);
+                } catch (NonexistentEntityException ex) {
+                   MessageDialog(ex.getMessage());
+                }
+    }
     private void EditTrade(long id){
         int confirmacion = JOptionPane.showConfirmDialog(this, "You will edit the trade, Are you sure?");
             if(confirmacion == 0){
                 try {
                     TradeDTO dto = KeyManager.getTrade(id);
-                    TradeInterface window = new TradeInterface(dto);
+                    TradeInterface window = new TradeInterface(dto, false);
                     editing = true;
                     AddWindow(window);
                 } catch (NonexistentEntityException ex) {

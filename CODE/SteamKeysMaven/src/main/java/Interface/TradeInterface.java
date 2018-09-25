@@ -25,18 +25,20 @@ import steam.jewishs.steamkeysmaven.KeyManager;
 public class TradeInterface extends Interface {
     
     private TradeDTO activetrade;
-    private boolean editing = false;
+    private boolean editingmode = false;
+    public boolean viewmode;
     private int edititem = -1;
     DefaultTableModel modelotabla;
     DefaultTableModel modeloitems;
     DefaultListModel modelolista;
     
     //CONSTRUCTOR
-    public TradeInterface(TradeDTO dto) {
+    public TradeInterface(TradeDTO dto, boolean viewmode) {
         initComponents();
         initICon();
         this.setSize(Inventory.getLastWindow().getSize());
-        this.setLocationRelativeTo(Inventory.getLastWindow()); 
+        this.setLocationRelativeTo(Inventory.getLastWindow());
+        this.viewmode = viewmode;
         initTrade(dto);
     }
   private void initTrade(TradeDTO dto){
@@ -45,7 +47,7 @@ public class TradeInterface extends Interface {
             PriceImput.setText(KeyManager.numberConvertor(activetrade.getPriceinstore()));
             SellPriceInput.setText("0.00");
             if(activetrade.getId() != null){
-                editing = true;
+                editingmode = true;
                 TradeTittle.setText("Trade  N° "+ activetrade.getId());
             }
             BalanceInput.setText(KeyManager.numberConvertor(activetrade.getBalance()));
@@ -83,6 +85,24 @@ public class TradeInterface extends Interface {
                     
                 }
             });
+            if(viewmode){
+                KeysTradingList.setEnabled(false);
+                DeleteKeyButton.setEnabled(false);
+                AddKeyButton.setEnabled(false);
+                PriceTittle.setEnabled(true);
+                PriceImput.setEnabled(true);
+                PriceImput.setEditable(false);
+                ReloadButton.setEnabled(false);
+                SellPriceInput.setEnabled(true);
+                SellPriceInput.setEditable(false);
+                AddButton.setEnabled(false);
+                BalanceInput.setEnabled(false);
+                TradeButton.setEnabled(false);
+                VmrTable.setEnabled(false);
+                ItemsTable.setEnabled(true);
+                DeleteItemButton.setEnabled(false);
+                PendingCheckBox.setEnabled(false);
+            }
             Reload();
         } catch (Exception ex) {
            MessageDialog(ex.getMessage());
@@ -105,10 +125,11 @@ public class TradeInterface extends Interface {
             int confirm = JOptionPane.showOptionDialog(this, "Are you sure?", "Trade Alert", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Yes", "No"}, "Yes");
             if(confirm == 0){
                     activetrade.setBalance(getBalanceInput());
+                    activetrade.setPriceinstore(getPriceInput());
                     KeyManager.EnterTrade(activetrade);
                     MessageDialog("Trade Succesfully");
                     initTrade(new TradeDTO(250,0));
-                    if(editing){
+                    if(editingmode){
                         Back();
                     }
             }
@@ -156,10 +177,8 @@ public class TradeInterface extends Interface {
                         if (evnt.getClickCount() == 2)
                         {   
                             try {
-                                
+                                if(ItemsTable.getSelectedRow()< activetrade.getItems().size())
                                     EditItemData(ItemsTable.getSelectedRow());
-                                    System.out.println("doble click");
-                                
                             } catch (Exception ex) {
                                 MessageDialog(ex.getMessage());
                             }
@@ -173,8 +192,11 @@ public class TradeInterface extends Interface {
     //PERMITE HACER UN EDI DE LOS DATOS DEL ITEM
     private void EditItemData(int row) throws Exception{
         ViewItemData(row);
-        edititem = row;
-        EditingTittle.setText("editing item");
+        if(!viewmode){
+            edititem = row;
+            ItemsTable.setEnabled(false);
+            EditingTittle.setText("editing item");
+        }
     }
     //PERMITE VER LOS DATOS DEL ITEM
     private void ViewItemData(int row) throws Exception{
@@ -204,15 +226,14 @@ public class TradeInterface extends Interface {
                 throw new Exception("You did not select a value");
             }else if(sellprice != 0){
                 int storeprice = KeyManager.numberConvertor(String.valueOf(VmrTable.getValueAt(index, 0)));
-                
+                activetrade.AddItem(new SteamItemDTO(isPending(),storeprice,sellprice));
                     if(edititem != -1){
                         DeleteI(edititem);
                         edititem = -1;
                         EditingTittle.setText("");
                     }
-                
-                activetrade.AddItem(new SteamItemDTO(isPending(),storeprice,sellprice));
                 UpdateBalance(-storeprice);
+                ItemsTable.setEnabled(true);
             }else if(sellprice == 0){
                 throw new Exception("You did not enter a sell price");
             }
@@ -227,9 +248,12 @@ public class TradeInterface extends Interface {
                 int confirm = JOptionPane.showOptionDialog(this, "Are you sure?", "Errase Alert", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Yes", "No"}, "Yes");
                 if(confirm == 0){
                     try {
-                        if(!editing && edititem != -1){
                             DeleteI(index);
-                        }
+                            if(edititem != -1){
+                               edititem = -1;
+                               EditingTittle.setText("");
+                            }
+                            ItemsTable.setEnabled(true);
                     } catch (Exception ex) {
                         MessageDialog("Error in entry");
                     }
@@ -261,7 +285,7 @@ public class TradeInterface extends Interface {
     //BORRA LA KEY SELECCIONADA
     private void DeleteTradingKey(){
         try {
-            if(!editing){
+            if(!editingmode){
             String key = KeysTradingList.getSelectedValue();
             int index = KeysTradingList.getSelectedIndex();
             if(key != null){
@@ -286,7 +310,7 @@ public class TradeInterface extends Interface {
         try {
             
             List<KeyDTO> missing = KeyManager.getmissingKeys(activetrade.getKeys());
-            if(missing.isEmpty() || editing){
+            if(missing.isEmpty() || editingmode){
                 missing = KeyManager.ListWithStateKeys(new KeyDTO("","Tradeable"));
             }
             String[] panel = new String[missing.size()];
@@ -651,12 +675,12 @@ public class TradeInterface extends Interface {
     }//GEN-LAST:event_SellPriceInputActionPerformed
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
-        if(!activetrade.getItems().isEmpty()){
+        if(!activetrade.getItems().isEmpty() && !viewmode){
            int confirm = JOptionPane.showOptionDialog(this, "You are trading, Are you sure you wanna leave?", "Leaving TradeHelper", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Yes", "No"}, "Yes");
                     if (confirm == 0){
                         Back();
                     }
-           }else if(activetrade.getItems().isEmpty()){
+           }else if(activetrade.getItems().isEmpty() || viewmode){
                Back();
            }
         // TODO add your handling code here:

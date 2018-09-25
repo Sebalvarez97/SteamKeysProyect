@@ -9,9 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Iterator;
 import java.util.List;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -544,13 +542,13 @@ public class Inventory extends Interface{
         if(keys.isEmpty()){
             int confirmacion = JOptionPane.showConfirmDialog(this, "You did not select a key. It is correct?");
             if(confirmacion == 0){
-                    TradeInterface window = new TradeInterface(new TradeDTO(250,0));
+                    TradeInterface window = new TradeInterface(new TradeDTO(250,0), false);
                     AddWindow(window);
             }    
         }else if(KeyManager.ValidateTradeSelection(keys)) {
             int confirmacion = JOptionPane.showConfirmDialog(this, "This key/s selected will be traded, Are you sure?");
             if(confirmacion == 0){
-                    TradeInterface window = new TradeInterface(new TradeDTO(250,0,keys));
+                    TradeInterface window = new TradeInterface(new TradeDTO(250,0,keys), false);
                     AddWindow(window);
             }
         }else if(!KeyManager.ValidateTradeSelection(keys)){
