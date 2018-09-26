@@ -47,7 +47,7 @@ public class Trade implements Serializable {
     @Column(name = "balancestore")
     private int balancestore;
     
-    @OneToMany(mappedBy = "trade" ,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "trade" ,cascade = CascadeType.ALL, orphanRemoval = false)
     private List <Key> keytraded = new ArrayList();
     
     @OneToMany(mappedBy = "trade" ,cascade = CascadeType.ALL, orphanRemoval = true)

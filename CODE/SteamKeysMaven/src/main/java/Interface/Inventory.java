@@ -7,11 +7,11 @@ import TransporterUnits.TradeDTO;
 import TransporterUnits.TypeStateDTO;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Iterator;
 import java.util.List;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -163,11 +163,23 @@ public class Inventory extends Interface{
                }
             }
             KeyTable.setModel(modelotabla);
+            KeyTable.addMouseListener(new MouseAdapter() {
+                public void mouseClicked(MouseEvent evnt)
+    		{
+                        if (evnt.getClickCount()> 1 && evnt.getClickCount()<=2)
+                        {   
+                           EditOrTradeMessage();
+                        }
+                }
+            });
         } catch (NonexistentEntityException ex) {
             MessageDialog("The entity does not exist");
         } catch (Exception ex) {
             MessageDialog(ex.getMessage());
         }
+    }
+    private void EditOrTradeMessage(){
+        
     }
     //DEVUELVE LA LISTA DE LLAVES SELECCIONADAS 
     private List<KeyDTO> getKeySelection(){
@@ -218,13 +230,16 @@ public class Inventory extends Interface{
             MessageDialog("Select a key first");
         }else{
             try {
-                int sellprice = KeyManager.numberConvertor(JOptionPane.showInputDialog("Ingrese el precio de venta"));
-                int confirm = JOptionPane.showConfirmDialog(this, "You are selling this " + keys.size()+ " keys. Are you sure?");
-                if(confirm == 0){
-                    for(KeyDTO key : keys){
+                Object input = JOptionPane.showInputDialog("Ingrese el precio de venta");
+                if(input != null){
+                    int sellprice = KeyManager.numberConvertor(String.valueOf(input));
+                    int confirm = JOptionPane.showConfirmDialog(this, "You are selling this " + keys.size()+ " keys. Are you sure?");
+                     if(confirm == 0){
+                        for(KeyDTO key : keys){
                         KeyManager.SellKey(key, sellprice);
+                        }
                     }
-                }
+                } 
             } catch (Exception ex) {
                 MessageDialog(ex.getMessage());
             }
@@ -544,13 +559,13 @@ public class Inventory extends Interface{
         if(keys.isEmpty()){
             int confirmacion = JOptionPane.showConfirmDialog(this, "You did not select a key. It is correct?");
             if(confirmacion == 0){
-                    TradeInterface window = new TradeInterface(new TradeDTO(250,0));
+                    TradeInterface window = new TradeInterface(new TradeDTO(250,0), false);
                     AddWindow(window);
             }    
         }else if(KeyManager.ValidateTradeSelection(keys)) {
             int confirmacion = JOptionPane.showConfirmDialog(this, "This key/s selected will be traded, Are you sure?");
             if(confirmacion == 0){
-                    TradeInterface window = new TradeInterface(new TradeDTO(250,0,keys));
+                    TradeInterface window = new TradeInterface(new TradeDTO(250,0,keys), false);
                     AddWindow(window);
             }
         }else if(!KeyManager.ValidateTradeSelection(keys)){
