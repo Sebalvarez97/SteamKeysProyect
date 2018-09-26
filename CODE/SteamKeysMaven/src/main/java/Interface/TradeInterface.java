@@ -105,7 +105,7 @@ public class TradeInterface extends Interface {
             }
             Reload();
         } catch (Exception ex) {
-           MessageDialog(ex.getMessage());
+           ErrorMessage(ex.getMessage());
         }
     }
     //RECARGA LAS TABLAS Y OTROS
@@ -116,7 +116,7 @@ public class TradeInterface extends Interface {
             ShowKeys();
             UpdateBalance(0);
         } catch (Exception ex) {
-            MessageDialog(ex.getMessage());
+           ErrorMessage(ex.getMessage());
         }
     }
     //CREA UN TRADE CON LOS VALORES INGRESADOS
@@ -127,14 +127,14 @@ public class TradeInterface extends Interface {
                     activetrade.setBalance(getBalanceInput());
                     activetrade.setPriceinstore(getPriceInput());
                     KeyManager.EnterTrade(activetrade);
-                    MessageDialog("Trade Succesfully");
+                    InformationMessage("Trade Succesfully");
                     initTrade(new TradeDTO(250,0));
                     if(editingmode){
                         Back();
                     }
             }
         } catch (Exception ex) {
-            MessageDialog(ex.getMessage());
+            ErrorMessage(ex.getMessage());
         } 
     }  
     //MUESTRA LA LISTA DE ITEMS AGREGADOS
@@ -180,13 +180,13 @@ public class TradeInterface extends Interface {
                                 if(ItemsTable.getSelectedRow()< activetrade.getItems().size())
                                     EditItemData(ItemsTable.getSelectedRow());
                             } catch (Exception ex) {
-                                MessageDialog(ex.getMessage());
+                                ErrorMessage(ex.getMessage());
                             }
                         }
     		} 
             });
         } catch (Exception ex) {
-            MessageDialog(ex.getMessage());
+            ErrorMessage(ex.getMessage());
         }
     }
     //PERMITE HACER UN EDI DE LOS DATOS DEL ITEM
@@ -238,7 +238,7 @@ public class TradeInterface extends Interface {
                 throw new Exception("You did not enter a sell price");
             }
         } catch (Exception ex) {
-            MessageDialog(ex.getMessage());
+            ErrorMessage(ex.getMessage());
         }
         ListItems();
     }
@@ -255,11 +255,11 @@ public class TradeInterface extends Interface {
                             }
                             ItemsTable.setEnabled(true);
                     } catch (Exception ex) {
-                        MessageDialog("Error in entry");
+                        WarningMessage("Error in entry");
                     }
                 } 
             }else{
-                 MessageDialog("Select an item first");
+                 WarningMessage("Select an item first");
             }
             ListItems();
     }
@@ -301,7 +301,7 @@ public class TradeInterface extends Interface {
                 throw new Exception("You can't delete a key while editing");
             }
         } catch (Exception ex) {
-            MessageDialog(ex.getMessage());
+            WarningMessage(ex.getMessage());
         }
         ShowKeys();
     }
@@ -327,9 +327,9 @@ public class TradeInterface extends Interface {
                 activetrade.AddKey(key); 
             }  
         } catch (NonexistentEntityException ex) {
-            MessageDialog(ex.getMessage());
+            ErrorMessage(ex.getMessage());
         } catch (Exception ex) {
-            MessageDialog(ex.getMessage());
+            ErrorMessage(ex.getMessage());
         }
         ShowKeys();
     }
@@ -391,7 +391,7 @@ public class TradeInterface extends Interface {
             });
             
         } catch (Exception ex) {
-            MessageDialog(ex.getMessage());
+            ErrorMessage(ex.getMessage());
         }
     }
     

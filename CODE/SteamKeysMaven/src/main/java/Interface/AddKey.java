@@ -56,7 +56,7 @@ private void ListTypes(){
             }
             ComboBoxTypes.setModel(modelocombobox);
         } catch (NonexistentEntityException ex) {
-            MessageDialog(ex.getMessage());
+            ErrorMessage(ex.getMessage());
         }  
 }
 //LISTA LOS COMBOBOX DE LA FECHA
@@ -103,12 +103,12 @@ private void AddNewKey(){
          int confirmation = JOptionPane.showConfirmDialog(this, "Are you sure you want to create " + cantidad + " of "+ type + " key/s?");
          if (confirmation == 0){
                KeyManager.EnterSomeKeys(type, cantidad, getImputDate());
-               MessageDialog("Key/s succesfully registered");
+               InformationMessage("Key/s succesfully registered");
          }
-        }else MessageDialog("How Many???. Please enter it");  
+        }else WarningMessage("How Many???. Please enter it");  
     }
   }catch(Exception e){
-     MessageDialog(e.getMessage());
+     ErrorMessage(e.getMessage());
   }
   Reload();  
 }//GENERA EL DATE CON LA FECHA INGRESADA

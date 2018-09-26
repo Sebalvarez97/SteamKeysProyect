@@ -664,6 +664,9 @@ public class KeyManager {
     }
     //CAMBIA EL VALOR DEL SALDO
     public static void UpdateSaldo(int saldo) throws Exception{
+        if(saldo <0){
+            throw new Exception ("Negative balance value");
+        }
         setValue(new ParameterDTO("Saldo", "", saldo));
         UpdateHistory();
     }

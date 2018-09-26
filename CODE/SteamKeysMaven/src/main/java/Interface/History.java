@@ -73,7 +73,7 @@ DefaultTableModel modelotrades = new DefaultTableModel();
         ChartLabel.setIcon(new ImageIcon(chart.getImage()));
         ChartPanel.updateUI();
     } catch (Exception ex) {
-        MessageDialog(ex.getMessage());
+       ErrorMessage(ex.getMessage());
     }
     }
     //MUESTRA LA LISTA DE TRADES
@@ -112,7 +112,7 @@ DefaultTableModel modelotrades = new DefaultTableModel();
     		}
             });
         } catch (Exception ex) {
-            MessageDialog(ex.getMessage());
+            ErrorMessage(ex.getMessage());
         }
     }
     private void ViewTrade(long id){
@@ -122,7 +122,7 @@ DefaultTableModel modelotrades = new DefaultTableModel();
                     editing = true;
                     AddWindow(window);
                 } catch (NonexistentEntityException ex) {
-                   MessageDialog(ex.getMessage());
+                   ErrorMessage(ex.getMessage());
                 }
     }
     private void EditTrade(long id){
@@ -134,7 +134,7 @@ DefaultTableModel modelotrades = new DefaultTableModel();
                     editing = true;
                     AddWindow(window);
                 } catch (NonexistentEntityException ex) {
-                   MessageDialog(ex.getMessage());
+                   ErrorMessage(ex.getMessage());
                 }
             }
     }
@@ -175,7 +175,7 @@ public class XYLineChart extends ImageIcon{
 //        domain.setRange(minx-1,maxx+1);
         domain.setVerticalTickLabels(true);
         NumberAxis range = (NumberAxis) xyplot.getRangeAxis();;
-        range.setRange(miny-50, maxy+50);
+        range.setRange(miny, maxy+50);
         range.setTickUnit(new NumberTickUnit(100.00));
         //fin de personalización
         //se crea la imagen y se asigna a la clase ImageIcon
@@ -206,6 +206,9 @@ public class XYLineChart extends ImageIcon{
             }
             Minute dia = new Minute(fecha);
             sIngresos.addOrUpdate(dia,value);
+        }
+        if(miny<maxy-100){
+            miny = maxy-100;
         }
         TimeSeriesCollection xyseriescollection =  new TimeSeriesCollection();
         xyseriescollection.addSeries( sIngresos );        
