@@ -22,11 +22,11 @@ import steam.jewishs.steamkeysmaven.KeyManager;
  *
  * @author eltet
  */
-public class Configurations extends Interface {
+public class Settings extends Interface {
     DefaultListModel modeloestado;
     DefaultListModel modelotipos;
     //CONSTRUCTOR
-    public Configurations() throws Exception {
+    public Settings() throws Exception {
         initComponents();
         initICon();
         ShowConfiguration();
@@ -107,25 +107,25 @@ public class Configurations extends Interface {
             }
             TypeList.setModel(modelotipos);
         } catch (NonexistentEntityException ex) {
-            MessageDialog(ex.getMessage());
+            ErrorMessage(ex.getMessage());
         }
     }
     private void DeleteType(){
           try{
             List<String> selected = TypeList.getSelectedValuesList();
             if(selected.isEmpty()){
-                MessageDialog("Select a type first");
+                WarningMessage("Select a type first");
             }else{
               int confirmation = JOptionPane.showConfirmDialog(this, "Are you sure?");
               if (confirmation == 0){
                   for(String sel : selected){
                       KeyManager.DeleteType(sel);
-                      MessageDialog("Deleted Succefully");
+                      InformationMessage("Deleted Succefully");
                   }
               }
             }
           }catch(NonexistentEntityException ex){
-              MessageDialog(ex.getMessage());
+              ErrorMessage(ex.getMessage());
           }
           Reload();
     }
@@ -137,11 +137,11 @@ public class Configurations extends Interface {
                 try {
                     KeyManager.EnterType(input);
                 } catch (Exception ex) {
-                    MessageDialog(ex.getMessage());
+                    ErrorMessage(ex.getMessage());
                 }
             }
         }else{
-            MessageDialog("You did not enter a value");
+            WarningMessage("You did not enter a value");
         }
         Reload();
     }
@@ -154,25 +154,25 @@ public class Configurations extends Interface {
             }
             StateList.setModel(modeloestado);
         } catch (NonexistentEntityException ex) {
-            MessageDialog(ex.getMessage());
+            ErrorMessage(ex.getMessage());
         }
     }
       private void DeleteState(){
           try{
             List<String> selected = StateList.getSelectedValuesList();
             if(selected.isEmpty()){
-                MessageDialog("Select a state first");
+                WarningMessage("Select a state first");
             }else{
               int confirmation = JOptionPane.showConfirmDialog(this, "Are you sure?");
               if (confirmation == 0){
                   for(String sel : selected){
                       KeyManager.DeleteState(sel);
-                      MessageDialog("Deleted Succefully");
+                      InformationMessage("Deleted Succefully");
                   }
               }
             }
           }catch(NonexistentEntityException ex){
-              MessageDialog(ex.getMessage());
+              ErrorMessage(ex.getMessage());
           }
           Reload();
     }
@@ -184,11 +184,11 @@ public class Configurations extends Interface {
                 try {
                     KeyManager.EnterState(input);
                 } catch (Exception ex) {
-                    MessageDialog(ex.getMessage());
+                    ErrorMessage(ex.getMessage());
                 }
             }
         }else{
-             MessageDialog("You did not enter a value");
+             WarningMessage("You did not enter a value");
         }
         Reload();
     }
@@ -208,7 +208,7 @@ public class Configurations extends Interface {
             }
         } catch (Exception ex) {
             ShowConfiguration();
-            MessageDialog("You entered a bad input");
+            ErrorMessage("You entered a bad input");
         }
     }
     @SuppressWarnings("unchecked")

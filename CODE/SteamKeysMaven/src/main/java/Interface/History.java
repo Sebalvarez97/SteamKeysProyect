@@ -73,7 +73,7 @@ DefaultTableModel modelotrades = new DefaultTableModel();
         ChartLabel.setIcon(new ImageIcon(chart.getImage()));
         ChartPanel.updateUI();
     } catch (Exception ex) {
-        MessageDialog(ex.getMessage());
+       ErrorMessage(ex.getMessage());
     }
     }
     //MUESTRA LA LISTA DE TRADES
@@ -112,7 +112,7 @@ DefaultTableModel modelotrades = new DefaultTableModel();
     		}
             });
         } catch (Exception ex) {
-            MessageDialog(ex.getMessage());
+            ErrorMessage(ex.getMessage());
         }
     }
     private void ViewTrade(long id){
@@ -122,7 +122,7 @@ DefaultTableModel modelotrades = new DefaultTableModel();
                     editing = true;
                     AddWindow(window);
                 } catch (NonexistentEntityException ex) {
-                   MessageDialog(ex.getMessage());
+                   ErrorMessage(ex.getMessage());
                 }
     }
     private void EditTrade(long id){
@@ -134,7 +134,7 @@ DefaultTableModel modelotrades = new DefaultTableModel();
                     editing = true;
                     AddWindow(window);
                 } catch (NonexistentEntityException ex) {
-                   MessageDialog(ex.getMessage());
+                   ErrorMessage(ex.getMessage());
                 }
             }
     }

@@ -34,8 +34,18 @@ public class Interface extends JFrame{
 //    }
     }
        //PERMITE MOSTRAR UNA ALERTA O MENSAJE EN PANTALLA
-    protected void MessageDialog(String scr){
-        JOptionPane.showMessageDialog(this, scr, "WARNING_MESSAGE", JOptionPane.WARNING_MESSAGE);
+    protected void InformationMessage(String scr){
+        JOptionPane.showMessageDialog(this, scr, "Information", JOptionPane.INFORMATION_MESSAGE);
+    }
+    protected void WarningMessage(String scr){
+        JOptionPane.showMessageDialog(this, scr, "Warning", JOptionPane.WARNING_MESSAGE);
+    }
+    //PERMITE MOSTRAR UNA ALERTA O MENSAJE EN PANTALLA
+//    protected void MessageDialog(String scr){
+//        JOptionPane.showMessageDialog(this, scr, "WARNING_MESSAGE", JOptionPane.WARNING_MESSAGE);
+//    }
+    protected void ErrorMessage(String scr){
+        JOptionPane.showMessageDialog(this, scr, "ERROR", JOptionPane.ERROR_MESSAGE);
     }
     protected boolean ValidateUser(){
         String contraseña = KeyManager.getGlobalPassword();
