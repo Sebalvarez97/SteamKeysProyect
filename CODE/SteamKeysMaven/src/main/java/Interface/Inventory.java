@@ -30,7 +30,7 @@ public class Inventory extends Interface{
     
     DefaultTableModel modelotabla; //MODELO PARA LA TABLE DE LLAVES   
     //MANEJO DE VENTANAS
-
+    private boolean sellingtrading;
     
     //CONSTRUCTOR
     public Inventory() {
@@ -60,7 +60,7 @@ public class Inventory extends Interface{
             ChartLabel.setIcon(new ImageIcon(graficoBarra));
             ChartPanel.updateUI();
         } catch (NonexistentEntityException ex) {
-            MessageDialog(ex.getMessage());
+            ErrorMessage(ex.getMessage());
         }
     }
     //CONFIGURACION DE LA TABLA
@@ -89,6 +89,7 @@ public class Inventory extends Interface{
     }
     //RECARGA LA LISTA DE LLAVES
     protected void Reload(){
+        sellingtrading = false;
         initSaldo();
         ListTable();
         SetKeyTable();
@@ -125,7 +126,7 @@ public class Inventory extends Interface{
             TotalTittle.setText("TOTAL   "+ "$ "+KeyManager.numberConvertor(totalmoney) + "  (Can buy: "+ KeyManager.getCantUcanBuy(KeyManager.getBalanceMoney()) +")");
             
         } catch (Exception ex) {
-            MessageDialog(ex.getMessage());
+            WarningMessage(ex.getMessage());
         }
     }
     //CONFIGURA EL MODELO DE LA TABLA DE LLAVES Y LAS LISTA
@@ -166,16 +167,19 @@ public class Inventory extends Interface{
             KeyTable.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent evnt)
     		{
-                        if (evnt.getClickCount()> 1 && evnt.getClickCount()<=2)
-                        {   
-                           SellOrTradeMessage();
-                        }
+//                    if(!sellingtrading){
+//                        if (evnt.getClickCount() == 2)
+//                        {  
+//                           sellingtrading = true;
+//                           SellOrTradeMessage();
+//                        }
+//                    }
                 }
             });
         } catch (NonexistentEntityException ex) {
-            MessageDialog("The entity does not exist");
+            WarningMessage("The entity does not exist");
         } catch (Exception ex) {
-            MessageDialog(ex.getMessage());
+            ErrorMessage(ex.getMessage());
         }
     }
     private void SellOrTradeMessage(){
@@ -223,7 +227,7 @@ public class Inventory extends Interface{
     private void DeleteKey(){ 
         List<KeyDTO> keys = getKeySelection();
       if(keys.size() == 0){
-            MessageDialog("Select a key first");
+            WarningMessage("Select a key first");
       }else{
         int confirmation = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete selected keys?");
         if (confirmation == 0){
@@ -231,7 +235,7 @@ public class Inventory extends Interface{
                try {
                    KeyManager.DeleteKey(dto);
                } catch (NonexistentEntityException ex) {
-                   MessageDialog(ex.getMessage());
+                   ErrorMessage(ex.getMessage());
                }
             }
         }
@@ -254,7 +258,7 @@ public class Inventory extends Interface{
                     AddWindow(window);
             }
         }else if(!KeyManager.ValidateTradeSelection(keys)){
-            MessageDialog("Invalid selection of keys");
+            WarningMessage("Invalid selection of keys");
         }
         Reload();
    }
@@ -262,7 +266,7 @@ public class Inventory extends Interface{
     private void SellKey(){
         List<KeyDTO> keys = getKeySelection();
         if(keys.size() == 0){
-            MessageDialog("Select a key first");
+            WarningMessage("Select a key first");
         }else{
             try {
                 Object input = JOptionPane.showInputDialog("Ingrese el precio de venta");
@@ -276,7 +280,7 @@ public class Inventory extends Interface{
                     }
                 } 
             } catch (Exception ex) {
-                MessageDialog(ex.getMessage());
+                ErrorMessage(ex.getMessage());
             }
         }
         initSaldo();
@@ -578,11 +582,11 @@ public class Inventory extends Interface{
     private void ConfigButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConfigButtonActionPerformed
         try {
             if(ValidateUser()){
-                AddWindow(new Configurations());
+                AddWindow(new Settings());
             }
             
         } catch (Exception ex) {
-            MessageDialog(ex.getMessage());
+            ErrorMessage(ex.getMessage());
         }
       
     }//GEN-LAST:event_ConfigButtonActionPerformed
