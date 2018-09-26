@@ -382,8 +382,10 @@ public class TradeInterface extends Interface {
     		{
                         if (evnt.getClickCount() == 1)
                         {   
-                            Object vrmprice = VmrTable.getModel().getValueAt(VmrTable.getSelectedRow(), 0);
-                            VmrPriceTittle.setText(String.valueOf(vrmprice));
+                            Object vmrprice = VmrTable.getModel().getValueAt(VmrTable.getSelectedRow(), 0);
+                            Object vmrsellprice = VmrTable.getModel().getValueAt(VmrTable.getSelectedRow(), 1);
+                            VmrPriceTittle.setText(String.valueOf(vmrprice));
+                            SellPriceInput.setText(String.valueOf(vmrsellprice));
                         }
     		} 
             });

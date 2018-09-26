@@ -7,6 +7,8 @@ import TransporterUnits.TradeDTO;
 import TransporterUnits.TypeStateDTO;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -161,11 +163,40 @@ public class Inventory extends Interface{
                }
             }
             KeyTable.setModel(modelotabla);
+            KeyTable.addMouseListener(new MouseAdapter() {
+                public void mouseClicked(MouseEvent evnt)
+    		{
+                        if (evnt.getClickCount()> 1 && evnt.getClickCount()<=2)
+                        {   
+                           SellOrTradeMessage();
+                        }
+                }
+            });
         } catch (NonexistentEntityException ex) {
             MessageDialog("The entity does not exist");
         } catch (Exception ex) {
             MessageDialog(ex.getMessage());
         }
+    }
+    private void SellOrTradeMessage(){
+        int seleccion = JOptionPane.showOptionDialog(
+            this,
+            "Trade or Sell?", 
+            "Options",
+            JOptionPane.YES_NO_CANCEL_OPTION,
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            new Object[] {"Trade", "Sell", "Cancel"},   // null para YES, NO y CANCEL
+            "Trade");
+            if(seleccion != -1){
+                System.out.println(seleccion);
+                if(seleccion == 0){
+                    TradeKey();
+                }
+                if(seleccion == 1){
+                    SellKey();
+                }
+            }
     }
     //DEVUELVE LA LISTA DE LLAVES SELECCIONADAS 
     private List<KeyDTO> getKeySelection(){
@@ -208,7 +239,25 @@ public class Inventory extends Interface{
         initSaldo();
         Reload();
     }
-   
+   private void TradeKey(){
+       List<KeyDTO> keys = getKeySelection();
+        if(keys.isEmpty()){
+            int confirmacion = JOptionPane.showConfirmDialog(this, "You did not select a key. It is correct?");
+            if(confirmacion == 0){
+                    TradeInterface window = new TradeInterface(new TradeDTO(250,0), false);
+                    AddWindow(window);
+            }    
+        }else if(KeyManager.ValidateTradeSelection(keys)) {
+            int confirmacion = JOptionPane.showConfirmDialog(this, "This key/s selected will be traded, Are you sure?");
+            if(confirmacion == 0){
+                    TradeInterface window = new TradeInterface(new TradeDTO(250,0,keys), false);
+                    AddWindow(window);
+            }
+        }else if(!KeyManager.ValidateTradeSelection(keys)){
+            MessageDialog("Invalid selection of keys");
+        }
+        Reload();
+   }
     //VENDE UNA LLAVE O LLAVES
     private void SellKey(){
         List<KeyDTO> keys = getKeySelection();
@@ -216,13 +265,16 @@ public class Inventory extends Interface{
             MessageDialog("Select a key first");
         }else{
             try {
-                int sellprice = KeyManager.numberConvertor(JOptionPane.showInputDialog("Ingrese el precio de venta"));
-                int confirm = JOptionPane.showConfirmDialog(this, "You are selling this " + keys.size()+ " keys. Are you sure?");
-                if(confirm == 0){
-                    for(KeyDTO key : keys){
+                Object input = JOptionPane.showInputDialog("Ingrese el precio de venta");
+                if(input != null){
+                    int sellprice = KeyManager.numberConvertor(String.valueOf(input));
+                    int confirm = JOptionPane.showConfirmDialog(this, "You are selling this " + keys.size()+ " keys. Are you sure?");
+                     if(confirm == 0){
+                        for(KeyDTO key : keys){
                         KeyManager.SellKey(key, sellprice);
+                        }
                     }
-                }
+                } 
             } catch (Exception ex) {
                 MessageDialog(ex.getMessage());
             }
@@ -538,23 +590,7 @@ public class Inventory extends Interface{
 
     
     private void TradeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TradeButtonActionPerformed
-        List<KeyDTO> keys = getKeySelection();
-        if(keys.isEmpty()){
-            int confirmacion = JOptionPane.showConfirmDialog(this, "You did not select a key. It is correct?");
-            if(confirmacion == 0){
-                    TradeInterface window = new TradeInterface(new TradeDTO(250,0), false);
-                    AddWindow(window);
-            }    
-        }else if(KeyManager.ValidateTradeSelection(keys)) {
-            int confirmacion = JOptionPane.showConfirmDialog(this, "This key/s selected will be traded, Are you sure?");
-            if(confirmacion == 0){
-                    TradeInterface window = new TradeInterface(new TradeDTO(250,0,keys), false);
-                    AddWindow(window);
-            }
-        }else if(!KeyManager.ValidateTradeSelection(keys)){
-            MessageDialog("Invalid selection of keys");
-        }
-        Reload();
+        TradeKey();
         // TODO add your handling code here:
     }//GEN-LAST:event_TradeButtonActionPerformed
 

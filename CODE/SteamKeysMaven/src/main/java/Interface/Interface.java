@@ -34,6 +34,13 @@ public class Interface extends JFrame{
 //    }
     }
        //PERMITE MOSTRAR UNA ALERTA O MENSAJE EN PANTALLA
+    protected void InformationMessage(String scr){
+        JOptionPane.showMessageDialog(this, scr, "Atention", JOptionPane.INFORMATION_MESSAGE);
+    }
+    protected void WarningMessage(String scr){
+        JOptionPane.showMessageDialog(this, scr, "Warning", JOptionPane.WARNING_MESSAGE);
+    }
+    //PERMITE MOSTRAR UNA ALERTA O MENSAJE EN PANTALLA
     protected void MessageDialog(String scr){
         JOptionPane.showMessageDialog(this, scr, "WARNING_MESSAGE", JOptionPane.WARNING_MESSAGE);
     }
