@@ -155,11 +155,11 @@ public class Inventory extends Interface{
                    if(day == 0){
                        days = " < 24hs";
                    }else{
-                    days = String.valueOf(day+1);
+                    days = String.valueOf(day+1) + " days";
                    }
                }
                Date release = KeyManager.ReleaseDate(dto.getbuydate());
-               Object[] row = {dto.getId(), type , date , state ,"("+ days + ")  "+KeyManager.SimpleFormatDate(release)};
+               Object[] row = {dto.getId(), type , date , state ,days};
                modelotabla.addRow(row);
                }
             }
@@ -391,8 +391,9 @@ public class Inventory extends Interface{
         ChartPanelLayout.setHorizontalGroup(
             ChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ChartPanelLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(ChartLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(ChartLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30))
         );
         ChartPanelLayout.setVerticalGroup(
             ChartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -446,24 +447,25 @@ public class Inventory extends Interface{
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, KeyPanelLayout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(KeyTableScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 379, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)))
-                        .addGroup(KeyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, KeyPanelLayout.createSequentialGroup()
-                                .addComponent(ChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap())
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, KeyPanelLayout.createSequentialGroup()
+                                .addComponent(KeyTableScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 419, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)))
+                        .addGap(10, 10, 10)
+                        .addGroup(KeyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(KeyPanelLayout.createSequentialGroup()
                                 .addComponent(NewKeyButton)
                                 .addGap(18, 18, 18)
                                 .addComponent(DeleteButton)
                                 .addGap(69, 69, 69))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, KeyPanelLayout.createSequentialGroup()
+                            .addGroup(KeyPanelLayout.createSequentialGroup()
                                 .addComponent(CantTittle)
                                 .addGap(49, 49, 49)
                                 .addComponent(UntradTittle)
                                 .addGap(48, 48, 48)
                                 .addComponent(TradTittle)
-                                .addGap(20, 20, 20))))))
+                                .addGap(20, 20, 20))
+                            .addGroup(KeyPanelLayout.createSequentialGroup()
+                                .addComponent(ChartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap())))))
         );
         KeyPanelLayout.setVerticalGroup(
             KeyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -523,7 +525,7 @@ public class Inventory extends Interface{
             .addGroup(InventoryPanelLayout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addComponent(KeyPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
         InventoryPanelLayout.setVerticalGroup(
             InventoryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
